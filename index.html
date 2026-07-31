@@ -3,734 +3,849 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MINDSET™ | Biotecnologie della Longevità Italia</title>
-  <style>
-    :root {
-      --bg: #070809;
-      --surface: #0E1015;
-      --surface-card: #14171F;
-      --surface-border: rgba(255, 255, 255, 0.08);
-      --text-main: #F8FAFC;
-      --text-muted: #64748B;
-      --accent-emerald: #10B981;
-      --accent-emerald-glow: rgba(16, 185, 129, 0.15);
-      --accent-violet: #8B5CF6;
-      --accent-silver: #94A3B8;
-    }
+  <title>MINDSET LABS | Neural Operating System</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- React & ReactDOM CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  
+  <!-- Babel Standalone for JSX -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    * { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; }
+  <!-- Feather / Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=Space+Grotesk:wght@400;600;700&display=swap');
     
     body {
-      background-color: var(--bg);
-      color: var(--text-main);
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      line-height: 1.5;
+      background-color: #08090C;
+      color: #F8FAFC;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       overflow-x: hidden;
     }
-
-    .glow-bg {
-      position: absolute;
-      top: -100px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 1000px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(16, 185, 129, 0.07) 0%, rgba(7, 8, 9, 0) 70%);
-      pointer-events: none;
-      z-index: 0;
+    
+    .font-mono-tech {
+      font-family: 'JetBrains Mono', monospace;
     }
 
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 18px 6%;
-      background: rgba(7, 8, 9, 0.85);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--surface-border);
+    .font-display {
+      font-family: 'Space Grotesk', sans-serif;
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      font-size: 19px;
-      text-decoration: none;
-      color: #FFF;
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.8; }
     }
 
-    .brand-dot {
-      width: 8px;
-      height: 8px;
-      background-color: var(--accent-emerald);
-      border-radius: 50%;
-      box-shadow: 0 0 12px var(--accent-emerald);
+    .animate-pulse-glow {
+      animation: pulseGlow 4s infinite ease-in-out;
     }
-
-    .nav-links { display: flex; gap: 28px; align-items: center; }
-    .nav-links a { color: var(--accent-silver); text-decoration: none; font-size: 13px; font-weight: 500; transition: color 0.2s; }
-    .nav-links a:hover { color: #FFF; }
-
-    .btn-nav {
-      padding: 8px 18px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--surface-border);
-      border-radius: 100px;
-      color: var(--text-main);
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .btn-nav:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(255,255,255,0.2); }
-
-    .hero-container {
-      position: relative;
-      z-index: 10;
-      max-width: 1240px;
-      margin: 0 auto;
-      padding: 70px 24px 90px 24px;
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 50px;
-      align-items: center;
-    }
-
-    @media (max-width: 968px) {
-      .hero-container { grid-template-columns: 1fr; padding: 40px 20px; gap: 40px; }
-      .nav-links { display: none; }
-    }
-
-    .meta-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 14px;
-      background: var(--accent-emerald-glow);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      border-radius: 100px;
-      font-size: 12px;
-      color: var(--accent-emerald);
-      margin-bottom: 24px;
-      font-weight: 600;
-    }
-
-    h1 { font-size: clamp(38px, 4.8vw, 60px); font-weight: 800; line-height: 1.05; letter-spacing: -0.03em; margin-bottom: 20px; color: #FFFFFF; }
-    h1 span { color: var(--text-muted); font-weight: 400; }
-    .hero-description { font-size: 16px; color: var(--accent-silver); line-height: 1.65; max-width: 520px; margin-bottom: 36px; }
-
-    .proof-strip { display: flex; gap: 32px; padding-top: 28px; border-top: 1px solid var(--surface-border); }
-    .proof-item { display: flex; flex-direction: column; }
-    .proof-val { font-size: 20px; font-weight: 800; color: #FFF; }
-    .proof-lbl { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
-
-    .calc-card {
-      background: var(--surface);
-      border: 1px solid var(--surface-border);
-      border-radius: 24px;
-      padding: 36px;
-      box-shadow: 0 30px 60px rgba(0,0,0,0.5);
-      position: relative;
-    }
-
-    .calc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--surface-border); }
-    .calc-title { font-size: 14px; font-weight: 700; text-transform: uppercase; color: var(--accent-silver); }
-    .calc-step-indicator { font-size: 11px; color: var(--accent-emerald); font-family: monospace; font-weight: 700; }
-
-    .option-btn {
-      width: 100%;
-      padding: 16px 20px;
-      margin-bottom: 10px;
-      background: rgba(255,255,255,0.02);
-      border: 1px solid var(--surface-border);
-      border-radius: 14px;
-      color: var(--text-main);
-      font-size: 14px;
-      text-align: left;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .option-btn:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.25); }
-
-    .btn-action {
-      width: 100%;
-      padding: 16px;
-      margin-top: 14px;
-      background: var(--text-main);
-      color: #000;
-      border: none;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 14px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .btn-action:hover { opacity: 0.9; transform: translateY(-1px); }
-
-    .section-container { max-width: 1240px; margin: 0 auto; padding: 90px 24px; border-top: 1px solid var(--surface-border); }
-    .section-header { text-align: center; max-width: 600px; margin: 0 auto 50px auto; }
-    .section-header h2 { font-size: 34px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 12px; color: #FFF; }
-    .section-header p { font-size: 15px; color: var(--accent-silver); }
-
-    .formula-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
-    .formula-card { background: var(--surface); border: 1px solid var(--surface-border); border-radius: 18px; padding: 28px; transition: all 0.2s ease; cursor: pointer; }
-    .formula-card:hover { border-color: var(--accent-emerald); transform: translateY(-3px); }
-    .formula-dose { font-size: 11px; color: var(--accent-emerald); font-family: monospace; font-weight: 700; margin-bottom: 10px; }
-    .formula-title { font-size: 18px; font-weight: 700; color: #FFF; margin-bottom: 10px; }
-    .formula-desc { font-size: 13px; color: var(--accent-silver); line-height: 1.6; }
-    .formula-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; font-size: 12px; color: var(--accent-emerald); font-weight: 600; }
-
-    .table-wrapper { background: var(--surface); border: 1px solid var(--surface-border); border-radius: 20px; overflow: hidden; }
-    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
-    th, td { padding: 20px 24px; border-bottom: 1px solid var(--surface-border); }
-    th { color: var(--text-muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; }
-    td strong { color: #FFF; }
-    .check-highlight { color: var(--accent-emerald); font-weight: 700; }
-
-    .faq-wrapper { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
-    .faq-item { background: var(--surface); border: 1px solid var(--surface-border); border-radius: 14px; overflow: hidden; }
-    .faq-q { padding: 20px 24px; font-weight: 600; font-size: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-    .faq-a { padding: 0 24px 20px 24px; font-size: 14px; color: var(--accent-silver); line-height: 1.6; display: none; }
-    .faq-item.active .faq-a { display: block; }
-    .faq-item.active .faq-icon { transform: rotate(180deg); }
-    .faq-icon { transition: transform 0.2s; color: var(--accent-silver); }
-
-    .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 900px; margin: 0 auto; }
-    @media (max-width: 768px) { .pricing-grid { grid-template-columns: 1fr; } }
-
-    .price-card { background: var(--surface); border: 1px solid var(--surface-border); border-radius: 24px; padding: 40px; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
-    .price-card.featured { border-color: var(--accent-emerald); background: rgba(16, 185, 129, 0.04); box-shadow: 0 20px 40px rgba(16, 185, 129, 0.1); }
-    .badge-pop { position: absolute; top: -12px; right: 24px; background: var(--accent-emerald); color: #000; font-size: 10px; font-weight: 800; padding: 4px 12px; border-radius: 100px; text-transform: uppercase; }
-    .price-val { font-size: 46px; font-weight: 800; color: #FFF; margin: 16px 0; }
-    .price-val span { font-size: 14px; color: var(--text-muted); font-weight: 400; }
-    .discount-banner { display: none; background: rgba(16, 185, 129, 0.2); color: var(--accent-emerald); border: 1px dashed var(--accent-emerald); padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; margin-bottom: 12px; }
-
-    /* Modal Component */
-    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 300; display: none; align-items: center; justify-content: center; padding: 20px; }
-    .modal-overlay.open { display: flex; }
-    .modal-box { background: #0E1015; border: 1px solid var(--surface-border); border-radius: 20px; max-width: 550px; width: 100%; padding: 32px; position: relative; }
-    .modal-close { position: absolute; top: 20px; right: 20px; background: none; border: none; color: var(--accent-silver); font-size: 20px; cursor: pointer; }
-
-    /* Drawer & Toast */
-    .drawer-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); z-index: 200; display: none; opacity: 0; transition: opacity 0.3s ease; }
-    .drawer-overlay.open { display: block; opacity: 1; }
-    .drawer { position: fixed; top: 0; right: -480px; bottom: 0; width: 100%; max-width: 440px; background: #0D0F14; border-left: 1px solid var(--surface-border); z-index: 201; padding: 32px; display: flex; flex-direction: column; justify-content: space-between; transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-    .drawer.open { right: 0; }
-    .drawer-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--surface-border); padding-bottom: 20px; }
-    .drawer-close { background: none; border: none; color: var(--accent-silver); font-size: 24px; cursor: pointer; }
-
-    .input-group { margin-bottom: 16px; text-align: left; }
-    .input-group label { display: block; font-size: 12px; color: var(--accent-silver); margin-bottom: 6px; font-weight: 600; }
-    .input-group input { width: 100%; padding: 12px 14px; background: rgba(255,255,255,0.04); border: 1px solid var(--surface-border); border-radius: 10px; color: #FFF; font-size: 14px; }
-    .input-group input:focus { outline: none; border-color: var(--accent-emerald); }
-
-    .toast { position: fixed; bottom: 24px; left: 24px; background: rgba(14, 16, 21, 0.95); border: 1px solid var(--surface-border); border-radius: 12px; padding: 14px 18px; display: flex; align-items: center; gap: 12px; z-index: 150; box-shadow: 0 10px 30px rgba(0,0,0,0.5); backdrop-filter: blur(10px); transform: translateY(150px); transition: transform 0.4s ease; }
-    .toast.show { transform: translateY(0); }
-
-    .gdpr-banner { position: fixed; bottom: 0; left: 0; right: 0; background: #0E1015; border-top: 1px solid var(--surface-border); padding: 16px 6%; display: flex; justify-content: space-between; align-items: center; z-index: 180; font-size: 12px; color: var(--accent-silver); }
-
-    footer { padding: 40px; text-align: center; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--surface-border); }
-    .hidden { display: none !important; }
   </style>
 </head>
-<body id="top">
+<body>
 
-  <div class="glow-bg"></div>
+  <div id="root"></div>
 
-  <!-- STICKY NAVBAR -->
-  <header>
-    <a href="#top" class="brand">
-      <div class="brand-dot"></div>
-      MINDSET LABS
-    </a>
-    <div class="nav-links">
-      <a href="#formula">Formula</a>
-      <a href="#confronto">Confronto</a>
-      <a href="#faq">FAQ</a>
-      <a href="#pricing">Prezzi</a>
-    </div>
-    <button class="btn-nav" id="btn-nav-quiz">Diagnosi Biometrica</button>
-  </header>
+  <script type="text/babel">
+    const { useState, useEffect } = React;
 
-  <!-- HERO & DIAGNOSTIC SECTION -->
-  <section class="hero-container" id="quiz-section">
-    <div class="hero-text">
-      <div class="meta-badge">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        Certificato di Purezza Clinica 99.8%
-      </div>
+    function App() {
+      // States
+      const [pricingCycle, setPricingCycle] = useState('sub');
+      const [selectedPlan, setSelectedPlan] = useState('sub');
+      const [showCheckout, setShowCheckout] = useState(false);
+      const [showCoa, setShowCoa] = useState(false);
+      const [selectedMolecule, setSelectedMolecule] = useState(null);
       
-      <h1>La Scienza della Longevità.<br/><span>Riscritta per il tuo Cervello.</span></h1>
-      
-      <p class="hero-description">
-        MINDSET™ combina nootropici ad alta bio-disponibilità e stimolatori del NAD+ per eliminare la nebbia mentale e proteggere la riserva cognitiva.
-      </p>
+      // Diagnostic Quiz States
+      const [quizStep, setQuizStep] = useState(1);
+      const [clarity, setClarity] = useState(45);
+      const [remSleep, setRemSleep] = useState('1.5h-2h');
+      const [bioPriority, setBioPriority] = useState('focus');
+      const [isAnalyzing, setIsAnalyzing] = useState(false);
+      const [quizDone, setQuizFinished] = useState(false);
+      const [quizScore, setQuizScore] = useState(0);
+      const [promoUnlocked, setPromoUnlocked] = useState(false);
+      const [openFaq, setOpenFaq] = useState(null);
+      const [glassType, setGlassType] = useState('miron');
 
-      <div class="proof-strip">
-        <div class="proof-item">
-          <span class="proof-val">40+</span>
-          <span class="proof-lbl">Studi Clinici PubMed</span>
-        </div>
-        <div class="proof-item">
-          <span class="proof-val">&lt; 24h</span>
-          <span class="proof-lbl">Spedizione da Bologna</span>
-        </div>
-        <div class="proof-item">
-          <span class="proof-val">0%</span>
-          <span class="proof-lbl">Eccipienti Sintetici</span>
-        </div>
-      </div>
-    </div>
+      // Toast Loop State
+      const [toastIndex, setToastIndex] = useState(0);
+      const [showToast, setShowToast] = useState(false);
 
-    <!-- DIAGNOSTIC CALCULATOR CARD -->
-    <div class="calc-card">
-      <div class="calc-header">
-        <span class="calc-title">Diagnosi Biometrica Cognitiva</span>
-        <span class="calc-step-indicator" id="step-num">01 / 03</span>
-      </div>
+      const toasts = [
+        { name: 'Marco D. da Milano', action: 'ha attivato il Protocollo Focus (Lotto #IT-9948)', time: '2 min fa' },
+        { name: 'Dr. Roberto M. da Bologna', action: 'ha scaricato il Certificato COA 99.8%', time: '5 min fa' },
+        { name: 'Elena B. da Roma', action: 'ha rinnovato l\'Abbonamento Longevità 90gg', time: '12 min fa' },
+        { name: 'Giuseppe T. da Torino', action: 'ha completato la Diagnosi Neurale', time: '18 min fa' }
+      ];
 
-      <div id="q1">
-        <p style="font-size: 15px; color: var(--accent-silver); margin-bottom: 20px;">Come definisci la tua lucidità mentale dopo le prime 3 ore di lavoro?</p>
-        <button class="option-btn" data-step="1" data-pts="15">
-          <span>Presenza di nebbia mentale o stanchezza</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        </button>
-        <button class="option-btn" data-step="1" data-pts="25">
-          <span>Buona, ma con forte calo post-prandiale</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        </button>
-        <button class="option-btn" data-step="1" data-pts="35">
-          <span>Focus continuo ed energia costante</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        </button>
-      </div>
+      useEffect(() => {
+        const timer = setTimeout(() => setShowToast(true), 2000);
+        const interval = setInterval(() => {
+          setShowToast(false);
+          setTimeout(() => {
+            setToastIndex((prev) => (prev + 1) % toasts.length);
+            setShowToast(true);
+          }, 500);
+        }, 9000);
+        return () => { clearTimeout(timer); clearInterval(interval); };
+      }, []);
 
-      <div id="q2" class="hidden">
-        <p style="font-size: 15px; color: var(--accent-silver); margin-bottom: 20px;">Quante ore di sonno profondo (fase REM) registri abitualmente?</p>
-        <button class="option-btn" data-step="2" data-pts="10">
-          <span>Meno di 1.5 ore (Risvegli frequenti)</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        </button>
-        <button class="option-btn" data-step="2" data-pts="25">
-          <span>Tra 1.5 e 2.5 ore (Nella media)</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        </button>
-        <button class="option-btn" data-step="2" data-pts="35">
-          <span>Oltre 2.5 ore (Ripristino ottimale)</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        </button>
-      </div>
-
-      <div id="q3" class="hidden">
-        <p style="font-size: 15px; color: var(--accent-silver); margin-bottom: 20px;">Qual è la tua priorità biologica nei prossimi 90 giorni?</p>
-        <button class="option-btn" data-step="3" data-pts="15">
-          <span>Neuro-protezione e Longevità Cellulare</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </button>
-        <button class="option-btn" data-step="3" data-pts="30">
-          <span>Massima Produttività e Performance</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </button>
-      </div>
-
-      <div id="result" class="hidden">
-        <div style="text-align: center; padding: 10px 0;">
-          <span style="font-size: 12px; color: var(--accent-emerald); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700;">Profilo Calcolato</span>
-          <div id="score-val" style="font-size: 46px; font-weight: 800; color: #FFF; margin: 8px 0;">--</div>
-          <p id="recommendation-text" style="font-size: 13px; color: var(--accent-silver); margin-bottom: 24px;">Analisi in corso...</p>
-          <button class="btn-action" id="btn-redeem-discount">Riscatta Offerta Personalizzata (-15%) →</button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FORMULA BREAKDOWN SECTION -->
-  <section class="section-container" id="formula">
-    <div class="section-header">
-      <h2>Scomposizione Clinica</h2>
-      <p>Clicca su ogni principio attivo per consultare i riferimenti dello studio clinico su PubMed.</p>
-    </div>
-
-    <div class="formula-grid">
-      <div class="formula-card" data-title="NMN (Nicotinamide Mononucleotide)" data-dose="500 mg (Clinic Dose)" data-desc="Studi su PubMed indicano che il Nicotinamide Mononucleotide ripristina i livelli di NAD+ negli organismi adulti, stimolando la sirtuina SIRT1 per la riparazione cellulare." data-doi="PMID: 34238770">
-        <div class="formula-dose">500 MG • CLINIC DOSE</div>
-        <div class="formula-title">NMN (Mononucleotide)</div>
-        <div class="formula-desc">Precursore diretto del NAD+. Ripara i mitocondri cellulari e stimola la produzione di energia a livello neurale.</div>
-        <div class="formula-link">Leggi Studio Clinico →</div>
-      </div>
-
-      <div class="formula-card" data-title="Citiscolina (Cognizin®)" data-dose="250 mg (High Purity)" data-desc="La Citiscolina aumenta la densità dei recettori della dopamina ed eleva i livelli di acetilcolina, migliorando la memoria di lavoro di oltre il 28%." data-doi="PMID: 22976324">
-        <div class="formula-dose">250 MG • HIGH PURITY</div>
-        <div class="formula-title">Citiscolina (Cognizin®)</div>
-        <div class="formula-desc">Aumenta la sintesi dei fosfolipidi nelle membrane cerebrali, migliorando la memoria di lavoro e la velocità di elaborazione.</div>
-        <div class="formula-link">Leggi Studio Clinico →</div>
-      </div>
-
-      <div class="formula-card" data-title="Bacopa Monnieri" data-dose="300 mg (Tit. 50%)" data-desc="I bacosidi favoriscono la crescita dei dendriti neurali e migliorano la velocità di trasmissione dei segnali tra le sinapsi sotto stress." data-doi="PMID: 23788517">
-        <div class="formula-dose">300 MG • STANDARDIZED 50%</div>
-        <div class="formula-title">Bacopa Monnieri</div>
-        <div class="formula-desc">Adattogeno clinico che riduce la risposta al cortisolo e protegge i neuroni dallo stress ossidativo continuativo.</div>
-        <div class="formula-link">Leggi Studio Clinico →</div>
-      </div>
-
-      <div class="formula-card" data-title="Spermidina Biologica" data-dose="10 mg (Autophagy Actuator)" data-desc="La Spermidina attiva il meccanismo molecolare dell autofagia cellulare, eliminando le proteine danneggiate e favorendo il rinnovamento organico." data-doi="PMID: 31826038">
-        <div class="formula-dose">10 MG • AUTOPHAGY ACTUATOR</div>
-        <div class="formula-title">Spermidina Biologica</div>
-        <div class="formula-desc">Attiva il processo naturale di autofagia, rimuovendo le componenti cellulari danneggiate e favorendo la longevità.</div>
-        <div class="formula-link">Leggi Studio Clinico →</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- COMPARISON TABLE SECTION -->
-  <section class="section-container" id="confronto">
-    <div class="section-header">
-      <h2>Confronto Tecnico</h2>
-      <p>Perché la maggior parte dei prodotti da farmacia non ottiene risultati misurabili.</p>
-    </div>
-
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>Caratteristica</th>
-            <th>Integratori Generici</th>
-            <th>MINDSET™ Protocol</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Dosaggio Principi Attivi</td>
-            <td style="color: var(--text-muted);">Sottodosati (&lt; 30% della dose clinica)</td>
-            <td class="check-highlight">Dose Clinica 100% Attiva</td>
-          </tr>
-          <tr>
-            <td>Trasparenza del Lotto</td>
-            <td style="color: var(--text-muted);">Non fornita</td>
-            <td class="check-highlight">Certificato di Analisi in PDF</td>
-          </tr>
-          <tr>
-            <td>Biodisponibilità</td>
-            <td style="color: var(--text-muted);">Bassa (Assorbimento epatico scarso)</td>
-            <td class="check-highlight">Incapsulamento Fotonico Miron®</td>
-          </tr>
-          <tr>
-            <td>Produzione</td>
-            <td style="color: var(--text-muted);">Importazione extra-UE generica</td>
-            <td class="check-highlight">Laboratori Certificati a Bologna</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- FAQ SECTION -->
-  <section class="section-container" id="faq">
-    <div class="section-header">
-      <h2>Domande Frequenti</h2>
-      <p>Trasparenza scientifica e dettagli operativi per il mercato italiano.</p>
-    </div>
-
-    <div class="faq-wrapper">
-      <div class="faq-item">
-        <div class="faq-q">
-          <span>Dopo quanto tempo si avvertono i primi risultati?</span>
-          <span class="faq-icon">↓</span>
-        </div>
-        <div class="faq-a">La Citiscolina agisce entro 45 minuti dall'assunzione favorendo il focus immediato. L'NMN e la Spermidina lavorano a livello cellulare accumulativo: i benefici strutturali su memoria e rigenerazione si consolidano in 14-21 giorni di utilizzo continuativo.</div>
-      </div>
-
-      <div class="faq-item">
-        <div class="faq-q">
-          <span>Ci sono controindicazioni o effetti collaterali?</span>
-          <span class="faq-icon">↓</span>
-        </div>
-        <div class="faq-a">MINDSET™ è formulato con ingredienti naturali di grado farmaceutico senza stimolanti sintetici nocivi (0% caffeina anidra). È ben tollerato. In caso di patologie pregresse o gravidanza, consigliamo di mostrare la scheda tecnica al proprio medico.</div>
-      </div>
-
-      <div class="faq-item">
-        <div class="faq-q">
-          <span>Come funziona la garanzia 30 giorni "Soddisfatti o Rimborsati"?</span>
-          <span class="faq-icon">↓</span>
-        </div>
-        <div class="faq-a">Se dopo 30 giorni di trattamento non rilevi un aumento della concentrazione e della qualità del sonno, invia una semplice email al supporto. Ti rimborseremo il 100% dell'importo senza domande.</div>
-      </div>
-
-      <div class="faq-item">
-        <div class="faq-q">
-          <span>Come posso cancellare l'abbonamento ricorsivo?</span>
-          <span class="faq-icon">↓</span>
-        </div>
-        <div class="faq-a">Puoi mettere in pausa o cancellare l'abbonamento in qualsiasi momento con 1 solo click direttamente dalla tua dashboard utente, oppure inviando un messaggio WhatsApp al nostro servizio clienti. Senza vincoli né penali.</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- PRICING & SUBSCRIPTION SECTION -->
-  <section class="section-container" id="pricing">
-    <div class="section-header">
-      <h2>Inizia il tuo Protocollo</h2>
-      <p>Scegli la modalità di somministrazione più adatta al tuo stile di vita.</p>
-    </div>
-
-    <div class="pricing-grid">
-      <div class="price-card">
-        <div>
-          <span style="font-size: 12px; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">FORNITURA SINGOLA</span>
-          <div class="price-val">€65 <span>/ 30 Giorni</span></div>
-          <p style="font-size: 13px; color: var(--accent-silver); margin-bottom: 24px;">Un solo flacone di MINDSET™ Focus & Longevity. Spedizione gratuita inclusa.</p>
-        </div>
-        <button class="option-btn btn-buy-single" style="justify-content: center; font-weight: 700;">Ordina Ora</button>
-      </div>
-
-      <div class="price-card featured" id="card-featured">
-        <div class="badge-pop">Più Scelto</div>
-        <div>
-          <span style="font-size: 12px; color: var(--accent-emerald); font-weight: 700; text-transform: uppercase;">ABBONAMENTO CONTINUO</span>
-          <div class="discount-banner" id="discount-banner">PROMO QUIZ ATTIVATA: -15% SUL PRIMO MESE</div>
-          <div class="price-val" id="price-sub">€49 <span>/ mese</span></div>
-          <p style="font-size: 13px; color: var(--accent-silver); margin-bottom: 24px;">Rinnovo automatico ogni 30 giorni. Sconto del 25% permanente e disdetta in 1 click.</p>
-        </div>
-        <button class="btn-action" id="btn-buy-sub">Attiva Protocollo Ricorsivo</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- MODAL FOR SCIENCE DETAILS -->
-  <div class="modal-overlay" id="modal-science">
-    <div class="modal-box">
-      <button class="modal-close" id="btn-close-modal-science">✕</button>
-      <span style="font-size: 11px; color: var(--accent-emerald); font-family: monospace; font-weight: 700;" id="modal-dose">--</span>
-      <h3 style="font-size: 22px; font-weight: 700; color: #FFF; margin: 8px 0 16px 0;" id="modal-title">--</h3>
-      <p style="font-size: 14px; color: var(--accent-silver); line-height: 1.6; margin-bottom: 20px;" id="modal-desc">--</p>
-      <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--surface-border); padding: 12px 16px; border-radius: 10px; font-size: 12px; color: var(--text-muted);" id="modal-doi">--</div>
-    </div>
-  </div>
-
-  <!-- CHECKOUT SLIDE-OVER DRAWER -->
-  <div class="drawer-overlay" id="drawer-overlay"></div>
-  <div class="drawer" id="drawer">
-    <div>
-      <div class="drawer-header">
-        <span style="font-weight: 700; font-size: 16px; color: #FFF;">Checkout Sicuro</span>
-        <button class="drawer-close" id="btn-close-drawer">✕</button>
-      </div>
-      <div style="padding: 20px 0; border-bottom: 1px solid var(--surface-border); margin-bottom: 20px;">
-        <span style="font-size: 12px; color: var(--accent-silver);">Prodotto Selezionato:</span>
-        <div id="drawer-product-title" style="font-weight: 700; color: #FFF; font-size: 15px; margin-top: 4px;">--</div>
-        <div id="drawer-product-price" style="font-size: 24px; font-weight: 800; color: var(--accent-emerald); margin-top: 8px;">--</div>
-      </div>
-
-      <form id="checkout-form">
-        <div class="input-group">
-          <label>Nome e Cognome</label>
-          <input type="text" id="cust-name" placeholder="Mario Rossi" required>
-        </div>
-        <div class="input-group">
-          <label>Email (per tracciamento spedizione)</label>
-          <input type="email" id="cust-email" placeholder="mario.rossi@gmail.com" required>
-        </div>
-        <div class="input-group">
-          <label>Indirizzo di Spedizione (Italia)</label>
-          <input type="text" placeholder="Via Roma 12, Milano" required>
-        </div>
-        <div class="input-group">
-          <label>Numero Carta / Apple Pay</label>
-          <input type="text" placeholder="4532 •••• •••• 8890" required>
-        </div>
-        <button type="submit" class="btn-action" style="margin-top: 20px; background: var(--accent-emerald); color: #000;">Conferma Ordine e Paga</button>
-      </form>
-    </div>
-    <div style="font-size: 11px; color: var(--text-muted); text-align: center;">🔒 Connessione Crittografata a 256-bit SSL • Spedizione 24h</div>
-  </div>
-
-  <!-- ORDER SUCCESS MODAL -->
-  <div class="modal-overlay" id="modal-success">
-    <div class="modal-box" style="text-align: center;">
-      <div style="font-size: 48px; margin-bottom: 12px;">🎉</div>
-      <h3 style="font-size: 24px; font-weight: 800; color: #FFF; margin-bottom: 8px;">Ordine Confermato!</h3>
-      <p style="font-size: 14px; color: var(--accent-silver); margin-bottom: 20px;">Grazie per la fiducia. Il tuo kit MINDSET™ è in preparazione nei nostri laboratori di Bologna.</p>
-      <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid var(--accent-emerald); padding: 14px; border-radius: 12px; font-size: 13px; color: var(--accent-emerald); margin-bottom: 24px;">
-        Codice Tracciamento Spedizione: <strong id="tracking-code">IT-9948271</strong>
-      </div>
-      <button class="btn-action" id="btn-close-success">Torna alla Home</button>
-    </div>
-  </div>
-
-  <!-- LIVE TOAST NOTIFICATION -->
-  <div class="toast" id="toast">
-    <div style="width: 10px; height: 10px; border-radius: 50%; background: var(--accent-emerald);"></div>
-    <div style="font-size: 12px; color: var(--text-main);">
-      <strong id="toast-user">Marco D. da Milano</strong> ha appena attivato il <span style="color: var(--accent-emerald);" id="toast-action">Protocollo Focus</span>
-    </div>
-  </div>
-
-  <!-- GDPR COOKIE BANNER -->
-  <div class="gdpr-banner" id="gdpr-banner">
-    <span>Utilizziamo cookie tecnici e analitici per ottimizzare l'esperienza di navigazione in Italia secondo la normativa GDPR.</span>
-    <button class="btn-nav" id="btn-accept-gdpr" style="background: var(--text-main); color: #000; border: none;">Accetta</button>
-  </div>
-
-  <footer>
-    © 2026 MINDSET LABS S.r.l. • Via dell'Innovazione, Milano • P.IVA IT09876543210 • Tutti i diritti riservati.
-  </footer>
-
-  <!-- CLEAN CENTRALIZED ES6 SCRIPT (ZERO INLINE EVENT HANDLERS) -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      let score = 0;
-      let isDiscountActive = false;
-
-      // 1. GDPR Cookie Management
-      if (localStorage.getItem('gdpr_accepted')) {
-        document.getElementById('gdpr-banner').style.display = 'none';
-      }
-      document.getElementById('btn-accept-gdpr').addEventListener('click', function() {
-        localStorage.setItem('gdpr_accepted', 'true');
-        document.getElementById('gdpr-banner').style.display = 'none';
-      });
-
-      // 2. Navigation Button
-      document.getElementById('btn-nav-quiz').addEventListener('click', function() {
-        document.getElementById('quiz-section').scrollIntoView();
-      });
-
-      // 3. Quiz Buttons Delegation
-      const optionButtons = document.querySelectorAll('.option-btn[data-step]');
-      optionButtons.forEach(function(btn) {
-        btn.addEventListener('click', function() {
-          const step = parseInt(this.getAttribute('data-step'), 10);
-          const pts = parseInt(this.getAttribute('data-pts'), 10);
-          score += pts;
-
-          if (step === 1) {
-            document.getElementById('q1').classList.add('hidden');
-            document.getElementById('q2').classList.remove('hidden');
-            document.getElementById('step-num').innerText = '02 / 03';
-          } else if (step === 2) {
-            document.getElementById('q2').classList.add('hidden');
-            document.getElementById('q3').classList.remove('hidden');
-            document.getElementById('step-num').innerText = '03 / 03';
-          } else if (step === 3) {
-            document.getElementById('q3').classList.add('hidden');
-            document.getElementById('result').classList.remove('hidden');
-            document.getElementById('step-num').innerText = 'COMPLETO';
-            document.getElementById('score-val').innerText = score + ' / 100';
-
-            if (score < 50) {
-              document.getElementById('recommendation-text').innerText = 'Rilevato accumulo di stress ossidativo. Consigliato: Protocollo MINDSET™ Cellular Recovery.';
-            } else {
-              document.getElementById('recommendation-text').innerText = 'Buona riserva cognitiva. Consigliato: Protocollo MINDSET™ High-Performance Focus.';
-            }
-          }
-        });
-      });
-
-      // 4. Redeem Quiz Discount
-      document.getElementById('btn-redeem-discount').addEventListener('click', function() {
-        isDiscountActive = true;
-        document.getElementById('pricing').scrollIntoView();
-        document.getElementById('discount-banner').style.display = 'block';
-        document.getElementById('price-sub').innerHTML = '€41.65 <span style="font-size: 14px; color: var(--accent-emerald); text-decoration: line-through;">€49</span> / mese';
-        document.getElementById('card-featured').style.borderColor = '#10B981';
-      });
-
-      // 5. Scientific Cards Modals Delegation
-      const formulaCards = document.querySelectorAll('.formula-card[data-title]');
-      formulaCards.forEach(function(card) {
-        card.addEventListener('click', function() {
-          document.getElementById('modal-title').innerText = this.getAttribute('data-title');
-          document.getElementById('modal-dose').innerText = this.getAttribute('data-dose');
-          document.getElementById('modal-desc').innerText = this.getAttribute('data-desc');
-          document.getElementById('modal-doi').innerText = 'Riferimento Ufficiale PubMed: ' + this.getAttribute('data-doi');
-          document.getElementById('modal-science').classList.add('open');
-        });
-      });
-
-      document.getElementById('btn-close-modal-science').addEventListener('click', function() {
-        document.getElementById('modal-science').classList.remove('open');
-      });
-
-      document.getElementById('modal-science').addEventListener('click', function(e) {
-        if (e.target.id === 'modal-science') {
-          this.classList.remove('open');
+      useEffect(() => {
+        if (window.lucide) {
+          window.lucide.createIcons();
         }
       });
 
-      // 6. FAQ Accordions Delegation
-      const faqItems = document.querySelectorAll('.faq-item');
-      faqItems.forEach(function(item) {
-        item.addEventListener('click', function() {
-          this.classList.toggle('active');
-        });
-      });
+      const runAnalysis = () => {
+        setIsAnalyzing(true);
+        setTimeout(() => {
+          let score = Math.round((clarity * 0.4) + (remSleep === '2.5h+' ? 35 : remSleep === '1.5h-2h' ? 25 : 12) + (bioPriority === 'longevity' ? 25 : bioPriority === 'focus' ? 20 : 15));
+          if (score > 98) score = 98;
+          setQuizScore(score);
+          setIsAnalyzing(false);
+          setQuizFinished(true);
+          setPromoUnlocked(true);
+        }, 1800);
+      };
 
-      // 7. Checkout Drawer Functions
-      function openCheckout(productTitle, price) {
-        document.getElementById('drawer-product-title').innerText = productTitle;
-        document.getElementById('drawer-product-price').innerText = '€' + price;
-        document.getElementById('drawer-overlay').classList.add('open');
-        document.getElementById('drawer').classList.add('open');
-      }
-
-      function closeCheckout() {
-        document.getElementById('drawer-overlay').classList.remove('open');
-        document.getElementById('drawer').classList.remove('open');
-      }
-
-      document.querySelector('.btn-buy-single').addEventListener('click', function() {
-        openCheckout('Fornitura Singola 30 Giorni', '65.00');
-      });
-
-      document.getElementById('btn-buy-sub').addEventListener('click', function() {
-        const finalPrice = isDiscountActive ? '41.65' : '49.00';
-        openCheckout('Abbonamento Longevità Continuo', finalPrice);
-      });
-
-      document.getElementById('btn-close-drawer').addEventListener('click', closeCheckout);
-      document.getElementById('drawer-overlay').addEventListener('click', closeCheckout);
-
-      // 8. Process Order Form
-      document.getElementById('checkout-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        closeCheckout();
-        const randomCode = 'IT-' + Math.floor(1000000 + Math.random() * 9000000);
-        document.getElementById('tracking-code').innerText = randomCode;
-        document.getElementById('modal-success').classList.add('open');
-      });
-
-      document.getElementById('btn-close-success').addEventListener('click', function() {
-        document.getElementById('modal-success').classList.remove('open');
-      });
-
-      // 9. Toast Loop
-      const buyers = [
-        { name: "Giuseppe M. da Torino", action: "Fornitura Singola 30gg" },
-        { name: "Elena B. da Roma", action: "Abbonamento Continuo" },
-        { name: "Alessandro P. da Milano", action: "Protocollo NMN High-Dose" },
-        { name: "Sofia T. da Bologna", action: "Abbonamento Continuo" }
+      const molecules = [
+        {
+          id: 'nmn',
+          name: 'NMN (Beta-Nicotinamide Mononucleotide)',
+          dose: '500 MG',
+          tag: 'NAD+ REGENERATOR',
+          pmid: 'PMID: 34238770',
+          mechanism: 'Ripristino bioenergetico cellulare e riparazione mitocondriale mediante attivazione delle sirtuine (SIRT1).',
+          timeline: 'Picco plasmatico in 15m. Aumento NAD+ epatico e cerebrale a 14-21 giorni.',
+          details: 'L\'NMN è il precursore diretto del NAD+. Il dosaggio clinico da 500mg garantisce la saturazione ottimale per l\'autofagia mitocondriale e la riparazione del DNA.'
+        },
+        {
+          id: 'citicoline',
+          name: 'Citiscolina (Cognizin®)',
+          dose: '250 MG',
+          tag: 'PHOSPHOLIPID SYNTHESIS',
+          pmid: 'PMID: 22976324',
+          mechanism: 'Sintesi di fosfatidilcolina nelle membrane neuronali ed elevazione dell\'acetilcolina per la velocità di elaborazione.',
+          timeline: 'Incremento immediato della velocità di trasmissione sinaptica dopo 45 minuti.',
+          details: 'Cognizin® è la forma brevettata di Citiscolina pura al 99.9%. Fornisce i mattoni essenziali per la memoria di lavoro senza ricorrere a stimolanti sintetici.'
+        },
+        {
+          id: 'bacopa',
+          name: 'Bacopa Monnieri (50% Bacosidi)',
+          dose: '300 MG',
+          tag: 'CORTISOL DAMPENER',
+          pmid: 'PMID: 23788517',
+          mechanism: 'Dendritogenesi e modulazione dell\'asse HPA per abbattere lo stress ossidativo ed il cortisolo.',
+          timeline: 'Riduzione del cortisolo salivare e aumento della ritenzione mnemonica a 7-14 giorni.',
+          details: 'Titolata al 50% in bacosidi. Questo adattogeno neuro-protettivo accelera la velocità di elaborazione e sopprime la nebbia mentale.'
+        },
+        {
+          id: 'spermidine',
+          name: 'Spermidina Biologica',
+          dose: '10 MG',
+          tag: 'AUTOPHAGY ACTUATOR',
+          pmid: 'PMID: 31826038',
+          mechanism: 'Attivazione del processo di autofagia cellulare: rinnovo delle proteine danneggiate e pulizia dei rifiuti tossici.',
+          timeline: 'Attivazione sistemica dei marcatori LC3-II per la rigenerazione tissutale.',
+          details: 'Estratta a freddo. La Spermidina simula gli effetti del digiuno prolungato, forzando le cellule cerebrali a riciclare i detriti interni.'
+        }
       ];
-      let toastIndex = 0;
-      setInterval(function() {
-        const b = buyers[toastIndex];
-        document.getElementById('toast-user').innerText = b.name;
-        document.getElementById('toast-action').innerText = b.action;
-        const toast = document.getElementById('toast');
-        toast.classList.add('show');
-        setTimeout(function() { toast.classList.remove('show'); }, 4000);
-        toastIndex = (toastIndex + 1) % buyers.length;
-      }, 12000);
-    });
+
+      return (
+        <div className="relative min-h-screen">
+          
+          {/* TOP TELEMETRY BAR */}
+          <div className="bg-[#0A0C10] border-b border-white/5 py-2 px-4 text-xs font-mono-tech text-slate-400 flex justify-between items-center">
+            <div className="flex items-center space-x-3 shrink-0">
+              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                LIVE TELEMETRY
+              </span>
+              <span className="hidden sm:inline text-slate-300">
+                BOLOGNA LABS: BATCH <span className="text-cyan-400">#IT-9948</span> READY
+              </span>
+              <span className="text-slate-600">|</span>
+              <span className="hidden md:inline">SPEDIZIONE IN &lt;24 ORE</span>
+            </div>
+            
+            <div className="flex items-center space-x-4">
+              <span className="text-emerald-400 flex items-center gap-1 text-[11px] font-semibold">
+                ✓ 99.8% CLINICAL PURITY COA VERIFIED
+              </span>
+              <button 
+                onClick={() => setShowCoa(true)}
+                className="hidden lg:inline text-[11px] text-cyan-400 hover:underline"
+              >
+                Scarica COA PDF
+              </button>
+            </div>
+          </div>
+
+          {/* HEADER NAVBAR */}
+          <header className="sticky top-0 z-40 bg-[#08090C]/80 backdrop-blur-xl border-b border-white/10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+              
+              <div className="flex items-center space-x-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500/20 to-purple-600/20 border border-cyan-500/40 flex items-center justify-center shadow-[0_0_15px_rgba(0,240,255,0.2)]">
+                  <i data-lucide="brain" className="w-5 h-5 text-cyan-400"></i>
+                </div>
+                <div>
+                  <span className="font-bold text-lg tracking-wider text-white font-mono-tech flex items-center gap-1">
+                    MINDSET <span className="text-cyan-400 text-xs px-1.5 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/30">LABS</span>
+                  </span>
+                  <span className="block text-[10px] text-slate-400 tracking-widest uppercase font-mono-tech">Neural Operating System</span>
+                </div>
+              </div>
+
+              <nav className="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-300">
+                <a href="#formula" className="hover:text-cyan-400 transition-colors">Formula Molecolare</a>
+                <a href="#diagnosi" className="hover:text-cyan-400 transition-colors">Diagnosi Neurale</a>
+                <a href="#confronto" className="hover:text-cyan-400 transition-colors">Confronto Clinico</a>
+                <a href="#faq" className="hover:text-cyan-400 transition-colors">FAQ</a>
+                <a href="#abbonamento" className="text-emerald-400 font-semibold hover:text-emerald-300">Abbonamento</a>
+              </nav>
+
+              <button 
+                onClick={() => { setSelectedPlan('sub'); setShowCheckout(true); }}
+                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-400 to-emerald-400 text-black font-extrabold text-sm hover:opacity-90 shadow-[0_0_20px_rgba(0,240,255,0.3)]"
+              >
+                Attiva Protocollo
+              </button>
+
+            </div>
+          </header>
+
+          {/* HERO SECTION */}
+          <section className="relative z-10 pt-12 pb-20 lg:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+              
+              <div className="lg:col-span-7 space-y-8 text-left">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-mono-tech font-bold tracking-wider uppercase">
+                  ✨ PROTOCOLLO CLINICO DI LONGEVITÀ NEURALE
+                </div>
+
+                <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-tight font-display">
+                  RISCRIVI L'ETÀ BIOLOGICA <br />
+                  <span className="bg-gradient-to-r from-cyan-400 via-teal-300 to-purple-400 bg-clip-text text-transparent">
+                    DEL TUO CERVELLO.
+                  </span>
+                </h1>
+
+                <p className="text-lg text-slate-300 max-w-2xl leading-relaxed font-light">
+                  Inibisci la nebbia mentale e preserva la tua riserva cognitiva. Una formulazione duale: rigenerazione cellulare di <span className="text-cyan-400 font-semibold">NAD+ via NMN 500mg</span> e focus neurale con <span className="text-emerald-400 font-semibold">Cognizin® Citiscolina</span>.
+                </p>
+
+                <div className="grid grid-cols-3 gap-3 pt-2 max-w-xl">
+                  <div className="bg-[#0F1117]/80 backdrop-blur-xl border border-white/10 rounded-xl p-3 text-left">
+                    <div className="text-cyan-400 font-mono-tech font-bold text-lg">40+</div>
+                    <div className="text-[11px] text-slate-400 font-medium">Studi PubMed</div>
+                  </div>
+                  <div className="bg-[#0F1117]/80 backdrop-blur-xl border border-white/10 rounded-xl p-3 text-left">
+                    <div className="text-emerald-400 font-mono-tech font-bold text-lg">&lt;24h</div>
+                    <div className="text-[11px] text-slate-400 font-medium">Spedizione Bologna</div>
+                  </div>
+                  <div className="bg-[#0F1117]/80 backdrop-blur-xl border border-white/10 rounded-xl p-3 text-left">
+                    <div className="text-purple-400 font-mono-tech font-bold text-lg">0%</div>
+                    <div className="text-[11px] text-slate-400 font-medium">Eccipienti Sintetici</div>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-4">
+                  <a 
+                    href="#diagnosi"
+                    className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl bg-cyan-400 text-black font-extrabold text-base tracking-wide hover:bg-cyan-300 shadow-[0_0_30px_rgba(0,240,255,0.4)]"
+                  >
+                    Inizia Diagnosi Cognitiva →
+                  </a>
+                  <button 
+                    onClick={() => setShowCoa(true)}
+                    className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-[#0F1117] text-slate-300 font-semibold text-sm border border-white/10 hover:border-white/30"
+                  >
+                    📄 Scarica Certificato COA (PDF)
+                  </button>
+                </div>
+
+              </div>
+
+              {/* Display Fotonico Miron Glass */}
+              <div className="lg:col-span-5 relative flex items-center justify-center">
+                <div className="relative w-full max-w-md bg-[#0F1117]/90 backdrop-blur-2xl border border-white/10 rounded-3xl p-6 shadow-2xl">
+                  
+                  <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-6">
+                    <div className="flex space-x-2">
+                      <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
+                      <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                      <div className="w-3 h-3 rounded-full bg-emerald-500/80"></div>
+                    </div>
+                    <div className="font-mono-tech text-[11px] text-cyan-400 font-semibold">
+                      MIRON_PHOTONIC_CORE.v2
+                    </div>
+                  </div>
+
+                  <div className="relative my-6 py-8 flex flex-col items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent rounded-2xl border border-white/5">
+                    <div className="w-32 h-48 bg-gradient-to-b from-slate-950 via-[#0A0C12] to-slate-950 border-2 border-purple-500/30 rounded-2xl shadow-[0_0_30px_rgba(168,85,247,0.25)] flex flex-col items-center justify-between p-3">
+                      <div className="w-20 h-6 bg-slate-800 rounded border border-white/20"></div>
+                      <div className="w-full bg-[#08090C] border border-cyan-500/40 rounded p-2 text-center space-y-1">
+                        <span className="block text-[8px] font-mono-tech text-cyan-400">MINDSET LABS</span>
+                        <span className="block text-[10px] font-bold text-white">FOCUS & NAD+</span>
+                        <span className="block text-[7px] text-emerald-400 font-mono-tech">500mg NMN • 250mg COGNIZIN</span>
+                      </div>
+                      <div className="text-[7px] font-mono-tech text-slate-400">BATCH #IT-9948</div>
+                    </div>
+
+                    <div className="absolute top-2 left-3 bg-[#08090C]/90 border border-cyan-500/30 rounded-lg p-2 text-left">
+                      <span className="block text-[9px] font-mono-tech text-slate-400">FOCUS INDEX</span>
+                      <span className="text-xs font-mono-tech font-bold text-cyan-400">+98.4% ATTENTION</span>
+                    </div>
+
+                    <div className="absolute top-2 right-3 bg-[#08090C]/90 border border-emerald-500/30 rounded-lg p-2 text-right">
+                      <span className="block text-[9px] font-mono-tech text-slate-400">NAD+ CELLULAR</span>
+                      <span className="text-xs font-mono-tech font-bold text-emerald-400">500MG NMN REPAIR</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between text-[11px] font-mono-tech text-slate-400 pt-2 border-t border-white/10">
+                    <span className="text-emerald-400">✓ MIRON® GLASS ENCAPSULATED</span>
+                    <span>BOLOGNA LABS</span>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          {/* DIAGNOSI NEURALE */}
+          <section id="diagnosi" className="relative z-10 py-20 bg-gradient-to-b from-[#08090C] via-[#0C0E14] to-[#08090C] border-y border-white/10">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+              
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono-tech font-bold uppercase mb-4">
+                📊 DIAGNOSI BIOMETRICA COGNITIVA V2
+              </div>
+              
+              <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-4 font-display">
+                CALCOLA IL TUO INDICE DI <span className="text-cyan-400">RISERVA NEURALE.</span>
+              </h2>
+              <p className="text-slate-400 max-w-xl mx-auto text-sm sm:text-base mb-10">
+                Algoritmo sviluppato per valutare la nebbia mentale, l'efficienza mitocondriale e determinare il dosaggio NAD+ ottimale.
+              </p>
+
+              <div className="bg-[#0F1117] border border-white/10 rounded-3xl p-6 sm:p-10 text-left shadow-2xl">
+                
+                {!quizDone && !isAnalyzing && (
+                  <div className="flex items-center justify-between border-b border-white/10 pb-6 mb-8">
+                    <div className="flex items-center space-x-2 font-mono-tech text-xs">
+                      <span className={`w-7 h-7 rounded-full flex items-center justify-center font-bold ${quizStep >= 1 ? 'bg-cyan-400 text-black' : 'bg-slate-800 text-slate-400'}`}>1</span>
+                      <span className="text-slate-400 hidden sm:inline">CHIAREZZA</span>
+                      <span className="text-slate-600">/</span>
+                      <span className={`w-7 h-7 rounded-full flex items-center justify-center font-bold ${quizStep >= 2 ? 'bg-cyan-400 text-black' : 'bg-slate-800 text-slate-400'}`}>2</span>
+                      <span className="text-slate-400 hidden sm:inline">SONNO REM</span>
+                      <span className="text-slate-600">/</span>
+                      <span className={`w-7 h-7 rounded-full flex items-center justify-center font-bold ${quizStep >= 3 ? 'bg-cyan-400 text-black' : 'bg-slate-800 text-slate-400'}`}>3</span>
+                      <span className="text-slate-400 hidden sm:inline">PRIORITÀ</span>
+                    </div>
+                    <span className="text-xs font-mono-tech text-cyan-400 font-bold">FASE {quizStep} DI 3</span>
+                  </div>
+                )}
+
+                {/* Step 1 */}
+                {quizStep === 1 && !isAnalyzing && !quizDone && (
+                  <div className="space-y-8">
+                    <div>
+                      <h3 className="text-xl font-bold text-white mb-2">1. Qual è il tuo livello di chiarezza mentale nelle prime 3 ore di lavoro?</h3>
+                      <p className="text-sm text-slate-400">Sposta lo slider per indicare la gravità della nebbia mentale o del calo di concentrazione.</p>
+                    </div>
+
+                    <div className="space-y-6 bg-slate-950/60 p-6 rounded-2xl border border-white/5">
+                      <div className="flex justify-between items-center font-mono-tech">
+                        <span className="text-xs text-red-400">10% NEBBIA MENTALE</span>
+                        <span className="text-xl font-bold text-cyan-400">{clarity}% FOCUS STATE</span>
+                        <span className="text-xs text-emerald-400">100% FLOW STATE</span>
+                      </div>
+                      <input 
+                        type="range" 
+                        min="10" 
+                        max="100" 
+                        value={clarity} 
+                        onChange={(e) => setClarity(Number(e.target.value))}
+                        className="w-full h-3 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+                      />
+                    </div>
+
+                    <button 
+                      onClick={() => setQuizStep(2)}
+                      className="w-full py-4 rounded-xl bg-cyan-400 text-black font-extrabold text-sm tracking-wide hover:bg-cyan-300"
+                    >
+                      Continua alla Fase 2 →
+                    </button>
+                  </div>
+                )}
+
+                {/* Step 2 */}
+                {quizStep === 2 && !isAnalyzing && !quizDone && (
+                  <div className="space-y-8">
+                    <div>
+                      <h3 className="text-xl font-bold text-white mb-2">2. Ore di sonno profondo REM registrate abitualmente?</h3>
+                      <p className="text-sm text-slate-400">Il sonno REM è essenziale per la pulizia glinfatica delle proteine cerebrali nocive.</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      {[
+                        { id: '<1h', label: '< 1 Ora / Notte', desc: 'Sveglia con spossatezza e rigidità mentale.' },
+                        { id: '1.5h-2h', label: '1.5h - 2 Ore', desc: 'Sonno moderato, calo energetico pomeridiano.' },
+                        { id: '2.5h+', label: '2.5+ Ore', desc: 'Ottima fase rigenerativa notturna.' }
+                      ].map((item) => (
+                        <div 
+                          key={item.id}
+                          onClick={() => setRemSleep(item.id)}
+                          className={`p-5 rounded-2xl border cursor-pointer ${remSleep === item.id ? 'bg-cyan-500/10 border-cyan-400 text-white' : 'bg-slate-950/40 border-white/10 text-slate-400'}`}
+                        >
+                          <div className="font-mono-tech font-bold text-base text-cyan-400 mb-1">{item.label}</div>
+                          <div className="text-xs text-slate-400">{item.desc}</div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="flex gap-4">
+                      <button onClick={() => setQuizStep(1)} className="w-1/3 py-4 rounded-xl bg-slate-900 text-slate-300 font-semibold text-sm border border-white/10">Indietro</button>
+                      <button onClick={() => setQuizStep(3)} className="w-2/3 py-4 rounded-xl bg-cyan-400 text-black font-extrabold text-sm tracking-wide">Continua alla Fase 3 →</button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Step 3 */}
+                {quizStep === 3 && !isAnalyzing && !quizDone && (
+                  <div className="space-y-8">
+                    <div>
+                      <h3 className="text-xl font-bold text-white mb-2">3. Qual è la tua Priorità Biologica nei prossimi 90 giorni?</h3>
+                      <p className="text-sm text-slate-400">Seleziona l'obiettivo primario per la calibrazione del dosaggio molecolare.</p>
+                    </div>
+
+                    <div className="space-y-3">
+                      {[
+                        { id: 'fog', title: 'Azzeramento Nebbia Mentale & Focus Istruito', desc: 'Focus immediato senza caffeina o stimolanti sintetici.' },
+                        { id: 'focus', title: 'Massimizzazione Produttività & Memoria di Lavoro', desc: 'Aumento della velocità di elaborazione nei compiti complessi.' },
+                        { id: 'longevity', title: 'Protezione Riserva Cognitiva & Rigenerazione NAD+', desc: 'Prevenzione dell invecchiamento cellulare e autofagia neurale.' }
+                      ].map((option) => (
+                        <div 
+                          key={option.id}
+                          onClick={() => setBioPriority(option.id)}
+                          className={`p-4 rounded-2xl border cursor-pointer flex items-center justify-between ${bioPriority === option.id ? 'bg-emerald-500/10 border-emerald-500 text-white' : 'bg-slate-950/40 border-white/10 text-slate-400'}`}
+                        >
+                          <div>
+                            <div className="font-bold text-sm text-white">{option.title}</div>
+                            <div className="text-xs text-slate-400">{option.desc}</div>
+                          </div>
+                          <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${bioPriority === option.id ? 'border-emerald-400 bg-emerald-400 text-black font-bold' : 'border-slate-600'}`}>✓</div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="flex gap-4">
+                      <button onClick={() => setQuizStep(2)} className="w-1/3 py-4 rounded-xl bg-slate-900 text-slate-300 font-semibold text-sm border border-white/10">Indietro</button>
+                      <button onClick={runAnalysis} className="w-2/3 py-4 rounded-xl bg-gradient-to-r from-emerald-400 to-cyan-400 text-black font-extrabold text-sm tracking-wide">Calcola Risultato Biometrico</button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Loader */}
+                {isAnalyzing && (
+                  <div className="py-16 text-center space-y-6">
+                    <div className="w-16 h-16 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                    <div className="font-mono-tech text-sm font-bold text-white">ANALISI BIOMARCATORI IN CORSO...</div>
+                  </div>
+                )}
+
+                {/* Quiz Result */}
+                {quizDone && !isAnalyzing && (
+                  <div className="space-y-6 text-center py-4">
+                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono-tech font-bold">
+                      ✓ DIAGNOSI COMPLETATA CON SUCCESSO
+                    </div>
+
+                    <div className="bg-slate-950 p-6 rounded-2xl border border-white/10 space-y-4">
+                      <div className="text-xs font-mono-tech text-slate-400">INDICE DI RISERVA NEURALE ATTUALE</div>
+                      <div className="text-6xl font-extrabold font-mono-tech text-cyan-400">
+                        {quizScore} <span className="text-lg text-slate-500 font-sans font-normal">/ 100 PTS</span>
+                      </div>
+                      <p className="text-sm text-slate-300 max-w-md mx-auto">
+                        {quizScore < 60 
+                          ? 'Rilevato accumulo di nebbia mentale e potenziale deplezione di NAD+. Consigliata integrazione del Protocollo Continuo 90gg.'
+                          : 'Buona riserva basale. Il Protocollo MINDSET™ stabilizzerà il picco attentivo ed estenderà la longevità cellulare.'}
+                      </p>
+                      <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-400 text-xs font-mono-tech font-bold">
+                        PROMO QUIZ SBLOCCATA: -15% SUL PRIMO MESE (CODICE: QUIZ15-NEURAL)
+                      </div>
+                    </div>
+
+                    <a 
+                      href="#abbonamento"
+                      onClick={() => setPricingCycle('sub')}
+                      className="inline-block w-full py-4 rounded-xl bg-gradient-to-r from-cyan-400 to-emerald-400 text-black font-extrabold text-sm tracking-wide text-center"
+                    >
+                      Riscatta Promo Quiz & Attiva (-15%) →
+                    </a>
+                  </div>
+                )}
+
+              </div>
+
+            </div>
+          </section>
+
+          {/* FORMULA MOLECOLARE */}
+          <section id="formula" className="relative z-10 py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-mono-tech font-bold uppercase">
+                🧬 SCIENZA DEGLI INGREDIENTI
+              </div>
+              <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight font-display">
+                4 MOLECOLE. DOSAGGI CLINICI <span className="text-cyan-400">100% ATTIVI.</span>
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {molecules.map((item) => (
+                <div key={item.id} className="bg-[#0F1117] border border-white/10 rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-500/50 transition-all">
+                  <div className="space-y-4">
+                    <span className="text-[10px] font-mono-tech font-bold px-2.5 py-1 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+                      {item.tag}
+                    </span>
+                    <div>
+                      <div className="text-3xl font-extrabold font-mono-tech text-cyan-400 mb-1">{item.dose}</div>
+                      <h3 className="text-lg font-bold text-white">{item.name}</h3>
+                    </div>
+                    <p className="text-xs text-slate-300 leading-relaxed">{item.mechanism}</p>
+                  </div>
+                  <button 
+                    onClick={() => setSelectedMolecule(item)}
+                    className="w-full mt-6 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs font-semibold text-slate-300 hover:text-white"
+                  >
+                    Scheda Clinica Dettagliata
+                  </button>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* SPETTROMETRO VETRO MIRON */}
+          <section className="relative z-10 py-20 bg-[#0C0E14] border-y border-white/10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <div className="lg:col-span-6 space-y-6 text-left">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-400 text-xs font-mono-tech font-bold uppercase">
+                    🛡️ CONSERVAZIONE BIOTONICA
+                  </div>
+
+                  <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight font-display">
+                    VETRO FOTONICO MIRON®.<br />
+                    <span className="text-purple-400">PROTEZIONE ANTI-DEGRADAZIONE 100%.</span>
+                  </h2>
+
+                  <p className="text-slate-300 text-sm leading-relaxed font-light">
+                    L'NMN e la Spermidina si degradano con la luce visibile. Il vetro trasparente o la plastica PET degradano il prodotto fino al 40% in soli 30 giorni. Il Vetro Miron® scherma la luce visibile e lascia passare solo le frequenze rigenerative UV-A e Infrarossi Lontani.
+                  </p>
+                </div>
+
+                <div className="lg:col-span-6 bg-[#0F1117] border border-white/10 rounded-3xl p-6 space-y-6">
+                  <div className="flex justify-between border-b border-white/10 pb-4">
+                    <span className="text-xs font-mono-tech text-slate-400 font-bold uppercase">Spettrometro di Trasmissione Luminosa</span>
+                    <button 
+                      onClick={() => setGlassType(glassType === 'miron' ? 'pet' : 'miron')}
+                      className="px-3 py-1 rounded text-xs font-mono-tech font-bold bg-purple-500/20 text-purple-400 border border-purple-500/40"
+                    >
+                      {glassType === 'miron' ? 'Vetro Miron®' : 'Plastica PET'}
+                    </button>
+                  </div>
+
+                  <div className="space-y-4 py-2 font-mono-tech text-xs">
+                    {glassType === 'miron' ? (
+                      <div className="space-y-3">
+                        <div>
+                          <div className="flex justify-between text-slate-400"><span>Luce Visibile (400 - 700 nm)</span><span className="text-emerald-400 font-bold">BLOCCO 100%</span></div>
+                          <div className="w-full h-2 bg-slate-900 rounded-full mt-1"><div className="w-0 h-full bg-emerald-400"></div></div>
+                        </div>
+                        <div>
+                          <div className="flex justify-between text-slate-400"><span>Raggi UV-A Bio-Stimolanti</span><span className="text-purple-400 font-bold">PERMESSO (45%)</span></div>
+                          <div className="w-full h-2 bg-slate-900 rounded-full mt-1"><div className="w-[45%] h-full bg-purple-400"></div></div>
+                        </div>
+                        <div className="p-3 bg-purple-500/10 border border-purple-500/30 rounded-xl text-purple-300">
+                          RISULTATO: Carica molecolare preservata invariata al 99.8% a 12 mesi.
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        <div>
+                          <div className="flex justify-between text-slate-400"><span>Luce Visibile (400 - 700 nm)</span><span className="text-red-400 font-bold">PENETRAZIONE 88%</span></div>
+                          <div className="w-full h-2 bg-slate-900 rounded-full mt-1"><div className="w-[88%] h-full bg-red-400"></div></div>
+                        </div>
+                        <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-300">
+                          RISULTATO: Perdita del 42% della carica attiva entro 30 giorni.
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </section>
+
+          {/* TABELLA COMPARATIVA */}
+          <section id="confronto" className="relative z-10 py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+              <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight font-display">
+                NON TUTTI I NOOTROPI SONO <span className="text-cyan-400">UGUALI.</span>
+              </h2>
+            </div>
+
+            <div className="overflow-x-auto bg-[#0F1117] border border-white/10 rounded-3xl">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-white/10 bg-white/[0.02]">
+                    <th className="py-5 px-6 font-mono-tech text-xs text-slate-400 font-semibold uppercase">PARAMETRO</th>
+                    <th className="py-5 px-6 font-mono-tech text-xs text-slate-400 font-semibold uppercase">FARMACIA TRADIZIONALE</th>
+                    <th className="py-5 px-6 font-mono-tech text-xs text-cyan-400 font-bold uppercase bg-cyan-500/5">MINDSET LABS PROTOCOL</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/10 text-sm">
+                  <tr>
+                    <td className="py-5 px-6 font-semibold text-white">Dosaggio Principi Attivi</td>
+                    <td className="py-5 px-6 text-slate-400">Sottodosati (&lt;30% dose efficace)</td>
+                    <td className="py-5 px-6 font-mono-tech font-bold text-emerald-400 bg-cyan-500/5">✓ DOSE CLINICA ATTIVA 100%</td>
+                  </tr>
+                  <tr>
+                    <td className="py-5 px-6 font-semibold text-white">Trasparenza Lotto (COA PDF)</td>
+                    <td className="py-5 px-6 text-slate-400">Non fornito</td>
+                    <td className="py-5 px-6 font-mono-tech font-bold text-cyan-400 bg-cyan-500/5">✓ COA 99.8% PDF PUBBLICO</td>
+                  </tr>
+                  <tr>
+                    <td className="py-5 px-6 font-semibold text-white">Incapsulamento</td>
+                    <td className="py-5 px-6 text-slate-400">Plastica PET o Vetro Trasparente</td>
+                    <td className="py-5 px-6 font-mono-tech font-bold text-purple-400 bg-cyan-500/5">✓ VETRO FOTONICO MIRON®</td>
+                  </tr>
+                  <tr>
+                    <td className="py-5 px-6 font-semibold text-white">Sintesi & Produzione</td>
+                    <td className="py-5 px-6 text-slate-400">Importazione extra-UE generica</td>
+                    <td className="py-5 px-6 font-mono-tech font-bold text-emerald-400 bg-cyan-500/5">✓ LABS CERTIFICATI BOLOGNA (IT)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          {/* PRICING & SELEZIONE PROTOCOLLO */}
+          <section id="abbonamento" className="relative z-10 py-24 bg-gradient-to-b from-[#08090C] via-[#0C0E14] to-[#08090C] border-y border-white/10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+              
+              <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-4 font-display">
+                ATTIVA IL TUO <span className="text-cyan-400">PROTOCOLLO NEURALE.</span>
+              </h2>
+              <p className="text-slate-400 max-w-xl mx-auto text-sm sm:text-base mb-10">
+                Trattamento completo per 30 giorni. Garanzia "Soddisfatti o Rimborsati" valida per 30 giorni senza domande.
+              </p>
+
+              <div className="flex items-center justify-center space-x-4 mb-12">
+                <span className={`text-sm font-semibold cursor-pointer ${pricingCycle === 'single' ? 'text-white' : 'text-slate-500'}`} onClick={() => setPricingCycle('single')}>
+                  Fornitura Singola (30gg)
+                </span>
+                <button 
+                  onClick={() => setPricingCycle(pricingCycle === 'sub' ? 'single' : 'sub')}
+                  className="relative w-14 h-8 bg-slate-800 rounded-full p-1 border border-white/10"
+                >
+                  <div className={`w-6 h-6 rounded-full bg-cyan-400 transform transition-transform ${pricingCycle === 'sub' ? 'translate-x-6' : 'translate-x-0'}`}></div>
+                </button>
+                <span className={`text-sm font-semibold cursor-pointer ${pricingCycle === 'sub' ? 'text-emerald-400' : 'text-slate-500'}`} onClick={() => setPricingCycle('sub')}>
+                  Abbonamento Continuo <span className="text-[10px] font-mono-tech font-bold px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">-25% RISPARMIO</span>
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto text-left">
+                
+                {/* Single */}
+                <div className={`bg-[#0F1117] border rounded-3xl p-8 flex flex-col justify-between ${pricingCycle === 'single' ? 'border-cyan-400' : 'border-white/10 opacity-70'}`}>
+                  <div className="space-y-6">
+                    <span className="text-xs font-mono-tech font-bold text-slate-400 uppercase">FORNITURA SINGOLA</span>
+                    <div className="text-4xl font-extrabold font-mono-tech text-white">€65 <span className="text-sm font-sans font-normal text-slate-500">/ una tantum</span></div>
+                    <ul className="space-y-3 text-xs text-slate-300">
+                      <li>✓ 1x Flacone MINDSET™ (60 Capsule)</li>
+                      <li>✓ Confezionamento in Vetro Miron®</li>
+                      <li>✓ Certificato COA PDF Incluso</li>
+                    </ul>
+                  </div>
+                  <button 
+                    onClick={() => { setSelectedPlan('single'); setShowCheckout(true); }}
+                    className="w-full mt-8 py-4 rounded-xl bg-slate-900 text-white font-bold text-sm border border-white/10"
+                  >
+                    Acquista Singolo (€65)
+                  </button>
+                </div>
+
+                {/* Subscription */}
+                <div className={`bg-gradient-to-b from-[#0F1117] via-[#121520] to-[#0F1117] border-2 rounded-3xl p-8 flex flex-col justify-between relative ${pricingCycle === 'sub' ? 'border-cyan-400' : 'border-emerald-500/50'}`}>
+                  <div className="absolute -top-3.5 right-6 px-4 py-1 rounded-full bg-cyan-400 text-black font-mono-tech font-extrabold text-[10px]">
+                    RACCOMANDATO CLINICO
+                  </div>
+
+                  <div className="space-y-6">
+                    <span className="text-xs font-mono-tech font-bold text-emerald-400 uppercase">ABBONAMENTO LONGEVITÀ</span>
+                    
+                    {promoUnlocked && (
+                      <div className="p-2.5 bg-emerald-500/10 border border-emerald-500/40 rounded-xl text-emerald-400 text-xs font-mono-tech font-bold">
+                        ✨ PROMO QUIZ ATTIVATA: -15% SUL PRIMO MESE
+                      </div>
+                    )}
+
+                    <div className="flex items-baseline gap-2">
+                      <div className="text-5xl font-extrabold font-mono-tech text-white">
+                        {promoUnlocked ? '€41.65' : '€49'} 
+                        <span className="text-sm font-sans font-normal text-slate-400"> / mese</span>
+                      </div>
+                      <span className="text-sm font-mono-tech text-slate-500 line-through">€65</span>
+                    </div>
+
+                    <ul className="space-y-3 text-xs text-slate-200">
+                      <li>✓ 1x Flacone Ricarica Mensile Automatico</li>
+                      <li>✓ Spedizione Express &lt;24h Gratuita</li>
+                      <li>✓ Cancella o metti in pausa con 1-click via WhatsApp</li>
+                    </ul>
+                  </div>
+
+                  <button 
+                    onClick={() => { setSelectedPlan('sub'); setShowCheckout(true); }}
+                    className="w-full mt-8 py-4 rounded-xl bg-cyan-400 text-black font-extrabold text-sm tracking-wide"
+                  >
+                    Attiva Abbonamento Longevità →
+                  </button>
+                </div>
+
+              </div>
+
+            </div>
+          </section>
+
+          {/* FAQ */}
+          <section id="faq" className="relative z-10 py-24 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight font-display">
+                DOMANDE FREQUENTI <span className="text-cyan-400">CLINICHE.</span>
+              </h2>
+            </div>
+
+            <div className="space-y-4">
+              {[
+                {
+                  q: 'Dopo quanto tempo si avvertono i primi risultati sulla concentrazione?',
+                  a: 'La Citiscolina Cognizin® agisce entro 45 minuti dalla somministrazione. L\'NMN e la Spermidina agiscono a livello cumulativo cellulare: i benefici sistemici su rigenerazione mitocondriale e qualità del sonno REM si consolidano a 14-21 giorni.'
+                },
+                {
+                  q: 'Ci sono stimolanti sintetici o caffeina che causano tremori o crash pomeridiani?',
+                  a: 'No. MINDSET™ è formulato con 0% caffeina anidra e zero stimolanti sintetici. La carica energetica deriva dal ripristino delle riserve di NAD+ cellulare.'
+                },
+                {
+                  q: 'Come funziona la garanzia 30 Giorni "Soddisfatti o Rimborsati"?',
+                  a: 'Se dopo 30 giorni di assunzione non rilevi miglioramenti, ti rimborseremo il 100% dell\'importo pagato senza domande.'
+                }
+              ].map((item, idx) => (
+                <div key={idx} className="bg-[#0F1117] border border-white/10 rounded-2xl overflow-hidden">
+                  <button 
+                    onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                    className="w-full p-6 text-left font-bold text-base text-white flex justify-between items-center"
+                  >
+                    <span>{item.q}</span>
+                    <span>{openFaq === idx ? '▲' : '▼'}</span>
+                  </button>
+                  {openFaq === idx && (
+                    <div className="px-6 pb-6 text-sm text-slate-300 border-t border-white/5 pt-4">
+                      {item.a}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* FOOTER */}
+          <footer className="relative z-10 bg-[#050608] border-t border-white/10 py-16 text-slate-500 text-xs text-center">
+            <p className="font-semibold text-slate-400 mb-1">MINDSET LABS S.r.l. • Divisione Longevità Neurale</p>
+            <p>Via dell'Innovazione 42, Milano • Laboratori di Confezionamento: Bologna (BO)</p>
+            <p className="mt-4">© 2026 MINDSET LABS. Tutti i diritti riservati. GDPR Compliant.</p>
+          </footer>
+
+          {/* MODAL COA */}
+          {showCoa && (
+            <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+              <div className="bg-[#0F1117] border border-emerald-500/40 rounded-3xl max-w-lg w-full p-6 space-y-6 relative">
+                <button onClick={() => setShowCoa(false)} className="absolute top-4 right-4 text-slate-400">✕</button>
+                <h3 className="text-lg font-bold text-white">Certificato di Analisi COA (Lotto #IT-9948)</h3>
+                <div className="space-y-2 text-xs font-mono-tech text-slate-300 bg-slate-950 p-4 rounded-xl border border-white/5">
+                  <div className="flex justify-between"><span>Purezza NMN:</span><span className="text-emerald-400">99.82% PASS</span></div>
+                  <div className="flex justify-between"><span>Cognizin® Purity:</span><span className="text-emerald-400">99.91% PASS</span></div>
+                  <div className="flex justify-between"><span>Metalli Pesanti:</span><span className="text-emerald-400">&lt;0.001 ppm PASS</span></div>
+                </div>
+                <button 
+                  onClick={() => { alert("PDF del Certificato Scaricato."); setShowCoa(false); }}
+                  className="w-full py-4 rounded-xl bg-emerald-400 text-black font-extrabold text-xs tracking-wider uppercase"
+                >
+                  Download Certificato COA PDF
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* CHECKOUT DRAWER */}
+          {showCheckout && (
+            <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex justify-end">
+              <div className="bg-[#0F1117] border-l border-white/10 w-full max-w-md h-full p-6 flex flex-col justify-between">
+                <div className="space-y-6">
+                  <div className="flex justify-between items-center border-b border-white/10 pb-4">
+                    <span className="font-mono-tech font-bold text-sm text-white">🔒 CHECKOUT SICURO</span>
+                    <button onClick={() => setShowCheckout(false)} className="text-slate-400">✕</button>
+                  </div>
+
+                  <div className="bg-slate-950 p-4 rounded-2xl border border-white/5 space-y-2">
+                    <span className="text-[10px] font-mono-tech text-slate-400">PRODOTTO SELEZIONATO</span>
+                    <div className="flex justify-between text-sm font-bold text-white">
+                      <span>{selectedPlan === 'sub' ? 'Abbonamento Longevità' : 'Fornitura Singola'}</span>
+                      <span className="font-mono-tech text-cyan-400">{selectedPlan === 'sub' ? (promoUnlocked ? '€41.65' : '€49.00') : '€65.00'}</span>
+                    </div>
+                  </div>
+
+                  <button 
+                    onClick={() => { alert("Ordine Confermato! Riceverai la mail con il tracciamento Bologna Express."); setShowCheckout(false); }}
+                    className="w-full py-4 rounded-xl bg-cyan-400 text-black font-extrabold text-sm"
+                  >
+                    Paga con Apple Pay / Carte
+                  </button>
+                </div>
+                <div className="text-[10px] text-center text-slate-500 font-mono-tech">Connessione Crittografata 256-bit SSL</div>
+              </div>
+            </div>
+          )}
+
+          {/* FLOATING TOAST */}
+          <div className={`fixed bottom-6 right-6 z-40 bg-[#0F1117] border border-cyan-500/30 rounded-2xl p-4 transition-all duration-500 ${showToast ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+            <div className="flex items-center space-x-3">
+              <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></div>
+              <div className="text-left text-xs">
+                <span className="block font-bold text-white">{toasts[toastIndex].name}</span>
+                <span className="block text-slate-400 text-[11px]">{toasts[toastIndex].action}</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
   </script>
 </body>
 </html>
