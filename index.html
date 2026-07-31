@@ -3,19 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MINDSET™ | Biotecnologie della Longevità</title>
+  <title>MINDSET™ | Biotecnologie della Longevità Italia</title>
   <style>
     :root {
-      --bg: #08090A;
-      --surface: #111317;
-      --surface-border: rgba(255, 255, 255, 0.07);
-      --text-main: #F1F5F9;
+      --bg: #070809;
+      --surface: #0E1015;
+      --surface-card: #14171F;
+      --surface-border: rgba(255, 255, 255, 0.08);
+      --text-main: #F8FAFC;
       --text-muted: #64748B;
       --accent-emerald: #10B981;
+      --accent-emerald-glow: rgba(16, 185, 129, 0.15);
+      --accent-violet: #8B5CF6;
       --accent-silver: #94A3B8;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; }
     
     body {
       background-color: var(--bg);
@@ -26,36 +29,42 @@
       overflow-x: hidden;
     }
 
+    /* Ambient Lighting */
     .glow-bg {
       position: absolute;
       top: -100px;
       left: 50%;
       transform: translateX(-50%);
-      width: 800px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, rgba(8, 9, 10, 0) 70%);
+      width: 1000px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.07) 0%, rgba(7, 8, 9, 0) 70%);
       pointer-events: none;
       z-index: 0;
     }
 
-    nav {
-      position: relative;
-      z-index: 10;
+    /* Sticky Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 24px 6%;
+      padding: 18px 6%;
+      background: rgba(7, 8, 9, 0.85);
+      backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--surface-border);
-      backdrop-filter: blur(12px);
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
-      font-weight: 700;
+      gap: 10px;
+      font-weight: 800;
       letter-spacing: -0.5px;
-      font-size: 18px;
+      font-size: 19px;
+      text-decoration: none;
+      color: #FFF;
     }
 
     .brand-dot {
@@ -63,32 +72,55 @@
       height: 8px;
       background-color: var(--accent-emerald);
       border-radius: 50%;
-      box-shadow: 0 0 10px var(--accent-emerald);
+      box-shadow: 0 0 12px var(--accent-emerald);
     }
 
-    .nav-tag {
-      font-size: 11px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--text-muted);
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--accent-silver);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: #FFF; }
+
+    .btn-nav {
+      padding: 8px 18px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--surface-border);
+      border-radius: 100px;
+      color: var(--text-main);
+      font-size: 12px;
       font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
     }
 
-    /* Hero Section */
+    .btn-nav:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(255,255,255,0.2); }
+
+    /* Hero Layout */
     .hero-container {
       position: relative;
       z-index: 10;
       max-width: 1240px;
       margin: 0 auto;
-      padding: 80px 24px;
+      padding: 70px 24px 90px 24px;
       display: grid;
       grid-template-columns: 1.1fr 0.9fr;
-      gap: 60px;
+      gap: 50px;
       align-items: center;
     }
 
     @media (max-width: 968px) {
       .hero-container { grid-template-columns: 1fr; padding: 40px 20px; gap: 40px; }
+      .nav-links { display: none; }
     }
 
     .hero-text { text-align: left; }
@@ -98,21 +130,22 @@
       align-items: center;
       gap: 8px;
       padding: 6px 14px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--surface-border);
+      background: var(--accent-emerald-glow);
+      border: 1px solid rgba(16, 185, 129, 0.3);
       border-radius: 100px;
       font-size: 12px;
       color: var(--accent-emerald);
       letter-spacing: 0.05em;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
+      font-weight: 600;
     }
 
     h1 {
-      font-size: clamp(40px, 5vw, 62px);
-      font-weight: 700;
+      font-size: clamp(38px, 4.8vw, 60px);
+      font-weight: 800;
       line-height: 1.05;
       letter-spacing: -0.03em;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       color: #FFFFFF;
     }
 
@@ -122,31 +155,31 @@
     }
 
     .hero-description {
-      font-size: 17px;
+      font-size: 16px;
       color: var(--accent-silver);
-      line-height: 1.6;
+      line-height: 1.65;
       max-width: 520px;
-      margin-bottom: 40px;
+      margin-bottom: 36px;
     }
 
     .proof-strip {
       display: flex;
       gap: 32px;
-      padding-top: 32px;
+      padding-top: 28px;
       border-top: 1px solid var(--surface-border);
     }
 
     .proof-item { display: flex; flex-direction: column; }
-    .proof-val { font-size: 22px; font-weight: 700; color: #FFF; }
-    .proof-lbl { font-size: 12px; color: var(--text-muted); }
+    .proof-val { font-size: 20px; font-weight: 800; color: #FFF; }
+    .proof-lbl { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
 
-    /* Interactive Calculator Card */
+    /* Diagnostic Card */
     .calc-card {
       background: var(--surface);
       border: 1px solid var(--surface-border);
-      border-radius: 20px;
+      border-radius: 24px;
       padding: 36px;
-      box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.5);
       position: relative;
     }
 
@@ -154,21 +187,21 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
       padding-bottom: 16px;
       border-bottom: 1px solid var(--surface-border);
     }
 
-    .calc-title { font-size: 15px; font-weight: 600; letter-spacing: -0.2px; }
-    .calc-step-indicator { font-size: 11px; color: var(--accent-emerald); font-family: monospace; }
+    .calc-title { font-size: 14px; font-weight: 700; letter-spacing: -0.2px; text-transform: uppercase; color: var(--accent-silver); }
+    .calc-step-indicator { font-size: 11px; color: var(--accent-emerald); font-family: monospace; font-weight: 700; }
 
     .option-btn {
       width: 100%;
-      padding: 18px 20px;
-      margin-bottom: 12px;
+      padding: 16px 20px;
+      margin-bottom: 10px;
       background: rgba(255,255,255,0.02);
       border: 1px solid var(--surface-border);
-      border-radius: 12px;
+      border-radius: 14px;
       color: var(--text-main);
       font-size: 14px;
       text-align: left;
@@ -180,43 +213,43 @@
     }
 
     .option-btn:hover {
-      background: rgba(255,255,255,0.05);
-      border-color: rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(255,255,255,0.25);
     }
 
     .btn-action {
       width: 100%;
       padding: 16px;
-      margin-top: 12px;
+      margin-top: 14px;
       background: var(--text-main);
       color: #000;
       border: none;
       border-radius: 12px;
-      font-weight: 600;
+      font-weight: 700;
       font-size: 14px;
       cursor: pointer;
-      transition: opacity 0.2s;
+      transition: all 0.2s;
     }
 
-    .btn-action:hover { opacity: 0.9; }
+    .btn-action:hover { opacity: 0.9; transform: translateY(-1px); }
 
-    /* Sections Shared */
+    /* Section Components */
     .section-container {
       max-width: 1240px;
       margin: 0 auto;
-      padding: 100px 24px;
+      padding: 90px 24px;
       border-top: 1px solid var(--surface-border);
     }
 
     .section-header {
       text-align: center;
       max-width: 600px;
-      margin: 0 auto 60px auto;
+      margin: 0 auto 50px auto;
     }
 
     .section-header h2 {
-      font-size: 36px;
-      font-weight: 700;
+      font-size: 34px;
+      font-weight: 800;
       letter-spacing: -0.02em;
       margin-bottom: 12px;
       color: #FFF;
@@ -231,45 +264,44 @@
     .formula-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 24px;
+      gap: 20px;
     }
 
     .formula-card {
       background: var(--surface);
       border: 1px solid var(--surface-border);
-      border-radius: 16px;
+      border-radius: 18px;
       padding: 28px;
-      transition: transform 0.2s ease;
+      transition: all 0.2s ease;
     }
 
-    .formula-card:hover { transform: translateY(-4px); }
-    .formula-dose { font-size: 12px; color: var(--accent-emerald); font-family: monospace; margin-bottom: 8px; }
-    .formula-title { font-size: 18px; font-weight: 600; color: #FFF; margin-bottom: 12px; }
+    .formula-card:hover { border-color: rgba(255,255,255,0.2); transform: translateY(-3px); }
+    .formula-dose { font-size: 11px; color: var(--accent-emerald); font-family: monospace; font-weight: 700; margin-bottom: 10px; }
+    .formula-title { font-size: 18px; font-weight: 700; color: #FFF; margin-bottom: 10px; }
     .formula-desc { font-size: 13px; color: var(--accent-silver); line-height: 1.6; }
 
     /* Comparison Table */
     .table-wrapper {
       background: var(--surface);
       border: 1px solid var(--surface-border);
-      border-radius: 16px;
+      border-radius: 20px;
       overflow: hidden;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-      font-size: 14px;
-    }
-
-    th, td {
-      padding: 20px 24px;
-      border-bottom: 1px solid var(--surface-border);
-    }
-
-    th { color: var(--text-muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
+    th, td { padding: 20px 24px; border-bottom: 1px solid var(--surface-border); }
+    th { color: var(--text-muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; }
     td strong { color: #FFF; }
     .check-highlight { color: var(--accent-emerald); font-weight: 700; }
+
+    /* FAQ Accordion */
+    .faq-wrapper { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+    .faq-item { background: var(--surface); border: 1px solid var(--surface-border); border-radius: 14px; overflow: hidden; }
+    .faq-q { padding: 20px 24px; font-weight: 600; font-size: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+    .faq-a { padding: 0 24px 20px 24px; font-size: 14px; color: var(--accent-silver); line-height: 1.6; display: none; }
+    .faq-item.active .faq-a { display: block; }
+    .faq-item.active .faq-icon { transform: rotate(180deg); }
+    .faq-icon { transition: transform 0.2s; color: var(--accent-silver); }
 
     /* Pricing Section */
     .pricing-grid {
@@ -285,7 +317,7 @@
     .price-card {
       background: var(--surface);
       border: 1px solid var(--surface-border);
-      border-radius: 20px;
+      border-radius: 24px;
       padding: 40px;
       display: flex;
       flex-direction: column;
@@ -295,7 +327,8 @@
 
     .price-card.featured {
       border-color: var(--accent-emerald);
-      background: rgba(16, 185, 129, 0.03);
+      background: rgba(16, 185, 129, 0.04);
+      box-shadow: 0 20px 40px rgba(16, 185, 129, 0.1);
     }
 
     .badge-pop {
@@ -305,42 +338,113 @@
       background: var(--accent-emerald);
       color: #000;
       font-size: 10px;
-      font-weight: 700;
+      font-weight: 800;
       padding: 4px 12px;
       border-radius: 100px;
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
 
-    .price-val { font-size: 42px; font-weight: 700; color: #FFF; margin: 16px 0; }
+    .price-val { font-size: 46px; font-weight: 800; color: #FFF; margin: 16px 0; }
     .price-val span { font-size: 14px; color: var(--text-muted); font-weight: 400; }
+    .discount-banner { display: none; background: rgba(16, 185, 129, 0.2); color: var(--accent-emerald); border: 1px dashed var(--accent-emerald); padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; margin-bottom: 12px; }
 
-    footer {
-      padding: 40px;
-      text-align: center;
-      font-size: 12px;
-      color: var(--text-muted);
-      border-top: 1px solid var(--surface-border);
+    /* Slide-over Checkout Drawer */
+    .drawer-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 200;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
 
-    .hidden { display: none; }
+    .drawer-overlay.open { display: block; opacity: 1; }
+
+    .drawer {
+      position: fixed;
+      top: 0; right: -480px; bottom: 0;
+      width: 100%; max-width: 440px;
+      background: #0D0F14;
+      border-left: 1px solid var(--surface-border);
+      z-index: 201;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .drawer.open { right: 0; }
+    .drawer-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--surface-border); padding-bottom: 20px; }
+    .drawer-close { background: none; border: none; color: var(--accent-silver); font-size: 24px; cursor: pointer; }
+
+    .input-group { margin-bottom: 16px; text-align: left; }
+    .input-group label { display: block; font-size: 12px; color: var(--accent-silver); margin-bottom: 6px; font-weight: 600; }
+    .input-group input { width: 100%; padding: 12px 14px; background: rgba(255,255,255,0.04); border: 1px solid var(--surface-border); border-radius: 10px; color: #FFF; font-size: 14px; }
+    .input-group input:focus { outline: none; border-color: var(--accent-emerald); }
+
+    /* Live Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px; left: 24px;
+      background: rgba(14, 16, 21, 0.95);
+      border: 1px solid var(--surface-border);
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 150;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      backdrop-filter: blur(10px);
+      transform: translateY(150px);
+      transition: transform 0.4s ease;
+    }
+    .toast.show { transform: translateY(0); }
+
+    /* GDPR Banner */
+    .gdpr-banner {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: #0E1015;
+      border-top: 1px solid var(--surface-border);
+      padding: 16px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 180;
+      font-size: 12px;
+      color: var(--accent-silver);
+    }
+
+    footer { padding: 40px; text-align: center; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--surface-border); }
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
 
   <div class="glow-bg"></div>
 
-  <!-- NAVBAR -->
-  <nav>
-    <div class="brand">
+  <!-- STICKY NAVBAR -->
+  <header>
+    <a href="#" class="brand">
       <div class="brand-dot"></div>
       MINDSET LABS
+    </a>
+    <div class="nav-links">
+      <a href="#formula">Formula</a>
+      <a href="#confronto">Confronto</a>
+      <a href="#faq">FAQ</a>
+      <a href="#pricing">Prezzi</a>
     </div>
-    <div class="nav-tag">Protocollo Longevità 2026 • IT</div>
-  </nav>
+    <button class="btn-nav" onclick="document.getElementById('quiz-section').scrollIntoView();">Diagnosi Biometrica</button>
+  </header>
 
-  <!-- HERO SECTION -->
-  <section class="hero-container">
+  <!-- HERO & DIAGNOSTIC SECTION -->
+  <section class="hero-container" id="quiz-section">
     <div class="hero-text">
       <div class="meta-badge">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -369,7 +473,7 @@
       </div>
     </div>
 
-    <!-- CALCULATOR -->
+    <!-- DIAGNOSTIC CALCULATOR CARD -->
     <div class="calc-card">
       <div class="calc-header">
         <span class="calc-title">Diagnosi Biometrica Cognitiva</span>
@@ -422,17 +526,17 @@
 
       <div id="result" class="hidden">
         <div style="text-align: center; padding: 10px 0;">
-          <span style="font-size: 12px; color: var(--accent-emerald); text-transform: uppercase; letter-spacing: 0.1em;">Profilo Calcolato</span>
-          <div id="score-val" style="font-size: 42px; font-weight: 700; color: #FFF; margin: 8px 0;">--</div>
+          <span style="font-size: 12px; color: var(--accent-emerald); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700;">Profilo Calcolato</span>
+          <div id="score-val" style="font-size: 46px; font-weight: 800; color: #FFF; margin: 8px 0;">--</div>
           <p id="recommendation-text" style="font-size: 13px; color: var(--accent-silver); margin-bottom: 24px;">Analisi in corso...</p>
-          <button class="btn-action" onclick="alert('Accesso alla formulazione riservata attivato.')">Richiedi Protocollo Personalizzato</button>
+          <button class="btn-action" onclick="applyQuizDiscount()">Riscatta Offerta Personalizzata (-15%) →</button>
         </div>
       </div>
     </div>
   </section>
 
   <!-- FORMULA BREAKDOWN SECTION -->
-  <section class="section-container">
+  <section class="section-container" id="formula">
     <div class="section-header">
       <h2>Scomposizione Clinica</h2>
       <p>Ogni lotto è sintetizzato con molecole pure a livello farmaceutico e dosaggi clinicamente attivi.</p>
@@ -463,7 +567,7 @@
   </section>
 
   <!-- COMPARISON TABLE SECTION -->
-  <section class="section-container">
+  <section class="section-container" id="confronto">
     <div class="section-header">
       <h2>Confronto Tecnico</h2>
       <p>Perché la maggior parte dei prodotti da farmacia non ottiene risultati misurabili.</p>
@@ -504,8 +608,50 @@
     </div>
   </section>
 
+  <!-- FAQ SECTION -->
+  <section class="section-container" id="faq">
+    <div class="section-header">
+      <h2>Domande Frequenti</h2>
+      <p>Trasparenza scientifica e dettagli operativi per il mercato italiano.</p>
+    </div>
+
+    <div class="faq-wrapper">
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <span>Dopo quanto tempo si avvertono i primi risultati?</span>
+          <span class="faq-icon">↓</span>
+        </div>
+        <div class="faq-a">La Citiscolina agisce entro 45 minuti dall'assunzione favorendo il focus immediato. L'NMN e la Spermidina lavorano a livello cellulare accumulativo: i benefici strutturali su memoria e rigenerazione si consolidano in 14-21 giorni di utilizzo continuativo.</div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <span>Ci sono controindicazioni o effetti collaterali?</span>
+          <span class="faq-icon">↓</span>
+        </div>
+        <div class="faq-a">MINDSET™ è formulato con ingredienti naturali di grado farmaceutico senza stimolanti sintetici nocivi (0% caffeina anidra). È ben tollerato. In caso di patologie pregresse o gravidanza, consigliamo di mostrare la scheda tecnica al proprio medico.</div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <span>Come funziona la garanzia 30 giorni "Soddisfatti o Rimborsati"?</span>
+          <span class="faq-icon">↓</span>
+        </div>
+        <div class="faq-a">Se dopo 30 giorni di trattamento non rilevi un aumento della concentrazione e della qualità del sonno, invia una semplice email al supporto. Ti rimborseremo il 100% dell'importo senza domande.</div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">
+          <span>Come posso cancellare l'abbonamento ricorsivo?</span>
+          <span class="faq-icon">↓</span>
+        </div>
+        <div class="faq-a">Puoi mettere in pausa o cancellare l'abbonamento in qualsiasi momento con 1 solo click direttamente dalla tua dashboard utente, oppure inviando un messaggio WhatsApp al nostro servizio clienti. Senza vincoli né penali.</div>
+      </div>
+    </div>
+  </section>
+
   <!-- PRICING & SUBSCRIPTION SECTION -->
-  <section class="section-container">
+  <section class="section-container" id="pricing">
     <div class="section-header">
       <h2>Inizia il tuo Protocollo</h2>
       <p>Scegli la modalità di somministrazione più adatta al tuo stile di vita.</p>
@@ -514,29 +660,81 @@
     <div class="pricing-grid">
       <div class="price-card">
         <div>
-          <span style="font-size: 13px; color: var(--text-muted); font-weight: 600;">FORNITURA SINGOLA</span>
-          <div class="price-val">€65 <span>/ 30 Giorni</span></div>
+          <span style="font-size: 12px; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">FORNITURA SINGOLA</span>
+          <div class="price-val" id="price-single">€65 <span>/ 30 Giorni</span></div>
           <p style="font-size: 13px; color: var(--accent-silver); margin-bottom: 24px;">Un solo flacone di MINDSET™ Focus & Longevity. Spedizione gratuita inclusa.</p>
         </div>
-        <button class="option-btn" style="justify-content: center; font-weight: 600;" onclick="alert('Checkout Fornitura Singola attivato.')">Ordina Ora</button>
+        <button class="option-btn" style="justify-content: center; font-weight: 700;" onclick="openCheckout('Fornitura Singola 30 Giorni', 65)">Ordina Ora</button>
       </div>
 
-      <div class="price-card featured">
+      <div class="price-card featured" id="card-featured">
         <div class="badge-pop">Più Scelto</div>
         <div>
-          <span style="font-size: 13px; color: var(--accent-emerald); font-weight: 600;">ABBONAMENTO CONTINUO</span>
-          <div class="price-val">€49 <span>/ mese</span></div>
+          <span style="font-size: 12px; color: var(--accent-emerald); font-weight: 700; text-transform: uppercase;">ABBONAMENTO CONTINUO</span>
+          <div class="discount-banner" id="discount-banner">PROMO QUIZ ATTIVATA: -15% SUL PRIMO MESE</div>
+          <div class="price-val" id="price-sub">€49 <span>/ mese</span></div>
           <p style="font-size: 13px; color: var(--accent-silver); margin-bottom: 24px;">Rinnovo automatico ogni 30 giorni. Sconto del 25% permanente e disdetta in 1 click.</p>
         </div>
-        <button class="btn-action" onclick="alert('Checkout Abbonamento attivato.')">Attiva Protocollo Ricorsivo</button>
+        <button class="btn-action" onclick="openCheckout('Abbonamento Longevità Continuo', 49)">Attiva Protocollo Ricorsivo</button>
       </div>
     </div>
   </section>
 
   <!-- FOOTER -->
   <footer>
-    © 2026 MINDSET LABS S.r.l. • Via dell'Innovazione, Milano • Tutti i diritti riservati.
+    © 2026 MINDSET LABS S.r.l. • Via dell'Innovazione, Milano • P.IVA IT09876543210 • Tutti i diritti riservati.
   </footer>
+
+  <!-- CHECKOUT SLIDE-OVER DRAWER -->
+  <div class="drawer-overlay" id="drawer-overlay" onclick="closeCheckout()"></div>
+  <div class="drawer" id="drawer">
+    <div>
+      <div class="drawer-header">
+        <span style="font-weight: 700; font-size: 16px; color: #FFF;">Checkout Sicuro</span>
+        <button class="drawer-close" onclick="closeCheckout()">✕</button>
+      </div>
+      <div style="padding: 20px 0; border-bottom: 1px solid var(--surface-border); margin-bottom: 20px;">
+        <span style="font-size: 12px; color: var(--accent-silver);">Prodotto Selezionato:</span>
+        <div id="drawer-product-title" style="font-weight: 700; color: #FFF; font-size: 15px; margin-top: 4px;">--</div>
+        <div id="drawer-product-price" style="font-size: 22px; font-weight: 800; color: var(--accent-emerald); margin-top: 8px;">--</div>
+      </div>
+
+      <form onsubmit="event.preventDefault(); processOrder();">
+        <div class="input-group">
+          <label>Nome e Cognome</label>
+          <input type="text" placeholder="Mario Rossi" required>
+        </div>
+        <div class="input-group">
+          <label>Email (per tracciamento spedizione)</label>
+          <input type="email" placeholder="mario.rossi@gmail.com" required>
+        </div>
+        <div class="input-group">
+          <label>Indirizzo di Spedizione (Italia)</label>
+          <input type="text" placeholder="Via Roma 12, Milano" required>
+        </div>
+        <div class="input-group">
+          <label>Carta di Credito / Apple Pay</label>
+          <input type="text" placeholder="4532 •••• •••• 8890" required>
+        </div>
+        <button type="submit" class="btn-action" style="margin-top: 20px; background: var(--accent-emerald); color: #000;">Conferma Ordine e Paga</button>
+      </form>
+    </div>
+    <div style="font-size: 11px; color: var(--text-muted); text-align: center;">🔒 Connessione Crittografata a 256-bit SSL • Spedizione 24h</div>
+  </div>
+
+  <!-- LIVE TOAST NOTIFICATION -->
+  <div class="toast" id="toast">
+    <div style="width: 10px; height: 10px; border-radius: 50%; background: var(--accent-emerald);"></div>
+    <div style="font-size: 12px; color: var(--text-main);">
+      <strong id="toast-user">Marco D. da Milano</strong> ha appena attivato il <span style="color: var(--accent-emerald);" id="toast-action">Protocollo Focus</span>
+    </div>
+  </div>
+
+  <!-- GDPR COOKIE BANNER -->
+  <div class="gdpr-banner" id="gdpr-banner">
+    <span>Utilizziamo cookie tecnici e analitici per ottimizzare l'esperienza di navigazione in Italia secondo la normativa GDPR.</span>
+    <button class="btn-nav" onclick="document.getElementById('gdpr-banner').style.display='none';" style="background: var(--text-main); color: #000; border: none;">Accetta</button>
+  </div>
 
   <script>
     let score = 0;
@@ -553,7 +751,6 @@
       document.getElementById('q3').classList.add('hidden');
       document.getElementById('result').classList.remove('hidden');
       document.getElementById('step-num').innerText = 'COMPLETO';
-      
       document.getElementById('score-val').innerText = score + ' / 100';
       
       if(score < 50) {
@@ -562,6 +759,23 @@
         document.getElementById('recommendation-text').innerText = 'Buona riserva cognitiva. Consigliato: Protocollo MINDSET™ High-Performance Focus.';
       }
     }
-  </script>
-</body>
-</html>
+
+    function applyQuizDiscount() {
+      document.getElementById('pricing').scrollIntoView();
+      document.getElementById('discount-banner').style.display = 'block';
+      document.getElementById('price-sub').innerHTML = '€41.65 <span style="font-size: 14px; color: var(--accent-emerald); text-decoration: line-through;">€49</span> / mese';
+      document.getElementById('card-featured').style.borderColor = '#10B981';
+    }
+
+    function toggleFaq(element) {
+      element.classList.toggle('active');
+    }
+
+    function openCheckout(productTitle, price) {
+      document.getElementById('drawer-product-title').innerText = productTitle;
+      document.getElementById('drawer-product-price').innerText = '€' + price + '.00';
+      document.getElementById('drawer-overlay').classList.add('open');
+      document.getElementById('drawer').classList.add('open');
+    }
+
+    f
