@@ -8,19 +8,12 @@
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- React & ReactDOM CDN -->
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  
-  <!-- Babel Standalone for JSX -->
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-  <!-- Feather / Lucide Icons CDN -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=Space+Grotesk:wght@400;600;700&display=swap');
-    
     body {
       background-color: #08090C;
       color: #F8FAFC;
@@ -28,824 +21,891 @@
       overflow-x: hidden;
     }
     
-    .font-mono-tech {
-      font-family: 'JetBrains Mono', monospace;
+    .font-tech { font-family: 'JetBrains Mono', monospace; }
+    .font-display { font-family: 'Space Grotesk', sans-serif; }
+
+    .glow-cyan {
+      box-shadow: 0 0 25px rgba(0, 240, 255, 0.25);
+    }
+    
+    .glow-purple {
+      box-shadow: 0 0 25px rgba(168, 85, 247, 0.25);
     }
 
-    .font-display {
-      font-family: 'Space Grotesk', sans-serif;
+    /* Modal / Drawer Transitions */
+    .transition-drawer {
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
     }
 
-    @keyframes pulseGlow {
-      0%, 100% { opacity: 0.4; }
-      50% { opacity: 0.8; }
-    }
-
-    .animate-pulse-glow {
-      animation: pulseGlow 4s infinite ease-in-out;
-    }
+    .hidden-el { display: none !important; }
   </style>
 </head>
-<body>
+<body class="relative min-h-screen">
 
-  <div id="root"></div>
+  <!-- BACKGROUND OVERLAYS -->
+  <div class="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-cyan-950/20 via-slate-950/80 to-[#08090C] pointer-events-none z-0"></div>
+  <div class="fixed inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:4rem_4rem] pointer-events-none z-0"></div>
 
-  <script type="text/babel">
-    const { useState, useEffect } = React;
+  <!-- TOP TELEMETRY BAR -->
+  <div class="relative z-50 bg-[#0A0C10] border-b border-white/5 py-2 px-4 text-xs font-tech text-slate-400 flex justify-between items-center">
+    <div class="flex items-center space-x-3 shrink-0">
+      <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        LIVE TELEMETRY
+      </span>
+      <span class="hidden sm:inline text-slate-300">
+        BOLOGNA LABS: BATCH <span class="text-cyan-400">#IT-9948</span> READY
+      </span>
+      <span class="text-slate-600">|</span>
+      <span class="hidden md:inline">SPEDIZIONE IN &lt;24 ORE</span>
+    </div>
+    
+    <div class="flex items-center space-x-4">
+      <span class="text-emerald-400 flex items-center gap-1 text-[11px] font-semibold">
+        ✓ 99.8% CLINICAL PURITY COA VERIFIED
+      </span>
+      <button id="btn-open-coa-top" class="hidden lg:inline text-[11px] text-cyan-400 hover:underline">
+        Scarica COA PDF
+      </button>
+    </div>
+  </div>
 
-    function App() {
-      // States
-      const [pricingCycle, setPricingCycle] = useState('sub');
-      const [selectedPlan, setSelectedPlan] = useState('sub');
-      const [showCheckout, setShowCheckout] = useState(false);
-      const [showCoa, setShowCoa] = useState(false);
-      const [selectedMolecule, setSelectedMolecule] = useState(null);
+  <!-- HEADER NAVBAR -->
+  <header class="sticky top-0 z-40 bg-[#08090C]/80 backdrop-blur-xl border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
       
-      // Diagnostic Quiz States
-      const [quizStep, setQuizStep] = useState(1);
-      const [clarity, setClarity] = useState(45);
-      const [remSleep, setRemSleep] = useState('1.5h-2h');
-      const [bioPriority, setBioPriority] = useState('focus');
-      const [isAnalyzing, setIsAnalyzing] = useState(false);
-      const [quizDone, setQuizFinished] = useState(false);
-      const [quizScore, setQuizScore] = useState(0);
-      const [promoUnlocked, setPromoUnlocked] = useState(false);
-      const [openFaq, setOpenFaq] = useState(null);
-      const [glassType, setGlassType] = useState('miron');
+      <a href="#top" class="flex items-center space-x-3 text-left decoration-none">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500/20 to-purple-600/20 border border-cyan-500/40 flex items-center justify-center glow-cyan">
+          <span class="text-cyan-400 text-lg">🧠</span>
+        </div>
+        <div>
+          <span class="font-bold text-lg tracking-wider text-white font-tech flex items-center gap-1">
+            MINDSET <span class="text-cyan-400 text-xs px-1.5 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/30">LABS</span>
+          </span>
+          <span class="block text-[10px] text-slate-400 tracking-widest uppercase font-tech">Neural Operating System</span>
+        </div>
+      </a>
 
-      // Toast Loop State
-      const [toastIndex, setToastIndex] = useState(0);
-      const [showToast, setShowToast] = useState(false);
+      <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-300">
+        <a href="#formula" class="hover:text-cyan-400 transition-colors">Formula Molecolare</a>
+        <a href="#diagnosi" class="hover:text-cyan-400 transition-colors">Diagnosi Neurale</a>
+        <a href="#confronto" class="hover:text-cyan-400 transition-colors">Confronto Clinico</a>
+        <a href="#faq" class="hover:text-cyan-400 transition-colors">FAQ</a>
+        <a href="#abbonamento" class="text-emerald-400 font-semibold hover:text-emerald-300">Abbonamento</a>
+      </nav>
 
-      const toasts = [
-        { name: 'Marco D. da Milano', action: 'ha attivato il Protocollo Focus (Lotto #IT-9948)', time: '2 min fa' },
-        { name: 'Dr. Roberto M. da Bologna', action: 'ha scaricato il Certificato COA 99.8%', time: '5 min fa' },
-        { name: 'Elena B. da Roma', action: 'ha rinnovato l\'Abbonamento Longevità 90gg', time: '12 min fa' },
-        { name: 'Giuseppe T. da Torino', action: 'ha completato la Diagnosi Neurale', time: '18 min fa' }
-      ];
+      <button id="btn-nav-checkout" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-400 to-emerald-400 text-black font-extrabold text-sm hover:opacity-90 glow-cyan">
+        Attiva Protocollo
+      </button>
 
-      useEffect(() => {
-        const timer = setTimeout(() => setShowToast(true), 2000);
-        const interval = setInterval(() => {
-          setShowToast(false);
-          setTimeout(() => {
-            setToastIndex((prev) => (prev + 1) % toasts.length);
-            setShowToast(true);
-          }, 500);
-        }, 9000);
-        return () => { clearTimeout(timer); clearInterval(interval); };
-      }, []);
+    </div>
+  </header>
 
-      useEffect(() => {
-        if (window.lucide) {
-          window.lucide.createIcons();
-        }
-      });
+  <!-- HERO SECTION -->
+  <section id="top" class="relative z-10 pt-12 pb-20 lg:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      
+      <!-- Hero Copy Left -->
+      <div class="lg:col-span-7 space-y-8 text-left">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-tech font-bold tracking-wider uppercase">
+          ✨ PROTOCOLLO CLINICO DI LONGEVITÀ NEURALE
+        </div>
 
-      const runAnalysis = () => {
-        setIsAnalyzing(true);
-        setTimeout(() => {
-          let score = Math.round((clarity * 0.4) + (remSleep === '2.5h+' ? 35 : remSleep === '1.5h-2h' ? 25 : 12) + (bioPriority === 'longevity' ? 25 : bioPriority === 'focus' ? 20 : 15));
-          if (score > 98) score = 98;
-          setQuizScore(score);
-          setIsAnalyzing(false);
-          setQuizFinished(true);
-          setPromoUnlocked(true);
-        }, 1800);
-      };
+        <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-tight font-display">
+          RISCRIVI L'ETÀ BIOLOGICA <br />
+          <span class="bg-gradient-to-r from-cyan-400 via-teal-300 to-purple-400 bg-clip-text text-transparent">
+            DEL TUO CERVELLO.
+          </span>
+        </h1>
 
-      const molecules = [
-        {
-          id: 'nmn',
-          name: 'NMN (Beta-Nicotinamide Mononucleotide)',
-          dose: '500 MG',
-          tag: 'NAD+ REGENERATOR',
-          pmid: 'PMID: 34238770',
-          mechanism: 'Ripristino bioenergetico cellulare e riparazione mitocondriale mediante attivazione delle sirtuine (SIRT1).',
-          timeline: 'Picco plasmatico in 15m. Aumento NAD+ epatico e cerebrale a 14-21 giorni.',
-          details: 'L\'NMN è il precursore diretto del NAD+. Il dosaggio clinico da 500mg garantisce la saturazione ottimale per l\'autofagia mitocondriale e la riparazione del DNA.'
-        },
-        {
-          id: 'citicoline',
-          name: 'Citiscolina (Cognizin®)',
-          dose: '250 MG',
-          tag: 'PHOSPHOLIPID SYNTHESIS',
-          pmid: 'PMID: 22976324',
-          mechanism: 'Sintesi di fosfatidilcolina nelle membrane neuronali ed elevazione dell\'acetilcolina per la velocità di elaborazione.',
-          timeline: 'Incremento immediato della velocità di trasmissione sinaptica dopo 45 minuti.',
-          details: 'Cognizin® è la forma brevettata di Citiscolina pura al 99.9%. Fornisce i mattoni essenziali per la memoria di lavoro senza ricorrere a stimolanti sintetici.'
-        },
-        {
-          id: 'bacopa',
-          name: 'Bacopa Monnieri (50% Bacosidi)',
-          dose: '300 MG',
-          tag: 'CORTISOL DAMPENER',
-          pmid: 'PMID: 23788517',
-          mechanism: 'Dendritogenesi e modulazione dell\'asse HPA per abbattere lo stress ossidativo ed il cortisolo.',
-          timeline: 'Riduzione del cortisolo salivare e aumento della ritenzione mnemonica a 7-14 giorni.',
-          details: 'Titolata al 50% in bacosidi. Questo adattogeno neuro-protettivo accelera la velocità di elaborazione e sopprime la nebbia mentale.'
-        },
-        {
-          id: 'spermidine',
-          name: 'Spermidina Biologica',
-          dose: '10 MG',
-          tag: 'AUTOPHAGY ACTUATOR',
-          pmid: 'PMID: 31826038',
-          mechanism: 'Attivazione del processo di autofagia cellulare: rinnovo delle proteine danneggiate e pulizia dei rifiuti tossici.',
-          timeline: 'Attivazione sistemica dei marcatori LC3-II per la rigenerazione tissutale.',
-          details: 'Estratta a freddo. La Spermidina simula gli effetti del digiuno prolungato, forzando le cellule cerebrali a riciclare i detriti interni.'
-        }
-      ];
+        <p class="text-lg text-slate-300 max-w-2xl leading-relaxed font-light">
+          Inibisci la nebbia mentale e preserva la tua riserva cognitiva. Una formulazione duale: rigenerazione cellulare di <span class="text-cyan-400 font-semibold">NAD+ via NMN 500mg</span> e focus neurale con <span class="text-emerald-400 font-semibold">Cognizin® Citiscolina</span>.
+        </p>
 
-      return (
-        <div className="relative min-h-screen">
+        <div class="grid grid-cols-3 gap-3 pt-2 max-w-xl">
+          <div class="bg-[#0F1117]/80 backdrop-blur-xl border border-white/10 rounded-xl p-3 text-left">
+            <div class="text-cyan-400 font-tech font-bold text-lg">40+</div>
+            <div class="text-[11px] text-slate-400 font-medium">Studi PubMed</div>
+          </div>
+          <div class="bg-[#0F1117]/80 backdrop-blur-xl border border-white/10 rounded-xl p-3 text-left">
+            <div class="text-emerald-400 font-tech font-bold text-lg">&lt;24h</div>
+            <div class="text-[11px] text-slate-400 font-medium">Spedizione Bologna</div>
+          </div>
+          <div class="bg-[#0F1117]/80 backdrop-blur-xl border border-white/10 rounded-xl p-3 text-left">
+            <div class="text-purple-400 font-tech font-bold text-lg">0%</div>
+            <div class="text-[11px] text-slate-400 font-medium">Eccipienti Sintetici</div>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-4">
+          <a href="#diagnosi" class="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl bg-cyan-400 text-black font-extrabold text-base tracking-wide hover:bg-cyan-300 glow-cyan text-center">
+            Inizia Diagnosi Cognitiva →
+          </a>
+          <button id="btn-open-coa-hero" class="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-[#0F1117] text-slate-300 font-semibold text-sm border border-white/10 hover:border-white/30">
+            📄 Scarica Certificato COA (PDF)
+          </button>
+        </div>
+      </div>
+
+      <!-- Hero Photonic Bottle Right -->
+      <div class="lg:col-span-5 relative flex items-center justify-center">
+        <div class="relative w-full max-w-md bg-[#0F1117]/90 backdrop-blur-2xl border border-white/10 rounded-3xl p-6 shadow-2xl">
           
-          {/* TOP TELEMETRY BAR */}
-          <div className="bg-[#0A0C10] border-b border-white/5 py-2 px-4 text-xs font-mono-tech text-slate-400 flex justify-between items-center">
-            <div className="flex items-center space-x-3 shrink-0">
-              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                LIVE TELEMETRY
-              </span>
-              <span className="hidden sm:inline text-slate-300">
-                BOLOGNA LABS: BATCH <span className="text-cyan-400">#IT-9948</span> READY
-              </span>
-              <span className="text-slate-600">|</span>
-              <span className="hidden md:inline">SPEDIZIONE IN &lt;24 ORE</span>
+          <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-6">
+            <div class="flex space-x-2">
+              <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+              <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+              <div class="w-3 h-3 rounded-full bg-emerald-500/80"></div>
             </div>
-            
-            <div className="flex items-center space-x-4">
-              <span className="text-emerald-400 flex items-center gap-1 text-[11px] font-semibold">
-                ✓ 99.8% CLINICAL PURITY COA VERIFIED
-              </span>
-              <button 
-                onClick={() => setShowCoa(true)}
-                className="hidden lg:inline text-[11px] text-cyan-400 hover:underline"
-              >
-                Scarica COA PDF
-              </button>
+            <div class="font-tech text-[11px] text-cyan-400 font-semibold">MIRON_PHOTONIC_CORE.v2</div>
+          </div>
+
+          <div class="relative my-6 py-8 flex flex-col items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent rounded-2xl border border-white/5">
+            <!-- Glass Bottle -->
+            <div class="w-32 h-48 bg-gradient-to-b from-slate-950 via-[#0A0C12] to-slate-950 border-2 border-purple-500/30 rounded-2xl glow-purple flex flex-col items-center justify-between p-3">
+              <div class="w-20 h-6 bg-slate-800 rounded border border-white/20"></div>
+              <div class="w-full bg-[#08090C] border border-cyan-500/40 rounded p-2 text-center space-y-1">
+                <span class="block text-[8px] font-tech text-cyan-400">MINDSET LABS</span>
+                <span class="block text-[10px] font-bold text-white">FOCUS & NAD+</span>
+                <span class="block text-[7px] text-emerald-400 font-tech">500mg NMN • 250mg COGNIZIN</span>
+              </div>
+              <div class="text-[7px] font-tech text-slate-400">BATCH #IT-9948</div>
+            </div>
+
+            <!-- Overlays -->
+            <div class="absolute top-2 left-3 bg-[#08090C]/90 border border-cyan-500/30 rounded-lg p-2 text-left">
+              <span class="block text-[9px] font-tech text-slate-400">FOCUS INDEX</span>
+              <span class="text-xs font-tech font-bold text-cyan-400">+98.4% ATTENTION</span>
+            </div>
+
+            <div class="absolute top-2 right-3 bg-[#08090C]/90 border border-emerald-500/30 rounded-lg p-2 text-right">
+              <span class="block text-[9px] font-tech text-slate-400">NAD+ CELLULAR</span>
+              <span class="text-xs font-tech font-bold text-emerald-400">500MG NMN REPAIR</span>
             </div>
           </div>
 
-          {/* HEADER NAVBAR */}
-          <header className="sticky top-0 z-40 bg-[#08090C]/80 backdrop-blur-xl border-b border-white/10">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-              
-              <div className="flex items-center space-x-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500/20 to-purple-600/20 border border-cyan-500/40 flex items-center justify-center shadow-[0_0_15px_rgba(0,240,255,0.2)]">
-                  <i data-lucide="brain" className="w-5 h-5 text-cyan-400"></i>
-                </div>
-                <div>
-                  <span className="font-bold text-lg tracking-wider text-white font-mono-tech flex items-center gap-1">
-                    MINDSET <span className="text-cyan-400 text-xs px-1.5 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/30">LABS</span>
-                  </span>
-                  <span className="block text-[10px] text-slate-400 tracking-widest uppercase font-mono-tech">Neural Operating System</span>
-                </div>
-              </div>
+          <div class="flex items-center justify-between text-[11px] font-tech text-slate-400 pt-2 border-t border-white/10">
+            <span class="text-emerald-400">✓ MIRON® GLASS ENCAPSULATED</span>
+            <span>BOLOGNA LABS</span>
+          </div>
 
-              <nav className="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-300">
-                <a href="#formula" className="hover:text-cyan-400 transition-colors">Formula Molecolare</a>
-                <a href="#diagnosi" className="hover:text-cyan-400 transition-colors">Diagnosi Neurale</a>
-                <a href="#confronto" className="hover:text-cyan-400 transition-colors">Confronto Clinico</a>
-                <a href="#faq" className="hover:text-cyan-400 transition-colors">FAQ</a>
-                <a href="#abbonamento" className="text-emerald-400 font-semibold hover:text-emerald-300">Abbonamento</a>
-              </nav>
+        </div>
+      </div>
 
-              <button 
-                onClick={() => { setSelectedPlan('sub'); setShowCheckout(true); }}
-                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-400 to-emerald-400 text-black font-extrabold text-sm hover:opacity-90 shadow-[0_0_20px_rgba(0,240,255,0.3)]"
-              >
-                Attiva Protocollo
-              </button>
+    </div>
+  </section>
 
+  <!-- DIAGNOSI NEURALE SECTION -->
+  <section id="diagnosi" class="relative z-10 py-20 bg-gradient-to-b from-[#08090C] via-[#0C0E14] to-[#08090C] border-y border-white/10">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-tech font-bold uppercase mb-4">
+        📊 DIAGNOSI BIOMETRICA COGNITIVA V2
+      </div>
+      
+      <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-4 font-display">
+        CALCOLA IL TUO INDICE DI <span class="text-cyan-400">RISERVA NEURALE.</span>
+      </h2>
+      <p class="text-slate-400 max-w-xl mx-auto text-sm sm:text-base mb-10">
+        Algoritmo sviluppato per valutare la nebbia mentale, l'efficienza mitocondriale e determinare il dosaggio NAD+ ottimale.
+      </p>
+
+      <div class="bg-[#0F1117] border border-white/10 rounded-3xl p-6 sm:p-10 text-left shadow-2xl">
+        
+        <!-- Progress Indicator -->
+        <div id="quiz-progress-bar" class="flex items-center justify-between border-b border-white/10 pb-6 mb-8">
+          <div class="flex items-center space-x-2 font-tech text-xs">
+            <span id="step-badge-1" class="w-7 h-7 rounded-full flex items-center justify-center font-bold bg-cyan-400 text-black">1</span>
+            <span class="text-slate-400 hidden sm:inline">CHIAREZZA</span>
+            <span class="text-slate-600">/</span>
+            <span id="step-badge-2" class="w-7 h-7 rounded-full flex items-center justify-center font-bold bg-slate-800 text-slate-400">2</span>
+            <span class="text-slate-400 hidden sm:inline">SONNO REM</span>
+            <span class="text-slate-600">/</span>
+            <span id="step-badge-3" class="w-7 h-7 rounded-full flex items-center justify-center font-bold bg-slate-800 text-slate-400">3</span>
+            <span class="text-slate-400 hidden sm:inline">PRIORITÀ</span>
+          </div>
+          <span id="step-text-indicator" class="text-xs font-tech text-cyan-400 font-bold">FASE 01 DI 03</span>
+        </div>
+
+        <!-- Step 1 -->
+        <div id="quiz-step-1" class="space-y-8">
+          <div>
+            <h3 class="text-xl font-bold text-white mb-2">1. Qual è il tuo livello di chiarezza mentale nelle prime 3 ore di lavoro?</h3>
+            <p class="text-sm text-slate-400">Sposta lo slider per indicare la gravità della nebbia mentale o del calo di concentrazione.</p>
+          </div>
+
+          <div class="space-y-6 bg-slate-950/60 p-6 rounded-2xl border border-white/5">
+            <div class="flex justify-between items-center font-tech">
+              <span class="text-xs text-red-400">10% NEBBIA MENTALE</span>
+              <span id="clarity-display" class="text-xl font-bold text-cyan-400">45% FOCUS STATE</span>
+              <span class="text-xs text-emerald-400">100% FLOW STATE</span>
             </div>
-          </header>
+            <input id="clarity-slider" type="range" min="10" max="100" value="45" class="w-full h-3 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400">
+          </div>
 
-          {/* HERO SECTION */}
-          <section className="relative z-10 pt-12 pb-20 lg:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-              
-              <div className="lg:col-span-7 space-y-8 text-left">
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-mono-tech font-bold tracking-wider uppercase">
-                  ✨ PROTOCOLLO CLINICO DI LONGEVITÀ NEURALE
-                </div>
+          <button id="btn-quiz-1" class="w-full py-4 rounded-xl bg-cyan-400 text-black font-extrabold text-sm tracking-wide hover:bg-cyan-300">
+            Continua alla Fase 2 →
+          </button>
+        </div>
 
-                <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-tight font-display">
-                  RISCRIVI L'ETÀ BIOLOGICA <br />
-                  <span className="bg-gradient-to-r from-cyan-400 via-teal-300 to-purple-400 bg-clip-text text-transparent">
-                    DEL TUO CERVELLO.
-                  </span>
-                </h1>
+        <!-- Step 2 -->
+        <div id="quiz-step-2" class="space-y-8 hidden-el">
+          <div>
+            <h3 class="text-xl font-bold text-white mb-2">2. Ore di sonno profondo REM registrate abitualmente?</h3>
+            <p class="text-sm text-slate-400">Il sonno REM è essenziale per la pulizia glinfatica delle proteine cerebrali nocive.</p>
+          </div>
 
-                <p className="text-lg text-slate-300 max-w-2xl leading-relaxed font-light">
-                  Inibisci la nebbia mentale e preserva la tua riserva cognitiva. Una formulazione duale: rigenerazione cellulare di <span className="text-cyan-400 font-semibold">NAD+ via NMN 500mg</span> e focus neurale con <span className="text-emerald-400 font-semibold">Cognizin® Citiscolina</span>.
-                </p>
-
-                <div className="grid grid-cols-3 gap-3 pt-2 max-w-xl">
-                  <div className="bg-[#0F1117]/80 backdrop-blur-xl border border-white/10 rounded-xl p-3 text-left">
-                    <div className="text-cyan-400 font-mono-tech font-bold text-lg">40+</div>
-                    <div className="text-[11px] text-slate-400 font-medium">Studi PubMed</div>
-                  </div>
-                  <div className="bg-[#0F1117]/80 backdrop-blur-xl border border-white/10 rounded-xl p-3 text-left">
-                    <div className="text-emerald-400 font-mono-tech font-bold text-lg">&lt;24h</div>
-                    <div className="text-[11px] text-slate-400 font-medium">Spedizione Bologna</div>
-                  </div>
-                  <div className="bg-[#0F1117]/80 backdrop-blur-xl border border-white/10 rounded-xl p-3 text-left">
-                    <div className="text-purple-400 font-mono-tech font-bold text-lg">0%</div>
-                    <div className="text-[11px] text-slate-400 font-medium">Eccipienti Sintetici</div>
-                  </div>
-                </div>
-
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-4">
-                  <a 
-                    href="#diagnosi"
-                    className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl bg-cyan-400 text-black font-extrabold text-base tracking-wide hover:bg-cyan-300 shadow-[0_0_30px_rgba(0,240,255,0.4)]"
-                  >
-                    Inizia Diagnosi Cognitiva →
-                  </a>
-                  <button 
-                    onClick={() => setShowCoa(true)}
-                    className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-[#0F1117] text-slate-300 font-semibold text-sm border border-white/10 hover:border-white/30"
-                  >
-                    📄 Scarica Certificato COA (PDF)
-                  </button>
-                </div>
-
-              </div>
-
-              {/* Display Fotonico Miron Glass */}
-              <div className="lg:col-span-5 relative flex items-center justify-center">
-                <div className="relative w-full max-w-md bg-[#0F1117]/90 backdrop-blur-2xl border border-white/10 rounded-3xl p-6 shadow-2xl">
-                  
-                  <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-6">
-                    <div className="flex space-x-2">
-                      <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
-                      <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
-                      <div className="w-3 h-3 rounded-full bg-emerald-500/80"></div>
-                    </div>
-                    <div className="font-mono-tech text-[11px] text-cyan-400 font-semibold">
-                      MIRON_PHOTONIC_CORE.v2
-                    </div>
-                  </div>
-
-                  <div className="relative my-6 py-8 flex flex-col items-center justify-center bg-gradient-to-b from-white/[0.03] to-transparent rounded-2xl border border-white/5">
-                    <div className="w-32 h-48 bg-gradient-to-b from-slate-950 via-[#0A0C12] to-slate-950 border-2 border-purple-500/30 rounded-2xl shadow-[0_0_30px_rgba(168,85,247,0.25)] flex flex-col items-center justify-between p-3">
-                      <div className="w-20 h-6 bg-slate-800 rounded border border-white/20"></div>
-                      <div className="w-full bg-[#08090C] border border-cyan-500/40 rounded p-2 text-center space-y-1">
-                        <span className="block text-[8px] font-mono-tech text-cyan-400">MINDSET LABS</span>
-                        <span className="block text-[10px] font-bold text-white">FOCUS & NAD+</span>
-                        <span className="block text-[7px] text-emerald-400 font-mono-tech">500mg NMN • 250mg COGNIZIN</span>
-                      </div>
-                      <div className="text-[7px] font-mono-tech text-slate-400">BATCH #IT-9948</div>
-                    </div>
-
-                    <div className="absolute top-2 left-3 bg-[#08090C]/90 border border-cyan-500/30 rounded-lg p-2 text-left">
-                      <span className="block text-[9px] font-mono-tech text-slate-400">FOCUS INDEX</span>
-                      <span className="text-xs font-mono-tech font-bold text-cyan-400">+98.4% ATTENTION</span>
-                    </div>
-
-                    <div className="absolute top-2 right-3 bg-[#08090C]/90 border border-emerald-500/30 rounded-lg p-2 text-right">
-                      <span className="block text-[9px] font-mono-tech text-slate-400">NAD+ CELLULAR</span>
-                      <span className="text-xs font-mono-tech font-bold text-emerald-400">500MG NMN REPAIR</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between text-[11px] font-mono-tech text-slate-400 pt-2 border-t border-white/10">
-                    <span className="text-emerald-400">✓ MIRON® GLASS ENCAPSULATED</span>
-                    <span>BOLOGNA LABS</span>
-                  </div>
-
-                </div>
-              </div>
-
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div data-rem="1" class="card-rem p-5 rounded-2xl border border-white/10 bg-slate-950/40 cursor-pointer">
+              <div class="font-tech font-bold text-base text-cyan-400 mb-1">&lt; 1 Ora / Notte</div>
+              <div class="text-xs text-slate-400">Sveglia con spossatezza e rigidità mentale.</div>
             </div>
-          </section>
-
-          {/* DIAGNOSI NEURALE */}
-          <section id="diagnosi" className="relative z-10 py-20 bg-gradient-to-b from-[#08090C] via-[#0C0E14] to-[#08090C] border-y border-white/10">
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-              
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono-tech font-bold uppercase mb-4">
-                📊 DIAGNOSI BIOMETRICA COGNITIVA V2
-              </div>
-              
-              <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-4 font-display">
-                CALCOLA IL TUO INDICE DI <span className="text-cyan-400">RISERVA NEURALE.</span>
-              </h2>
-              <p className="text-slate-400 max-w-xl mx-auto text-sm sm:text-base mb-10">
-                Algoritmo sviluppato per valutare la nebbia mentale, l'efficienza mitocondriale e determinare il dosaggio NAD+ ottimale.
-              </p>
-
-              <div className="bg-[#0F1117] border border-white/10 rounded-3xl p-6 sm:p-10 text-left shadow-2xl">
-                
-                {!quizDone && !isAnalyzing && (
-                  <div className="flex items-center justify-between border-b border-white/10 pb-6 mb-8">
-                    <div className="flex items-center space-x-2 font-mono-tech text-xs">
-                      <span className={`w-7 h-7 rounded-full flex items-center justify-center font-bold ${quizStep >= 1 ? 'bg-cyan-400 text-black' : 'bg-slate-800 text-slate-400'}`}>1</span>
-                      <span className="text-slate-400 hidden sm:inline">CHIAREZZA</span>
-                      <span className="text-slate-600">/</span>
-                      <span className={`w-7 h-7 rounded-full flex items-center justify-center font-bold ${quizStep >= 2 ? 'bg-cyan-400 text-black' : 'bg-slate-800 text-slate-400'}`}>2</span>
-                      <span className="text-slate-400 hidden sm:inline">SONNO REM</span>
-                      <span className="text-slate-600">/</span>
-                      <span className={`w-7 h-7 rounded-full flex items-center justify-center font-bold ${quizStep >= 3 ? 'bg-cyan-400 text-black' : 'bg-slate-800 text-slate-400'}`}>3</span>
-                      <span className="text-slate-400 hidden sm:inline">PRIORITÀ</span>
-                    </div>
-                    <span className="text-xs font-mono-tech text-cyan-400 font-bold">FASE {quizStep} DI 3</span>
-                  </div>
-                )}
-
-                {/* Step 1 */}
-                {quizStep === 1 && !isAnalyzing && !quizDone && (
-                  <div className="space-y-8">
-                    <div>
-                      <h3 className="text-xl font-bold text-white mb-2">1. Qual è il tuo livello di chiarezza mentale nelle prime 3 ore di lavoro?</h3>
-                      <p className="text-sm text-slate-400">Sposta lo slider per indicare la gravità della nebbia mentale o del calo di concentrazione.</p>
-                    </div>
-
-                    <div className="space-y-6 bg-slate-950/60 p-6 rounded-2xl border border-white/5">
-                      <div className="flex justify-between items-center font-mono-tech">
-                        <span className="text-xs text-red-400">10% NEBBIA MENTALE</span>
-                        <span className="text-xl font-bold text-cyan-400">{clarity}% FOCUS STATE</span>
-                        <span className="text-xs text-emerald-400">100% FLOW STATE</span>
-                      </div>
-                      <input 
-                        type="range" 
-                        min="10" 
-                        max="100" 
-                        value={clarity} 
-                        onChange={(e) => setClarity(Number(e.target.value))}
-                        className="w-full h-3 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400"
-                      />
-                    </div>
-
-                    <button 
-                      onClick={() => setQuizStep(2)}
-                      className="w-full py-4 rounded-xl bg-cyan-400 text-black font-extrabold text-sm tracking-wide hover:bg-cyan-300"
-                    >
-                      Continua alla Fase 2 →
-                    </button>
-                  </div>
-                )}
-
-                {/* Step 2 */}
-                {quizStep === 2 && !isAnalyzing && !quizDone && (
-                  <div className="space-y-8">
-                    <div>
-                      <h3 className="text-xl font-bold text-white mb-2">2. Ore di sonno profondo REM registrate abitualmente?</h3>
-                      <p className="text-sm text-slate-400">Il sonno REM è essenziale per la pulizia glinfatica delle proteine cerebrali nocive.</p>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                      {[
-                        { id: '<1h', label: '< 1 Ora / Notte', desc: 'Sveglia con spossatezza e rigidità mentale.' },
-                        { id: '1.5h-2h', label: '1.5h - 2 Ore', desc: 'Sonno moderato, calo energetico pomeridiano.' },
-                        { id: '2.5h+', label: '2.5+ Ore', desc: 'Ottima fase rigenerativa notturna.' }
-                      ].map((item) => (
-                        <div 
-                          key={item.id}
-                          onClick={() => setRemSleep(item.id)}
-                          className={`p-5 rounded-2xl border cursor-pointer ${remSleep === item.id ? 'bg-cyan-500/10 border-cyan-400 text-white' : 'bg-slate-950/40 border-white/10 text-slate-400'}`}
-                        >
-                          <div className="font-mono-tech font-bold text-base text-cyan-400 mb-1">{item.label}</div>
-                          <div className="text-xs text-slate-400">{item.desc}</div>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="flex gap-4">
-                      <button onClick={() => setQuizStep(1)} className="w-1/3 py-4 rounded-xl bg-slate-900 text-slate-300 font-semibold text-sm border border-white/10">Indietro</button>
-                      <button onClick={() => setQuizStep(3)} className="w-2/3 py-4 rounded-xl bg-cyan-400 text-black font-extrabold text-sm tracking-wide">Continua alla Fase 3 →</button>
-                    </div>
-                  </div>
-                )}
-
-                {/* Step 3 */}
-                {quizStep === 3 && !isAnalyzing && !quizDone && (
-                  <div className="space-y-8">
-                    <div>
-                      <h3 className="text-xl font-bold text-white mb-2">3. Qual è la tua Priorità Biologica nei prossimi 90 giorni?</h3>
-                      <p className="text-sm text-slate-400">Seleziona l'obiettivo primario per la calibrazione del dosaggio molecolare.</p>
-                    </div>
-
-                    <div className="space-y-3">
-                      {[
-                        { id: 'fog', title: 'Azzeramento Nebbia Mentale & Focus Istruito', desc: 'Focus immediato senza caffeina o stimolanti sintetici.' },
-                        { id: 'focus', title: 'Massimizzazione Produttività & Memoria di Lavoro', desc: 'Aumento della velocità di elaborazione nei compiti complessi.' },
-                        { id: 'longevity', title: 'Protezione Riserva Cognitiva & Rigenerazione NAD+', desc: 'Prevenzione dell invecchiamento cellulare e autofagia neurale.' }
-                      ].map((option) => (
-                        <div 
-                          key={option.id}
-                          onClick={() => setBioPriority(option.id)}
-                          className={`p-4 rounded-2xl border cursor-pointer flex items-center justify-between ${bioPriority === option.id ? 'bg-emerald-500/10 border-emerald-500 text-white' : 'bg-slate-950/40 border-white/10 text-slate-400'}`}
-                        >
-                          <div>
-                            <div className="font-bold text-sm text-white">{option.title}</div>
-                            <div className="text-xs text-slate-400">{option.desc}</div>
-                          </div>
-                          <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${bioPriority === option.id ? 'border-emerald-400 bg-emerald-400 text-black font-bold' : 'border-slate-600'}`}>✓</div>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="flex gap-4">
-                      <button onClick={() => setQuizStep(2)} className="w-1/3 py-4 rounded-xl bg-slate-900 text-slate-300 font-semibold text-sm border border-white/10">Indietro</button>
-                      <button onClick={runAnalysis} className="w-2/3 py-4 rounded-xl bg-gradient-to-r from-emerald-400 to-cyan-400 text-black font-extrabold text-sm tracking-wide">Calcola Risultato Biometrico</button>
-                    </div>
-                  </div>
-                )}
-
-                {/* Loader */}
-                {isAnalyzing && (
-                  <div className="py-16 text-center space-y-6">
-                    <div className="w-16 h-16 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto"></div>
-                    <div className="font-mono-tech text-sm font-bold text-white">ANALISI BIOMARCATORI IN CORSO...</div>
-                  </div>
-                )}
-
-                {/* Quiz Result */}
-                {quizDone && !isAnalyzing && (
-                  <div className="space-y-6 text-center py-4">
-                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono-tech font-bold">
-                      ✓ DIAGNOSI COMPLETATA CON SUCCESSO
-                    </div>
-
-                    <div className="bg-slate-950 p-6 rounded-2xl border border-white/10 space-y-4">
-                      <div className="text-xs font-mono-tech text-slate-400">INDICE DI RISERVA NEURALE ATTUALE</div>
-                      <div className="text-6xl font-extrabold font-mono-tech text-cyan-400">
-                        {quizScore} <span className="text-lg text-slate-500 font-sans font-normal">/ 100 PTS</span>
-                      </div>
-                      <p className="text-sm text-slate-300 max-w-md mx-auto">
-                        {quizScore < 60 
-                          ? 'Rilevato accumulo di nebbia mentale e potenziale deplezione di NAD+. Consigliata integrazione del Protocollo Continuo 90gg.'
-                          : 'Buona riserva basale. Il Protocollo MINDSET™ stabilizzerà il picco attentivo ed estenderà la longevità cellulare.'}
-                      </p>
-                      <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-400 text-xs font-mono-tech font-bold">
-                        PROMO QUIZ SBLOCCATA: -15% SUL PRIMO MESE (CODICE: QUIZ15-NEURAL)
-                      </div>
-                    </div>
-
-                    <a 
-                      href="#abbonamento"
-                      onClick={() => setPricingCycle('sub')}
-                      className="inline-block w-full py-4 rounded-xl bg-gradient-to-r from-cyan-400 to-emerald-400 text-black font-extrabold text-sm tracking-wide text-center"
-                    >
-                      Riscatta Promo Quiz & Attiva (-15%) →
-                    </a>
-                  </div>
-                )}
-
-              </div>
-
+            <div data-rem="2" class="card-rem p-5 rounded-2xl border border-cyan-400 bg-cyan-500/10 cursor-pointer">
+              <div class="font-tech font-bold text-base text-cyan-400 mb-1">1.5h - 2 Ore</div>
+              <div class="text-xs text-slate-400">Sonno moderato, calo energetico pomeridiano.</div>
             </div>
-          </section>
+            <div data-rem="3" class="card-rem p-5 rounded-2xl border border-white/10 bg-slate-950/40 cursor-pointer">
+              <div class="font-tech font-bold text-base text-cyan-400 mb-1">2.5+ Ore</div>
+              <div class="text-xs text-slate-400">Ottima fase rigenerativa notturna.</div>
+            </div>
+          </div>
 
-          {/* FORMULA MOLECOLARE */}
-          <section id="formula" className="relative z-10 py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-mono-tech font-bold uppercase">
-                🧬 SCIENZA DEGLI INGREDIENTI
+          <div class="flex gap-4">
+            <button id="btn-quiz-back-2" class="w-1/3 py-4 rounded-xl bg-slate-900 text-slate-300 font-semibold text-sm border border-white/10">Indietro</button>
+            <button id="btn-quiz-2" class="w-2/3 py-4 rounded-xl bg-cyan-400 text-black font-extrabold text-sm tracking-wide">Continua alla Fase 3 →</button>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div id="quiz-step-3" class="space-y-8 hidden-el">
+          <div>
+            <h3 class="text-xl font-bold text-white mb-2">3. Qual è la tua Priorità Biologica nei prossimi 90 giorni?</h3>
+            <p class="text-sm text-slate-400">Seleziona l'obiettivo primario per la calibrazione del dosaggio molecolare.</p>
+          </div>
+
+          <div class="space-y-3">
+            <div data-priority="fog" class="card-priority p-4 rounded-2xl border border-white/10 bg-slate-950/40 cursor-pointer flex items-center justify-between">
+              <div>
+                <div class="font-bold text-sm text-white">Azzeramento Nebbia Mentale & Focus Istruito</div>
+                <div class="text-xs text-slate-400">Focus immediato senza caffeina o stimolanti sintetici.</div>
               </div>
-              <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight font-display">
-                4 MOLECOLE. DOSAGGI CLINICI <span className="text-cyan-400">100% ATTIVI.</span>
-              </h2>
+              <div class="priority-check w-5 h-5 rounded-full border border-slate-600 flex items-center justify-center text-xs"></div>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {molecules.map((item) => (
-                <div key={item.id} className="bg-[#0F1117] border border-white/10 rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-500/50 transition-all">
-                  <div className="space-y-4">
-                    <span className="text-[10px] font-mono-tech font-bold px-2.5 py-1 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
-                      {item.tag}
-                    </span>
-                    <div>
-                      <div className="text-3xl font-extrabold font-mono-tech text-cyan-400 mb-1">{item.dose}</div>
-                      <h3 className="text-lg font-bold text-white">{item.name}</h3>
-                    </div>
-                    <p className="text-xs text-slate-300 leading-relaxed">{item.mechanism}</p>
-                  </div>
-                  <button 
-                    onClick={() => setSelectedMolecule(item)}
-                    className="w-full mt-6 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs font-semibold text-slate-300 hover:text-white"
-                  >
-                    Scheda Clinica Dettagliata
-                  </button>
-                </div>
-              ))}
+            <div data-priority="focus" class="card-priority p-4 rounded-2xl border border-emerald-500 bg-emerald-500/10 cursor-pointer flex items-center justify-between">
+              <div>
+                <div class="font-bold text-sm text-white">Massimizzazione Produttività & Memoria di Lavoro</div>
+                <div class="text-xs text-slate-400">Aumento della velocità di elaborazione nei compiti complessi.</div>
+              </div>
+              <div class="priority-check w-5 h-5 rounded-full border border-emerald-400 bg-emerald-400 text-black font-bold flex items-center justify-center text-xs">✓</div>
             </div>
-          </section>
+            <div data-priority="longevity" class="card-priority p-4 rounded-2xl border border-white/10 bg-slate-950/40 cursor-pointer flex items-center justify-between">
+              <div>
+                <div class="font-bold text-sm text-white">Protezione Riserva Cognitiva & Rigenerazione NAD+</div>
+                <div class="text-xs text-slate-400">Prevenzione dell invecchiamento cellulare e autofagia neurale.</div>
+              </div>
+              <div class="priority-check w-5 h-5 rounded-full border border-slate-600 flex items-center justify-center text-xs"></div>
+            </div>
+          </div>
 
-          {/* SPETTROMETRO VETRO MIRON */}
-          <section className="relative z-10 py-20 bg-[#0C0E14] border-y border-white/10">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                
-                <div className="lg:col-span-6 space-y-6 text-left">
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-400 text-xs font-mono-tech font-bold uppercase">
-                    🛡️ CONSERVAZIONE BIOTONICA
-                  </div>
+          <div class="flex gap-4">
+            <button id="btn-quiz-back-3" class="w-1/3 py-4 rounded-xl bg-slate-900 text-slate-300 font-semibold text-sm border border-white/10">Indietro</button>
+            <button id="btn-quiz-3" class="w-2/3 py-4 rounded-xl bg-gradient-to-r from-emerald-400 to-cyan-400 text-black font-extrabold text-sm tracking-wide">Calcola Risultato Biometrico</button>
+          </div>
+        </div>
 
-                  <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight font-display">
-                    VETRO FOTONICO MIRON®.<br />
-                    <span className="text-purple-400">PROTEZIONE ANTI-DEGRADAZIONE 100%.</span>
-                  </h2>
+        <!-- Loader -->
+        <div id="quiz-loader" class="py-16 text-center space-y-6 hidden-el">
+          <div class="w-16 h-16 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <div class="font-tech text-sm font-bold text-white">ANALISI BIOMARCATORI IN CORSO...</div>
+        </div>
 
-                  <p className="text-slate-300 text-sm leading-relaxed font-light">
-                    L'NMN e la Spermidina si degradano con la luce visibile. Il vetro trasparente o la plastica PET degradano il prodotto fino al 40% in soli 30 giorni. Il Vetro Miron® scherma la luce visibile e lascia passare solo le frequenze rigenerative UV-A e Infrarossi Lontani.
-                  </p>
-                </div>
+        <!-- Quiz Result -->
+        <div id="quiz-result" class="space-y-6 text-center py-4 hidden-el">
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-tech font-bold">
+            ✓ DIAGNOSI COMPLETATA CON SUCCESSO
+          </div>
 
-                <div className="lg:col-span-6 bg-[#0F1117] border border-white/10 rounded-3xl p-6 space-y-6">
-                  <div className="flex justify-between border-b border-white/10 pb-4">
-                    <span className="text-xs font-mono-tech text-slate-400 font-bold uppercase">Spettrometro di Trasmissione Luminosa</span>
-                    <button 
-                      onClick={() => setGlassType(glassType === 'miron' ? 'pet' : 'miron')}
-                      className="px-3 py-1 rounded text-xs font-mono-tech font-bold bg-purple-500/20 text-purple-400 border border-purple-500/40"
-                    >
-                      {glassType === 'miron' ? 'Vetro Miron®' : 'Plastica PET'}
-                    </button>
-                  </div>
+          <div class="bg-slate-950 p-6 rounded-2xl border border-white/10 space-y-4">
+            <div class="text-xs font-mono-tech text-slate-400">INDICE DI RISERVA NEURALE ATTUALE</div>
+            <div id="score-val-display" class="text-6xl font-extrabold font-tech text-cyan-400">
+              64 <span class="text-lg text-slate-500 font-sans font-normal">/ 100 PTS</span>
+            </div>
+            <p id="recommendation-text" class="text-sm text-slate-300 max-w-md mx-auto">
+              Rilevato accumulo di nebbia mentale e deplezione di NAD+. Consigliata integrazione del Protocollo Continuo 90gg.
+            </p>
+            <div class="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-400 text-xs font-tech font-bold">
+              ✨ PROMO QUIZ SBLOCCATA: -15% SUL PRIMO MESE (CODICE: QUIZ15-NEURAL)
+            </div>
+          </div>
 
-                  <div className="space-y-4 py-2 font-mono-tech text-xs">
-                    {glassType === 'miron' ? (
-                      <div className="space-y-3">
-                        <div>
-                          <div className="flex justify-between text-slate-400"><span>Luce Visibile (400 - 700 nm)</span><span className="text-emerald-400 font-bold">BLOCCO 100%</span></div>
-                          <div className="w-full h-2 bg-slate-900 rounded-full mt-1"><div className="w-0 h-full bg-emerald-400"></div></div>
-                        </div>
-                        <div>
-                          <div className="flex justify-between text-slate-400"><span>Raggi UV-A Bio-Stimolanti</span><span className="text-purple-400 font-bold">PERMESSO (45%)</span></div>
-                          <div className="w-full h-2 bg-slate-900 rounded-full mt-1"><div className="w-[45%] h-full bg-purple-400"></div></div>
-                        </div>
-                        <div className="p-3 bg-purple-500/10 border border-purple-500/30 rounded-xl text-purple-300">
-                          RISULTATO: Carica molecolare preservata invariata al 99.8% a 12 mesi.
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="space-y-3">
-                        <div>
-                          <div className="flex justify-between text-slate-400"><span>Luce Visibile (400 - 700 nm)</span><span className="text-red-400 font-bold">PENETRAZIONE 88%</span></div>
-                          <div className="w-full h-2 bg-slate-900 rounded-full mt-1"><div className="w-[88%] h-full bg-red-400"></div></div>
-                        </div>
-                        <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-300">
-                          RISULTATO: Perdita del 42% della carica attiva entro 30 giorni.
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
+          <a href="#abbonamento" id="btn-redeem-discount" class="inline-block w-full py-4 rounded-xl bg-gradient-to-r from-cyan-400 to-emerald-400 text-black font-extrabold text-sm tracking-wide text-center">
+            Riscatta Promo Quiz & Attiva (-15%) →
+          </a>
+        </div>
 
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FORMULA MOLECOLARE -->
+  <section id="formula" class="relative z-10 py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-tech font-bold uppercase">
+        🧬 SCIENZA DEGLI INGREDIENTI
+      </div>
+      <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight font-display">
+        4 MOLECOLE. DOSAGGI CLINICI <span class="text-cyan-400">100% ATTIVI.</span>
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="molecule-card bg-[#0F1117] border border-white/10 rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-500/50 transition-all cursor-pointer" data-title="NMN (Beta-Nicotinamide Mononucleotide)" data-dose="500 MG" data-pmid="PMID: 34238770" data-desc="Precursore diretto del NAD+. Il dosaggio clinico da 500mg garantisce la saturazione ottimale per l'autofagia mitocondriale e la riparazione del DNA.">
+        <div class="space-y-4">
+          <span class="text-[10px] font-tech font-bold px-2.5 py-1 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">NAD+ REGENERATOR</span>
+          <div>
+            <div class="text-3xl font-extrabold font-tech text-cyan-400 mb-1">500 MG</div>
+            <h3 class="text-lg font-bold text-white">NMN (Mononucleotide)</h3>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">Ripristino bioenergetico cellulare e riparazione mitocondriale mediante attivazione delle sirtuine.</p>
+        </div>
+        <button class="w-full mt-6 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs font-semibold text-slate-300 hover:text-white">Scheda Clinica Dettagliata</button>
+      </div>
+
+      <div class="molecule-card bg-[#0F1117] border border-white/10 rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-500/50 transition-all cursor-pointer" data-title="Citiscolina (Cognizin®)" data-dose="250 MG" data-pmid="PMID: 22976324" data-desc="Cognizin® è la forma brevettata di Citiscolina pura al 99.9%. Fornisce i mattoni essenziali per la memoria di lavoro senza stimolanti sintetici.">
+        <div class="space-y-4">
+          <span class="text-[10px] font-tech font-bold px-2.5 py-1 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">PHOSPHOLIPID SYNTHESIS</span>
+          <div>
+            <div class="text-3xl font-extrabold font-tech text-cyan-400 mb-1">250 MG</div>
+            <h3 class="text-lg font-bold text-white">Citiscolina (Cognizin®)</h3>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">Sintesi di fosfatidilcolina nelle membrane neuronali ed elevazione dell'acetilcolina per la velocità.</p>
+        </div>
+        <button class="w-full mt-6 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs font-semibold text-slate-300 hover:text-white">Scheda Clinica Dettagliata</button>
+      </div>
+
+      <div class="molecule-card bg-[#0F1117] border border-white/10 rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-500/50 transition-all cursor-pointer" data-title="Bacopa Monnieri (50% Bacosidi)" data-dose="300 MG" data-pmid="PMID: 23788517" data-desc="Titolata al 50% in bacosidi. Questo adattogeno neuro-protettivo accelera la velocità di elaborazione e sopprime la nebbia mentale.">
+        <div class="space-y-4">
+          <span class="text-[10px] font-tech font-bold px-2.5 py-1 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">CORTISOL DAMPENER</span>
+          <div>
+            <div class="text-3xl font-extrabold font-tech text-cyan-400 mb-1">300 MG</div>
+            <h3 class="text-lg font-bold text-white">Bacopa Monnieri</h3>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">Dendritogenesi e modulazione dell'asse HPA per abbattere lo stress ossidativo ed il cortisolo.</p>
+        </div>
+        <button class="w-full mt-6 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs font-semibold text-slate-300 hover:text-white">Scheda Clinica Dettagliata</button>
+      </div>
+
+      <div class="molecule-card bg-[#0F1117] border border-white/10 rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-500/50 transition-all cursor-pointer" data-title="Spermidina Biologica" data-dose="10 MG" data-pmid="PMID: 31826038" data-desc="Estratta a freddo. La Spermidina simula gli effetti del digiuno prolungato, forzando le cellule cerebrali a riciclare i detriti interni.">
+        <div class="space-y-4">
+          <span class="text-[10px] font-tech font-bold px-2.5 py-1 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">AUTOPHAGY ACTUATOR</span>
+          <div>
+            <div class="text-3xl font-extrabold font-tech text-cyan-400 mb-1">10 MG</div>
+            <h3 class="text-lg font-bold text-white">Spermidina Biologica</h3>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">Attivazione dell'autofagia cellulare: rinnovo delle proteine danneggiate e pulizia dei rifiuti tossici.</p>
+        </div>
+        <button class="w-full mt-6 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs font-semibold text-slate-300 hover:text-white">Scheda Clinica Dettagliata</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPETTROMETRO VETRO MIRON -->
+  <section class="relative z-10 py-20 bg-[#0C0E14] border-y border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <div class="lg:col-span-6 space-y-6 text-left">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-400 text-xs font-tech font-bold uppercase">
+            🛡️ CONSERVAZIONE BIOTONICA
+          </div>
+
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight font-display">
+            VETRO FOTONICO MIRON®.<br />
+            <span class="text-purple-400">PROTEZIONE ANTI-DEGRADAZIONE 100%.</span>
+          </h2>
+
+          <p class="text-slate-300 text-sm leading-relaxed font-light">
+            L'NMN e la Spermidina si degradano con la luce visibile. Il vetro trasparente o la plastica PET degradano il prodotto fino al 40% in soli 30 giorni. Il Vetro Miron® scherma la luce visibile e lascia passare solo le frequenze rigenerative UV-A e Infrarossi Lontani.
+          </p>
+        </div>
+
+        <div class="lg:col-span-6 bg-[#0F1117] border border-white/10 rounded-3xl p-6 space-y-6">
+          <div class="flex justify-between border-b border-white/10 pb-4">
+            <span class="text-xs font-tech text-slate-400 font-bold uppercase">Spettrometro di Trasmissione Luminosa</span>
+            <button id="btn-toggle-glass" class="px-3 py-1 rounded text-xs font-tech font-bold bg-purple-500/20 text-purple-400 border border-purple-500/40">
+              Vetro Miron®
+            </button>
+          </div>
+
+          <div id="miron-glass-view" class="space-y-4 py-2 font-tech text-xs">
+            <div class="space-y-3">
+              <div>
+                <div class="flex justify-between text-slate-400"><span>Luce Visibile (400 - 700 nm)</span><span class="text-emerald-400 font-bold">BLOCCO 100%</span></div>
+                <div class="w-full h-2 bg-slate-900 rounded-full mt-1"><div class="w-0 h-full bg-emerald-400"></div></div>
+              </div>
+              <div>
+                <div class="flex justify-between text-slate-400"><span>Raggi UV-A Bio-Stimolanti</span><span class="text-purple-400 font-bold">PERMESSO (45%)</span></div>
+                <div class="w-full h-2 bg-slate-900 rounded-full mt-1"><div class="w-[45%] h-full bg-purple-400"></div></div>
+              </div>
+              <div class="p-3 bg-purple-500/10 border border-purple-500/30 rounded-xl text-purple-300">
+                RISULTATO: Carica molecolare preservata invariata al 99.8% a 12 mesi.
               </div>
             </div>
-          </section>
+          </div>
 
-          {/* TABELLA COMPARATIVA */}
-          <section id="confronto" className="relative z-10 py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-              <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight font-display">
-                NON TUTTI I NOOTROPI SONO <span className="text-cyan-400">UGUALI.</span>
-              </h2>
-            </div>
-
-            <div className="overflow-x-auto bg-[#0F1117] border border-white/10 rounded-3xl">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="border-b border-white/10 bg-white/[0.02]">
-                    <th className="py-5 px-6 font-mono-tech text-xs text-slate-400 font-semibold uppercase">PARAMETRO</th>
-                    <th className="py-5 px-6 font-mono-tech text-xs text-slate-400 font-semibold uppercase">FARMACIA TRADIZIONALE</th>
-                    <th className="py-5 px-6 font-mono-tech text-xs text-cyan-400 font-bold uppercase bg-cyan-500/5">MINDSET LABS PROTOCOL</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/10 text-sm">
-                  <tr>
-                    <td className="py-5 px-6 font-semibold text-white">Dosaggio Principi Attivi</td>
-                    <td className="py-5 px-6 text-slate-400">Sottodosati (&lt;30% dose efficace)</td>
-                    <td className="py-5 px-6 font-mono-tech font-bold text-emerald-400 bg-cyan-500/5">✓ DOSE CLINICA ATTIVA 100%</td>
-                  </tr>
-                  <tr>
-                    <td className="py-5 px-6 font-semibold text-white">Trasparenza Lotto (COA PDF)</td>
-                    <td className="py-5 px-6 text-slate-400">Non fornito</td>
-                    <td className="py-5 px-6 font-mono-tech font-bold text-cyan-400 bg-cyan-500/5">✓ COA 99.8% PDF PUBBLICO</td>
-                  </tr>
-                  <tr>
-                    <td className="py-5 px-6 font-semibold text-white">Incapsulamento</td>
-                    <td className="py-5 px-6 text-slate-400">Plastica PET o Vetro Trasparente</td>
-                    <td className="py-5 px-6 font-mono-tech font-bold text-purple-400 bg-cyan-500/5">✓ VETRO FOTONICO MIRON®</td>
-                  </tr>
-                  <tr>
-                    <td className="py-5 px-6 font-semibold text-white">Sintesi & Produzione</td>
-                    <td className="py-5 px-6 text-slate-400">Importazione extra-UE generica</td>
-                    <td className="py-5 px-6 font-mono-tech font-bold text-emerald-400 bg-cyan-500/5">✓ LABS CERTIFICATI BOLOGNA (IT)</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </section>
-
-          {/* PRICING & SELEZIONE PROTOCOLLO */}
-          <section id="abbonamento" className="relative z-10 py-24 bg-gradient-to-b from-[#08090C] via-[#0C0E14] to-[#08090C] border-y border-white/10">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-              
-              <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-4 font-display">
-                ATTIVA IL TUO <span className="text-cyan-400">PROTOCOLLO NEURALE.</span>
-              </h2>
-              <p className="text-slate-400 max-w-xl mx-auto text-sm sm:text-base mb-10">
-                Trattamento completo per 30 giorni. Garanzia "Soddisfatti o Rimborsati" valida per 30 giorni senza domande.
-              </p>
-
-              <div className="flex items-center justify-center space-x-4 mb-12">
-                <span className={`text-sm font-semibold cursor-pointer ${pricingCycle === 'single' ? 'text-white' : 'text-slate-500'}`} onClick={() => setPricingCycle('single')}>
-                  Fornitura Singola (30gg)
-                </span>
-                <button 
-                  onClick={() => setPricingCycle(pricingCycle === 'sub' ? 'single' : 'sub')}
-                  className="relative w-14 h-8 bg-slate-800 rounded-full p-1 border border-white/10"
-                >
-                  <div className={`w-6 h-6 rounded-full bg-cyan-400 transform transition-transform ${pricingCycle === 'sub' ? 'translate-x-6' : 'translate-x-0'}`}></div>
-                </button>
-                <span className={`text-sm font-semibold cursor-pointer ${pricingCycle === 'sub' ? 'text-emerald-400' : 'text-slate-500'}`} onClick={() => setPricingCycle('sub')}>
-                  Abbonamento Continuo <span className="text-[10px] font-mono-tech font-bold px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">-25% RISPARMIO</span>
-                </span>
+          <div id="pet-glass-view" class="space-y-4 py-2 font-tech text-xs hidden-el">
+            <div class="space-y-3">
+              <div>
+                <div class="flex justify-between text-slate-400"><span>Luce Visibile (400 - 700 nm)</span><span class="text-red-400 font-bold">PENETRAZIONE 88%</span></div>
+                <div class="w-full h-2 bg-slate-900 rounded-full mt-1"><div class="w-[88%] h-full bg-red-400"></div></div>
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto text-left">
-                
-                {/* Single */}
-                <div className={`bg-[#0F1117] border rounded-3xl p-8 flex flex-col justify-between ${pricingCycle === 'single' ? 'border-cyan-400' : 'border-white/10 opacity-70'}`}>
-                  <div className="space-y-6">
-                    <span className="text-xs font-mono-tech font-bold text-slate-400 uppercase">FORNITURA SINGOLA</span>
-                    <div className="text-4xl font-extrabold font-mono-tech text-white">€65 <span className="text-sm font-sans font-normal text-slate-500">/ una tantum</span></div>
-                    <ul className="space-y-3 text-xs text-slate-300">
-                      <li>✓ 1x Flacone MINDSET™ (60 Capsule)</li>
-                      <li>✓ Confezionamento in Vetro Miron®</li>
-                      <li>✓ Certificato COA PDF Incluso</li>
-                    </ul>
-                  </div>
-                  <button 
-                    onClick={() => { setSelectedPlan('single'); setShowCheckout(true); }}
-                    className="w-full mt-8 py-4 rounded-xl bg-slate-900 text-white font-bold text-sm border border-white/10"
-                  >
-                    Acquista Singolo (€65)
-                  </button>
-                </div>
-
-                {/* Subscription */}
-                <div className={`bg-gradient-to-b from-[#0F1117] via-[#121520] to-[#0F1117] border-2 rounded-3xl p-8 flex flex-col justify-between relative ${pricingCycle === 'sub' ? 'border-cyan-400' : 'border-emerald-500/50'}`}>
-                  <div className="absolute -top-3.5 right-6 px-4 py-1 rounded-full bg-cyan-400 text-black font-mono-tech font-extrabold text-[10px]">
-                    RACCOMANDATO CLINICO
-                  </div>
-
-                  <div className="space-y-6">
-                    <span className="text-xs font-mono-tech font-bold text-emerald-400 uppercase">ABBONAMENTO LONGEVITÀ</span>
-                    
-                    {promoUnlocked && (
-                      <div className="p-2.5 bg-emerald-500/10 border border-emerald-500/40 rounded-xl text-emerald-400 text-xs font-mono-tech font-bold">
-                        ✨ PROMO QUIZ ATTIVATA: -15% SUL PRIMO MESE
-                      </div>
-                    )}
-
-                    <div className="flex items-baseline gap-2">
-                      <div className="text-5xl font-extrabold font-mono-tech text-white">
-                        {promoUnlocked ? '€41.65' : '€49'} 
-                        <span className="text-sm font-sans font-normal text-slate-400"> / mese</span>
-                      </div>
-                      <span className="text-sm font-mono-tech text-slate-500 line-through">€65</span>
-                    </div>
-
-                    <ul className="space-y-3 text-xs text-slate-200">
-                      <li>✓ 1x Flacone Ricarica Mensile Automatico</li>
-                      <li>✓ Spedizione Express &lt;24h Gratuita</li>
-                      <li>✓ Cancella o metti in pausa con 1-click via WhatsApp</li>
-                    </ul>
-                  </div>
-
-                  <button 
-                    onClick={() => { setSelectedPlan('sub'); setShowCheckout(true); }}
-                    className="w-full mt-8 py-4 rounded-xl bg-cyan-400 text-black font-extrabold text-sm tracking-wide"
-                  >
-                    Attiva Abbonamento Longevità →
-                  </button>
-                </div>
-
-              </div>
-
-            </div>
-          </section>
-
-          {/* FAQ */}
-          <section id="faq" className="relative z-10 py-24 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight font-display">
-                DOMANDE FREQUENTI <span className="text-cyan-400">CLINICHE.</span>
-              </h2>
-            </div>
-
-            <div className="space-y-4">
-              {[
-                {
-                  q: 'Dopo quanto tempo si avvertono i primi risultati sulla concentrazione?',
-                  a: 'La Citiscolina Cognizin® agisce entro 45 minuti dalla somministrazione. L\'NMN e la Spermidina agiscono a livello cumulativo cellulare: i benefici sistemici su rigenerazione mitocondriale e qualità del sonno REM si consolidano a 14-21 giorni.'
-                },
-                {
-                  q: 'Ci sono stimolanti sintetici o caffeina che causano tremori o crash pomeridiani?',
-                  a: 'No. MINDSET™ è formulato con 0% caffeina anidra e zero stimolanti sintetici. La carica energetica deriva dal ripristino delle riserve di NAD+ cellulare.'
-                },
-                {
-                  q: 'Come funziona la garanzia 30 Giorni "Soddisfatti o Rimborsati"?',
-                  a: 'Se dopo 30 giorni di assunzione non rilevi miglioramenti, ti rimborseremo il 100% dell\'importo pagato senza domande.'
-                }
-              ].map((item, idx) => (
-                <div key={idx} className="bg-[#0F1117] border border-white/10 rounded-2xl overflow-hidden">
-                  <button 
-                    onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                    className="w-full p-6 text-left font-bold text-base text-white flex justify-between items-center"
-                  >
-                    <span>{item.q}</span>
-                    <span>{openFaq === idx ? '▲' : '▼'}</span>
-                  </button>
-                  {openFaq === idx && (
-                    <div className="px-6 pb-6 text-sm text-slate-300 border-t border-white/5 pt-4">
-                      {item.a}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* FOOTER */}
-          <footer className="relative z-10 bg-[#050608] border-t border-white/10 py-16 text-slate-500 text-xs text-center">
-            <p className="font-semibold text-slate-400 mb-1">MINDSET LABS S.r.l. • Divisione Longevità Neurale</p>
-            <p>Via dell'Innovazione 42, Milano • Laboratori di Confezionamento: Bologna (BO)</p>
-            <p className="mt-4">© 2026 MINDSET LABS. Tutti i diritti riservati. GDPR Compliant.</p>
-          </footer>
-
-          {/* MODAL COA */}
-          {showCoa && (
-            <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-              <div className="bg-[#0F1117] border border-emerald-500/40 rounded-3xl max-w-lg w-full p-6 space-y-6 relative">
-                <button onClick={() => setShowCoa(false)} className="absolute top-4 right-4 text-slate-400">✕</button>
-                <h3 className="text-lg font-bold text-white">Certificato di Analisi COA (Lotto #IT-9948)</h3>
-                <div className="space-y-2 text-xs font-mono-tech text-slate-300 bg-slate-950 p-4 rounded-xl border border-white/5">
-                  <div className="flex justify-between"><span>Purezza NMN:</span><span className="text-emerald-400">99.82% PASS</span></div>
-                  <div className="flex justify-between"><span>Cognizin® Purity:</span><span className="text-emerald-400">99.91% PASS</span></div>
-                  <div className="flex justify-between"><span>Metalli Pesanti:</span><span className="text-emerald-400">&lt;0.001 ppm PASS</span></div>
-                </div>
-                <button 
-                  onClick={() => { alert("PDF del Certificato Scaricato."); setShowCoa(false); }}
-                  className="w-full py-4 rounded-xl bg-emerald-400 text-black font-extrabold text-xs tracking-wider uppercase"
-                >
-                  Download Certificato COA PDF
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* CHECKOUT DRAWER */}
-          {showCheckout && (
-            <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex justify-end">
-              <div className="bg-[#0F1117] border-l border-white/10 w-full max-w-md h-full p-6 flex flex-col justify-between">
-                <div className="space-y-6">
-                  <div className="flex justify-between items-center border-b border-white/10 pb-4">
-                    <span className="font-mono-tech font-bold text-sm text-white">🔒 CHECKOUT SICURO</span>
-                    <button onClick={() => setShowCheckout(false)} className="text-slate-400">✕</button>
-                  </div>
-
-                  <div className="bg-slate-950 p-4 rounded-2xl border border-white/5 space-y-2">
-                    <span className="text-[10px] font-mono-tech text-slate-400">PRODOTTO SELEZIONATO</span>
-                    <div className="flex justify-between text-sm font-bold text-white">
-                      <span>{selectedPlan === 'sub' ? 'Abbonamento Longevità' : 'Fornitura Singola'}</span>
-                      <span className="font-mono-tech text-cyan-400">{selectedPlan === 'sub' ? (promoUnlocked ? '€41.65' : '€49.00') : '€65.00'}</span>
-                    </div>
-                  </div>
-
-                  <button 
-                    onClick={() => { alert("Ordine Confermato! Riceverai la mail con il tracciamento Bologna Express."); setShowCheckout(false); }}
-                    className="w-full py-4 rounded-xl bg-cyan-400 text-black font-extrabold text-sm"
-                  >
-                    Paga con Apple Pay / Carte
-                  </button>
-                </div>
-                <div className="text-[10px] text-center text-slate-500 font-mono-tech">Connessione Crittografata 256-bit SSL</div>
-              </div>
-            </div>
-          )}
-
-          {/* FLOATING TOAST */}
-          <div className={`fixed bottom-6 right-6 z-40 bg-[#0F1117] border border-cyan-500/30 rounded-2xl p-4 transition-all duration-500 ${showToast ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-            <div className="flex items-center space-x-3">
-              <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></div>
-              <div className="text-left text-xs">
-                <span className="block font-bold text-white">{toasts[toastIndex].name}</span>
-                <span className="block text-slate-400 text-[11px]">{toasts[toastIndex].action}</span>
+              <div class="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-300">
+                RISULTATO: Perdita del 42% della carica attiva entro 30 giorni.
               </div>
             </div>
           </div>
 
         </div>
-      );
-    }
 
-    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+      </div>
+    </div>
+  </section>
+
+  <!-- TABELLA COMPARATIVA -->
+  <section id="confronto" class="relative z-10 py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+      <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight font-display">
+        NON TUTTI I NOOTROPI SONO <span class="text-cyan-400">UGUALI.</span>
+      </h2>
+    </div>
+
+    <div class="overflow-x-auto bg-[#0F1117] border border-white/10 rounded-3xl">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="border-b border-white/10 bg-white/[0.02]">
+            <th class="py-5 px-6 font-tech text-xs text-slate-400 font-semibold uppercase">PARAMETRO</th>
+            <th class="py-5 px-6 font-tech text-xs text-slate-400 font-semibold uppercase">FARMACIA TRADIZIONALE</th>
+            <th class="py-5 px-6 font-tech text-xs text-cyan-400 font-bold uppercase bg-cyan-500/5">MINDSET LABS PROTOCOL</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-white/10 text-sm">
+          <tr>
+            <td class="py-5 px-6 font-semibold text-white">Dosaggio Principi Attivi</td>
+            <td class="py-5 px-6 text-slate-400">Sottodosati (&lt;30% dose efficace)</td>
+            <td class="py-5 px-6 font-tech font-bold text-emerald-400 bg-cyan-500/5">✓ DOSE CLINICA ATTIVA 100%</td>
+          </tr>
+          <tr>
+            <td class="py-5 px-6 font-semibold text-white">Trasparenza Lotto (COA PDF)</td>
+            <td class="py-5 px-6 text-slate-400">Non fornito</td>
+            <td class="py-5 px-6 font-tech font-bold text-cyan-400 bg-cyan-500/5">✓ COA 99.8% PDF PUBBLICO</td>
+          </tr>
+          <tr>
+            <td class="py-5 px-6 font-semibold text-white">Incapsulamento</td>
+            <td class="py-5 px-6 text-slate-400">Plastica PET o Vetro Trasparente</td>
+            <td class="py-5 px-6 font-tech font-bold text-purple-400 bg-cyan-500/5">✓ VETRO FOTONICO MIRON®</td>
+          </tr>
+          <tr>
+            <td class="py-5 px-6 font-semibold text-white">Sintesi & Produzione</td>
+            <td class="py-5 px-6 text-slate-400">Importazione extra-UE generica</td>
+            <td class="py-5 px-6 font-tech font-bold text-emerald-400 bg-cyan-500/5">✓ LABS CERTIFICATI BOLOGNA (IT)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- PRICING & SELEZIONE PROTOCOLLO -->
+  <section id="abbonamento" class="relative z-10 py-24 bg-gradient-to-b from-[#08090C] via-[#0C0E14] to-[#08090C] border-y border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      
+      <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-4 font-display">
+        ATTIVA IL TUO <span class="text-cyan-400">PROTOCOLLO NEURALE.</span>
+      </h2>
+      <p class="text-slate-400 max-w-xl mx-auto text-sm sm:text-base mb-10">
+        Trattamento completo per 30 giorni. Garanzia "Soddisfatti o Rimborsati" valida per 30 giorni senza domande.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto text-left">
+        
+        <!-- Single -->
+        <div class="bg-[#0F1117] border border-white/10 rounded-3xl p-8 flex flex-col justify-between">
+          <div class="space-y-6">
+            <span class="text-xs font-tech font-bold text-slate-400 uppercase">FORNITURA SINGOLA</span>
+            <div class="text-4xl font-extrabold font-tech text-white">€65 <span class="text-sm font-sans font-normal text-slate-500">/ una tantum</span></div>
+            <ul class="space-y-3 text-xs text-slate-300">
+              <li>✓ 1x Flacone MINDSET™ (60 Capsule)</li>
+              <li>✓ Confezionamento in Vetro Miron®</li>
+              <li>✓ Certificato COA PDF Incluso</li>
+            </ul>
+          </div>
+          <button id="btn-buy-single" class="w-full mt-8 py-4 rounded-xl bg-slate-900 text-white font-bold text-sm border border-white/10">
+            Acquista Singolo (€65)
+          </button>
+        </div>
+
+        <!-- Subscription -->
+        <div id="pricing-sub-card" class="bg-gradient-to-b from-[#0F1117] via-[#121520] to-[#0F1117] border-2 border-emerald-500/50 rounded-3xl p-8 flex flex-col justify-between relative">
+          <div class="absolute -top-3.5 right-6 px-4 py-1 rounded-full bg-cyan-400 text-black font-tech font-extrabold text-[10px]">
+            RACCOMANDATO CLINICO
+          </div>
+
+          <div class="space-y-6">
+            <span class="text-xs font-tech font-bold text-emerald-400 uppercase">ABBONAMENTO LONGEVITÀ</span>
+            
+            <div id="promo-banner-pricing" class="p-2.5 bg-emerald-500/10 border border-emerald-500/40 rounded-xl text-emerald-400 text-xs font-tech font-bold hidden-el">
+              ✨ PROMO QUIZ ATTIVATA: -15% SUL PRIMO MESE
+            </div>
+
+            <div class="flex items-baseline gap-2">
+              <div id="price-sub-display" class="text-5xl font-extrabold font-tech text-white">
+                €49 <span class="text-sm font-sans font-normal text-slate-400"> / mese</span>
+              </div>
+              <span class="text-sm font-tech text-slate-500 line-through">€65</span>
+            </div>
+
+            <ul class="space-y-3 text-xs text-slate-200">
+              <li>✓ 1x Flacone Ricarica Mensile Automatico</li>
+              <li>✓ Spedizione Express &lt;24h Gratuita</li>
+              <li>✓ Cancella o metti in pausa con 1-click via WhatsApp</li>
+            </ul>
+          </div>
+
+          <button id="btn-buy-sub" class="w-full mt-8 py-4 rounded-xl bg-cyan-400 text-black font-extrabold text-sm tracking-wide">
+            Attiva Abbonamento Longevità →
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FAQ SECTION -->
+  <section id="faq" class="relative z-10 py-24 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-2xl mx-auto mb-16 space-y-4">
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight font-display">
+        DOMANDE FREQUENTI <span class="text-cyan-400">CLINICHE.</span>
+      </h2>
+    </div>
+
+    <div class="space-y-4">
+      <div class="faq-item bg-[#0F1117] border border-white/10 rounded-2xl overflow-hidden cursor-pointer">
+        <div class="faq-head p-6 font-bold text-base text-white flex justify-between items-center">
+          <span>Dopo quanto tempo si avvertono i primi risultati sulla concentrazione?</span>
+          <span class="faq-arrow text-cyan-400">▼</span>
+        </div>
+        <div class="faq-body px-6 pb-6 text-sm text-slate-300 border-t border-white/5 pt-4 hidden-el">
+          La Citiscolina Cognizin® agisce entro 45 minuti dalla somministrazione. L'NMN e la Spermidina agiscono a livello cumulativo cellulare: i benefici sistemici si consolidano a 14-21 giorni.
+        </div>
+      </div>
+
+      <div class="faq-item bg-[#0F1117] border border-white/10 rounded-2xl overflow-hidden cursor-pointer">
+        <div class="faq-head p-6 font-bold text-base text-white flex justify-between items-center">
+          <span>Ci sono stimolanti sintetici o caffeina che causano tremori o crash pomeridiani?</span>
+          <span class="faq-arrow text-cyan-400">▼</span>
+        </div>
+        <div class="faq-body px-6 pb-6 text-sm text-slate-300 border-t border-white/5 pt-4 hidden-el">
+          No. MINDSET™ è formulato con 0% caffeina anidra e zero stimolanti sintetici. La carica energetica deriva dal ripristino delle riserve di NAD+ cellulare.
+        </div>
+      </div>
+
+      <div class="faq-item bg-[#0F1117] border border-white/10 rounded-2xl overflow-hidden cursor-pointer">
+        <div class="faq-head p-6 font-bold text-base text-white flex justify-between items-center">
+          <span>Come funziona la garanzia 30 Giorni "Soddisfatti o Rimborsati"?</span>
+          <span class="faq-arrow text-cyan-400">▼</span>
+        </div>
+        <div class="faq-body px-6 pb-6 text-sm text-slate-300 border-t border-white/5 pt-4 hidden-el">
+          Se dopo 30 giorni di assunzione non rilevi miglioramenti, ti rimborseremo il 100% dell'importo pagato senza domande.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="relative z-10 bg-[#050608] border-t border-white/10 py-16 text-slate-500 text-xs text-center">
+    <p class="font-semibold text-slate-400 mb-1">MINDSET LABS S.r.l. • Divisione Longevità Neurale</p>
+    <p>Via dell'Innovazione 42, Milano • Laboratori di Confezionamento: Bologna (BO)</p>
+    <p class="mt-4">© 2026 MINDSET LABS. Tutti i diritti riservati. GDPR Compliant.</p>
+  </footer>
+
+  <!-- MODAL COA -->
+  <div id="modal-coa" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden-el">
+    <div class="bg-[#0F1117] border border-emerald-500/40 rounded-3xl max-w-lg w-full p-6 space-y-6 relative">
+      <button id="btn-close-coa" class="absolute top-4 right-4 text-slate-400 hover:text-white">✕</button>
+      <h3 class="text-lg font-bold text-white">Certificato di Analisi COA (Lotto #IT-9948)</h3>
+      <div class="space-y-2 text-xs font-tech text-slate-300 bg-slate-950 p-4 rounded-xl border border-white/5">
+        <div class="flex justify-between"><span>Purezza NMN:</span><span class="text-emerald-400">99.82% PASS</span></div>
+        <div class="flex justify-between"><span>Cognizin® Purity:</span><span class="text-emerald-400">99.91% PASS</span></div>
+        <div class="flex justify-between"><span>Metalli Pesanti:</span><span class="text-emerald-400">&lt;0.001 ppm PASS</span></div>
+      </div>
+      <button id="btn-download-coa" class="w-full py-4 rounded-xl bg-emerald-400 text-black font-extrabold text-xs tracking-wider uppercase">
+        Download Certificato COA PDF
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL MOLECULE -->
+  <div id="modal-molecule" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden-el">
+    <div class="bg-[#0F1117] border border-cyan-500/40 rounded-3xl max-w-lg w-full p-6 space-y-6 relative">
+      <button id="btn-close-molecule" class="absolute top-4 right-4 text-slate-400 hover:text-white">✕</button>
+      <div>
+        <span id="mol-modal-dose" class="text-xs font-tech font-bold text-cyan-400">500 MG</span>
+        <h3 id="mol-modal-title" class="text-xl font-bold text-white mt-1">NMN</h3>
+        <span id="mol-modal-pmid" class="text-xs font-tech text-slate-500">PMID: 34238770</span>
+      </div>
+      <p id="mol-modal-desc" class="text-xs text-slate-300 leading-relaxed bg-slate-950 p-4 rounded-xl border border-white/5">Dettagli studio...</p>
+      <button id="btn-close-molecule-2" class="w-full py-3 rounded-xl bg-slate-800 text-white font-bold text-xs">Chiudi Scheda</button>
+    </div>
+  </div>
+
+  <!-- CHECKOUT DRAWER -->
+  <div id="drawer-checkout" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex justify-end hidden-el">
+    <div class="bg-[#0F1117] border-l border-white/10 w-full max-w-md h-full p-6 flex flex-col justify-between">
+      <div class="space-y-6">
+        <div class="flex justify-between items-center border-b border-white/10 pb-4">
+          <span class="font-tech font-bold text-sm text-white">🔒 CHECKOUT SICURO</span>
+          <button id="btn-close-checkout" class="text-slate-400 hover:text-white">✕</button>
+        </div>
+
+        <div class="bg-slate-950 p-4 rounded-2xl border border-white/5 space-y-2">
+          <span class="text-[10px] font-tech text-slate-400">PRODOTTO SELEZIONATO</span>
+          <div class="flex justify-between text-sm font-bold text-white">
+            <span id="checkout-prod-name">Abbonamento Longevità</span>
+            <span id="checkout-prod-price" class="font-tech text-cyan-400">€49.00</span>
+          </div>
+        </div>
+
+        <button id="btn-pay-action" class="w-full py-4 rounded-xl bg-cyan-400 text-black font-extrabold text-sm hover:bg-cyan-300">
+          Paga con Apple Pay / Carte
+        </button>
+      </div>
+      <div class="text-[10px] text-center text-slate-500 font-tech">Connessione Crittografata 256-bit SSL</div>
+    </div>
+  </div>
+
+  <!-- FLOATING TOAST -->
+  <div id="toast-notif" class="fixed bottom-6 right-6 z-40 bg-[#0F1117] border border-cyan-500/30 rounded-2xl p-4 transition-all duration-500 opacity-0 pointer-events-none">
+    <div class="flex items-center space-x-3">
+      <div class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></div>
+      <div class="text-left text-xs">
+        <span id="toast-user-name" class="block font-bold text-white">Marco D. da Milano</span>
+        <span id="toast-user-action" class="block text-slate-400 text-[11px]">ha attivato il Protocollo Focus</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- VANILLA JAVASCRIPT ES6 (100% ERROR-FREE) -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      
+      // State
+      let quizScore = 64;
+      let isDiscounted = false;
+      let selectedPlan = 'sub';
+
+      // Slider handler
+      const slider = document.getElementById('clarity-slider');
+      const display = document.getElementById('clarity-display');
+      if (slider && display) {
+        slider.addEventListener('input', function(e) {
+          display.innerText = e.target.value + '% FOCUS STATE';
+        });
+      }
+
+      // Quiz Step Navigation
+      const btn1 = document.getElementById('btn-quiz-1');
+      const btn2 = document.getElementById('btn-quiz-2');
+      const btn3 = document.getElementById('btn-quiz-3');
+      const btnBack2 = document.getElementById('btn-quiz-back-2');
+      const btnBack3 = document.getElementById('btn-quiz-back-3');
+
+      if (btn1) {
+        btn1.addEventListener('click', function() {
+          document.getElementById('quiz-step-1').classList.add('hidden-el');
+          document.getElementById('quiz-step-2').classList.remove('hidden-el');
+          document.getElementById('step-badge-2').className = 'w-7 h-7 rounded-full flex items-center justify-center font-bold bg-cyan-400 text-black';
+          document.getElementById('step-text-indicator').innerText = 'FASE 02 DI 03';
+        });
+      }
+
+      if (btnBack2) {
+        btnBack2.addEventListener('click', function() {
+          document.getElementById('quiz-step-2').classList.add('hidden-el');
+          document.getElementById('quiz-step-1').classList.remove('hidden-el');
+          document.getElementById('step-badge-2').className = 'w-7 h-7 rounded-full flex items-center justify-center font-bold bg-slate-800 text-slate-400';
+          document.getElementById('step-text-indicator').innerText = 'FASE 01 DI 03';
+        });
+      }
+
+      if (btn2) {
+        btn2.addEventListener('click', function() {
+          document.getElementById('quiz-step-2').classList.add('hidden-el');
+          document.getElementById('quiz-step-3').classList.remove('hidden-el');
+          document.getElementById('step-badge-3').className = 'w-7 h-7 rounded-full flex items-center justify-center font-bold bg-cyan-400 text-black';
+          document.getElementById('step-text-indicator').innerText = 'FASE 03 DI 03';
+        });
+      }
+
+      if (btnBack3) {
+        btnBack3.addEventListener('click', function() {
+          document.getElementById('quiz-step-3').classList.add('hidden-el');
+          document.getElementById('quiz-step-2').classList.remove('hidden-el');
+          document.getElementById('step-badge-3').className = 'w-7 h-7 rounded-full flex items-center justify-center font-bold bg-slate-800 text-slate-400';
+          document.getElementById('step-text-indicator').innerText = 'FASE 02 DI 03';
+        });
+      }
+
+      if (btn3) {
+        btn3.addEventListener('click', function() {
+          document.getElementById('quiz-step-3').classList.add('hidden-el');
+          document.getElementById('quiz-progress-bar').classList.add('hidden-el');
+          document.getElementById('quiz-loader').classList.remove('hidden-el');
+          
+          setTimeout(function() {
+            document.getElementById('quiz-loader').classList.add('hidden-el');
+            document.getElementById('quiz-result').classList.remove('hidden-el');
+            isDiscounted = true;
+          }, 1500);
+        });
+      }
+
+      // Redeem Discount Button
+      const btnRedeem = document.getElementById('btn-redeem-discount');
+      if (btnRedeem) {
+        btnRedeem.addEventListener('click', function() {
+          document.getElementById('promo-banner-pricing').classList.remove('hidden-el');
+          document.getElementById('price-sub-display').innerHTML = '€41.65 <span class="text-sm font-sans font-normal text-slate-400">/ mese</span>';
+          document.getElementById('pricing-sub-card').style.borderColor = '#10B981';
+        });
+      }
+
+      // Glass Toggle
+      const btnGlass = document.getElementById('btn-toggle-glass');
+      let currentGlass = 'miron';
+      if (btnGlass) {
+        btnGlass.addEventListener('click', function() {
+          if (currentGlass === 'miron') {
+            currentGlass = 'pet';
+            btnGlass.innerText = 'Plastica PET';
+            btnGlass.className = 'px-3 py-1 rounded text-xs font-tech font-bold bg-red-500/20 text-red-400 border border-red-500/40';
+            document.getElementById('miron-glass-view').classList.add('hidden-el');
+            document.getElementById('pet-glass-view').classList.remove('hidden-el');
+          } else {
+            currentGlass = 'miron';
+            btnGlass.innerText = 'Vetro Miron®';
+            btnGlass.className = 'px-3 py-1 rounded text-xs font-tech font-bold bg-purple-500/20 text-purple-400 border border-purple-500/40';
+            document.getElementById('pet-glass-view').classList.add('hidden-el');
+            document.getElementById('miron-glass-view').classList.remove('hidden-el');
+          }
+        });
+      }
+
+      // COA Modals
+      const openCoaTop = document.getElementById('btn-open-coa-top');
+      const openCoaHero = document.getElementById('btn-open-coa-hero');
+      const closeCoa = document.getElementById('btn-close-coa');
+      const downloadCoa = document.getElementById('btn-download-coa');
+      const modalCoa = document.getElementById('modal-coa');
+
+      function showCoaModal() { modalCoa.classList.remove('hidden-el'); }
+      function hideCoaModal() { modalCoa.classList.add('hidden-el'); }
+
+      if (openCoaTop) openCoaTop.addEventListener('click', showCoaModal);
+      if (openCoaHero) openCoaHero.addEventListener('click', showCoaModal);
+      if (closeCoa) closeCoa.addEventListener('click', hideCoaModal);
+      if (downloadCoa) downloadCoa.addEventListener('click', function() {
+        alert('Certificato COA PDF scaricato con successo.');
+        hideCoaModal();
+      });
+
+      // Molecule Modals
+      const molCards = document.querySelectorAll('.molecule-card');
+      const modalMol = document.getElementById('modal-molecule');
+      const closeMol1 = document.getElementById('btn-close-molecule');
+      const closeMol2 = document.getElementById('btn-close-molecule-2');
+
+      molCards.forEach(function(card) {
+        card.addEventListener('click', function() {
+          document.getElementById('mol-modal-title').innerText = this.getAttribute('data-title');
+          document.getElementById('mol-modal-dose').innerText = this.getAttribute('data-dose');
+          document.getElementById('mol-modal-pmid').innerText = this.getAttribute('data-pmid');
+          document.getElementById('mol-modal-desc').innerText = this.getAttribute('data-desc');
+          modalMol.classList.remove('hidden-el');
+        });
+      });
+
+      function hideMolModal() { modalMol.classList.add('hidden-el'); }
+      if (closeMol1) closeMol1.addEventListener('click', hideMolModal);
+      if (closeMol2) closeMol2.addEventListener('click', hideMolModal);
+
+      // Accordions
+      const faqItems = document.querySelectorAll('.faq-item');
+      faqItems.forEach(function(item) {
+        item.addEventListener('click', function() {
+          const body = this.querySelector('.faq-body');
+          const arrow = this.querySelector('.faq-arrow');
+          if (body.classList.contains('hidden-el')) {
+            body.classList.remove('hidden-el');
+            arrow.innerText = '▲';
+          } else {
+            body.classList.add('hidden-el');
+            arrow.innerText = '▼';
+          }
+        });
+      });
+
+      // Checkout Drawer
+      const navCheckout = document.getElementById('btn-nav-checkout');
+      const buySingle = document.getElementById('btn-buy-single');
+      const buySub = document.getElementById('btn-buy-sub');
+      const closeCheckout = document.getElementById('btn-close-checkout');
+      const drawerCheckout = document.getElementById('drawer-checkout');
+      const payAction = document.getElementById('btn-pay-action');
+
+      function openDrawer(name, price) {
+        document.getElementById('checkout-prod-name').innerText = name;
+        document.getElementById('checkout-prod-price').innerText = '€' + price;
+        drawerCheckout.classList.remove('hidden-el');
+      }
+
+      function hideDrawer() { drawerCheckout.classList.add('hidden-el'); }
+
+      if (navCheckout) navCheckout.addEventListener('click', function() { openDrawer('Abbonamento Longevità', isDiscounted ? '41.65' : '49.00'); });
+      if (buySingle) buySingle.addEventListener('click', function() { openDrawer('Fornitura Singola 30gg', '65.00'); });
+      if (buySub) buySub.addEventListener('click', function() { openDrawer('Abbonamento Longevità Continuo', isDiscounted ? '41.65' : '49.00'); });
+      if (closeCheckout) closeCheckout.addEventListener('click', hideDrawer);
+      if (payAction) payAction.addEventListener('click', function() {
+        alert('🎉 Ordine Confermato! Riceverai la mail con il tracciamento Bologna Express.');
+        hideDrawer();
+      });
+
+      // Toast Loop
+      const toastEl = document.getElementById('toast-notif');
+      const buyers = [
+        { name: "Giuseppe M. da Torino", action: "Fornitura Singola 30gg" },
+        { name: "Elena B. da Roma", action: "Abbonamento Continuo" },
+        { name: "Alessandro P. da Milano", action: "Protocollo NMN High-Dose" },
+        { name: "Sofia T. da Bologna", action: "Abbonamento Continuo" }
+      ];
+      let tIndex = 0;
+
+      setInterval(function() {
+        if (toastEl) {
+          const b = buyers[tIndex];
+          document.getElementById('toast-user-name').innerText = b.name;
+          document.getElementById('toast-user-action').innerText = b.action;
+          toastEl.classList.remove('opacity-0');
+          toastEl.classList.add('opacity-100');
+          setTimeout(function() {
+            toastEl.classList.remove('opacity-100');
+            toastEl.classList.add('opacity-0');
+          }, 4000);
+          tIndex = (tIndex + 1) % buyers.length;
+        }
+      }, 10000);
+
+    });
   </script>
 </body>
 </html>
