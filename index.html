@@ -26,7 +26,6 @@
       overflow-x: hidden;
     }
 
-    /* Ambient Lighting Background */
     .glow-bg {
       position: absolute;
       top: -100px;
@@ -75,7 +74,7 @@
       font-weight: 600;
     }
 
-    /* Hero Section - Asymmetric Layout */
+    /* Hero Section */
     .hero-container {
       position: relative;
       z-index: 10;
@@ -130,7 +129,6 @@
       margin-bottom: 40px;
     }
 
-    /* Proof Metrics Strip */
     .proof-strip {
       display: flex;
       gap: 32px;
@@ -186,11 +184,6 @@
       border-color: rgba(255,255,255,0.2);
     }
 
-    .option-btn.selected {
-      border-color: var(--accent-emerald);
-      background: rgba(16, 185, 129, 0.05);
-    }
-
     .btn-action {
       width: 100%;
       padding: 16px;
@@ -207,7 +200,121 @@
 
     .btn-action:hover { opacity: 0.9; }
 
-    /* Clean Footer */
+    /* Sections Shared */
+    .section-container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 100px 24px;
+      border-top: 1px solid var(--surface-border);
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 60px auto;
+    }
+
+    .section-header h2 {
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+      color: #FFF;
+    }
+
+    .section-header p {
+      font-size: 15px;
+      color: var(--accent-silver);
+    }
+
+    /* Formula Grid */
+    .formula-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+
+    .formula-card {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: 16px;
+      padding: 28px;
+      transition: transform 0.2s ease;
+    }
+
+    .formula-card:hover { transform: translateY(-4px); }
+    .formula-dose { font-size: 12px; color: var(--accent-emerald); font-family: monospace; margin-bottom: 8px; }
+    .formula-title { font-size: 18px; font-weight: 600; color: #FFF; margin-bottom: 12px; }
+    .formula-desc { font-size: 13px; color: var(--accent-silver); line-height: 1.6; }
+
+    /* Comparison Table */
+    .table-wrapper {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    th, td {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--surface-border);
+    }
+
+    th { color: var(--text-muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+    td strong { color: #FFF; }
+    .check-highlight { color: var(--accent-emerald); font-weight: 700; }
+
+    /* Pricing Section */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 768px) { .pricing-grid { grid-template-columns: 1fr; } }
+
+    .price-card {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: 20px;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .price-card.featured {
+      border-color: var(--accent-emerald);
+      background: rgba(16, 185, 129, 0.03);
+    }
+
+    .badge-pop {
+      position: absolute;
+      top: -12px;
+      right: 24px;
+      background: var(--accent-emerald);
+      color: #000;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 100px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .price-val { font-size: 42px; font-weight: 700; color: #FFF; margin: 16px 0; }
+    .price-val span { font-size: 14px; color: var(--text-muted); font-weight: 400; }
+
     footer {
       padding: 40px;
       text-align: center;
@@ -223,6 +330,7 @@
 
   <div class="glow-bg"></div>
 
+  <!-- NAVBAR -->
   <nav>
     <div class="brand">
       <div class="brand-dot"></div>
@@ -231,9 +339,8 @@
     <div class="nav-tag">Protocollo Longevità 2026 • IT</div>
   </nav>
 
+  <!-- HERO SECTION -->
   <section class="hero-container">
-    
-    <!-- Left Editorial Column -->
     <div class="hero-text">
       <div class="meta-badge">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -262,14 +369,13 @@
       </div>
     </div>
 
-    <!-- Right Calculator Column -->
+    <!-- CALCULATOR -->
     <div class="calc-card">
       <div class="calc-header">
         <span class="calc-title">Diagnosi Biometrica Cognitiva</span>
         <span class="calc-step-indicator" id="step-num">01 / 03</span>
       </div>
 
-      <!-- Step 1 -->
       <div id="q1">
         <p style="font-size: 15px; color: var(--accent-silver); margin-bottom: 20px;">Come definisci la tua lucidità mentale dopo le prime 3 ore di lavoro?</p>
         <button class="option-btn" onclick="nextStep(1, 15)">
@@ -286,7 +392,6 @@
         </button>
       </div>
 
-      <!-- Step 2 -->
       <div id="q2" class="hidden">
         <p style="font-size: 15px; color: var(--accent-silver); margin-bottom: 20px;">Quante ore di sonno profondo (fase REM) registri abitualmente?</p>
         <button class="option-btn" onclick="nextStep(2, 10)">
@@ -303,7 +408,6 @@
         </button>
       </div>
 
-      <!-- Step 3 -->
       <div id="q3" class="hidden">
         <p style="font-size: 15px; color: var(--accent-silver); margin-bottom: 20px;">Qual è la tua priorità biologica nei prossimi 90 giorni?</p>
         <button class="option-btn" onclick="finishCalc(15)">
@@ -316,7 +420,6 @@
         </button>
       </div>
 
-      <!-- Result State -->
       <div id="result" class="hidden">
         <div style="text-align: center; padding: 10px 0;">
           <span style="font-size: 12px; color: var(--accent-emerald); text-transform: uppercase; letter-spacing: 0.1em;">Profilo Calcolato</span>
@@ -325,11 +428,112 @@
           <button class="btn-action" onclick="alert('Accesso alla formulazione riservata attivato.')">Richiedi Protocollo Personalizzato</button>
         </div>
       </div>
-
     </div>
-
   </section>
 
+  <!-- FORMULA BREAKDOWN SECTION -->
+  <section class="section-container">
+    <div class="section-header">
+      <h2>Scomposizione Clinica</h2>
+      <p>Ogni lotto è sintetizzato con molecole pure a livello farmaceutico e dosaggi clinicamente attivi.</p>
+    </div>
+
+    <div class="formula-grid">
+      <div class="formula-card">
+        <div class="formula-dose">500 MG • CLINIC DOSE</div>
+        <div class="formula-title">NMN (Nicotinamide Mononucleotide)</div>
+        <div class="formula-desc">Precursore diretto del NAD+. Ripara i mitocondri cellulari e stimola la produzione di energia a livello neurale.</div>
+      </div>
+      <div class="formula-card">
+        <div class="formula-dose">250 MG • HIGH PURITY</div>
+        <div class="formula-title">Citiscolina (Cognizin®)</div>
+        <div class="formula-desc">Aumenta la sintesi dei fosfolipidi nelle membrane cerebrali, migliorando la memoria di lavoro e la velocità di elaborazione.</div>
+      </div>
+      <div class="formula-card">
+        <div class="formula-dose">300 MG • STANDARDIZED 50%</div>
+        <div class="formula-title">Bacopa Monnieri</div>
+        <div class="formula-desc">Adattogeno clinico che riduce la risposta al cortisolo e protegge i neuroni dallo stress ossidativo continuativo.</div>
+      </div>
+      <div class="formula-card">
+        <div class="formula-dose">10 MG • AUTOPHAGY ACTUATOR</div>
+        <div class="formula-title">Spermidina Biologica</div>
+        <div class="formula-desc">Attiva il processo naturale di autofagia, rimuovendo le componenti cellulari danneggiate e favorendo la longevità.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARISON TABLE SECTION -->
+  <section class="section-container">
+    <div class="section-header">
+      <h2>Confronto Tecnico</h2>
+      <p>Perché la maggior parte dei prodotti da farmacia non ottiene risultati misurabili.</p>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Caratteristica</th>
+            <th>Integratori Generici</th>
+            <th>MINDSET™ Protocol</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Dosaggio Principi Attivi</td>
+            <td style="color: var(--text-muted);">Sottodosati (&lt; 30% della dose clinica)</td>
+            <td class="check-highlight">Dose Clinica 100% Attiva</td>
+          </tr>
+          <tr>
+            <td>Trasparenza del Lotto</td>
+            <td style="color: var(--text-muted);">Non fornita</td>
+            <td class="check-highlight">Certificato di Analisi in PDF</td>
+          </tr>
+          <tr>
+            <td>Biodisponibilità</td>
+            <td style="color: var(--text-muted);">Bassa (Assorbimento epatico scarso)</td>
+            <td class="check-highlight">Incapsulamento Fotonico Miron®</td>
+          </tr>
+          <tr>
+            <td>Produzione</td>
+            <td style="color: var(--text-muted);">Importazione extra-UE generica</td>
+            <td class="check-highlight">Laboratori Certificati a Bologna</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- PRICING & SUBSCRIPTION SECTION -->
+  <section class="section-container">
+    <div class="section-header">
+      <h2>Inizia il tuo Protocollo</h2>
+      <p>Scegli la modalità di somministrazione più adatta al tuo stile di vita.</p>
+    </div>
+
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div>
+          <span style="font-size: 13px; color: var(--text-muted); font-weight: 600;">FORNITURA SINGOLA</span>
+          <div class="price-val">€65 <span>/ 30 Giorni</span></div>
+          <p style="font-size: 13px; color: var(--accent-silver); margin-bottom: 24px;">Un solo flacone di MINDSET™ Focus & Longevity. Spedizione gratuita inclusa.</p>
+        </div>
+        <button class="option-btn" style="justify-content: center; font-weight: 600;" onclick="alert('Checkout Fornitura Singola attivato.')">Ordina Ora</button>
+      </div>
+
+      <div class="price-card featured">
+        <div class="badge-pop">Più Scelto</div>
+        <div>
+          <span style="font-size: 13px; color: var(--accent-emerald); font-weight: 600;">ABBONAMENTO CONTINUO</span>
+          <div class="price-val">€49 <span>/ mese</span></div>
+          <p style="font-size: 13px; color: var(--accent-silver); margin-bottom: 24px;">Rinnovo automatico ogni 30 giorni. Sconto del 25% permanente e disdetta in 1 click.</p>
+        </div>
+        <button class="btn-action" onclick="alert('Checkout Abbonamento attivato.')">Attiva Protocollo Ricorsivo</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
   <footer>
     © 2026 MINDSET LABS S.r.l. • Via dell'Innovazione, Milano • Tutti i diritti riservati.
   </footer>
