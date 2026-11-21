@@ -1,6 +1,6 @@
 # Scardinare il sistema tecnologico – Lezione in classe
 
-Trascrizione dell’audio `scardinare-il-sistema-tecnologico.mp3`: il professore spiega a Giulia *Scardinare il sistema tecnologico* di Vadim Zeland (Macro Edizioni, 2021; prima edizione italiana *Scardinare il sistema tecnogeno*, 2013).
+Trascrizione dell’audio `04-scardinare-il-sistema-tecnologico.mp3`: il professore spiega a Giulia *Scardinare il sistema tecnologico* di Vadim Zeland (Macro Edizioni, 2021; prima edizione italiana *Scardinare il sistema tecnogeno*, 2013).
 
 **Prof:** Ciao Giulia. Hai una faccia da investigatrice, oggi.
 

@@ -1,6 +1,6 @@
 # Il proiettore – Lezione in classe
 
-Trascrizione dell’audio `il-proiettore.mp3`: il professore spiega a Giulia *Il proiettore. Il diario del transurfing* di Vadim Zeland (Macro Edizioni, 2016).
+Trascrizione dell’audio `05-il-proiettore.mp3`: il professore spiega a Giulia *Il proiettore. Il diario del transurfing* di Vadim Zeland (Macro Edizioni, 2016).
 
 **Prof:** Ciao Giulia, entra pure. Cosa hai lì sotto il braccio?
 

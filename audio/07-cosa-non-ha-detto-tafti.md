@@ -1,6 +1,6 @@
 # Cosa non ha detto Tafti – Lezione in classe
 
-Trascrizione dell’audio `cosa-non-ha-detto-tafti.mp3`: il professore spiega a Giulia *Cosa non ha detto Tafti* di Vadim Zeland (OM edizioni, 2020).
+Trascrizione dell’audio `07-cosa-non-ha-detto-tafti.mp3`: il professore spiega a Giulia *Cosa non ha detto Tafti* di Vadim Zeland (OM edizioni, 2020).
 
 **Prof:** Ciao Giulia. Hai la faccia di chi è arrivato con una lista di domande.
 

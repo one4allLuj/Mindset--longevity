@@ -1,6 +1,6 @@
-# Reality Transurfing — Lezione in classe
+# Reality Transurfing – Lezione in classe
 
-Trascrizione dell’audio `reality-transurfing-lezione.mp3` (circa 12 minuti): un insegnante spiega a Giulia, la sua alunna, il libro *Reality Transurfing — Steps I-V* di Vadim Zeland.
+Trascrizione dell’audio `01-reality-transurfing.mp3` (circa 12 minuti): un insegnante spiega a Giulia, la sua alunna, il libro *Reality Transurfing — Steps I-V* di Vadim Zeland.
 
 **Prof:** Ciao Giulia, accomodati. Mi hai detto che volevi parlarmi di un libro.
 

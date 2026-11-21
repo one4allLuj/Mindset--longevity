@@ -1,6 +1,6 @@
 # Tafti la sacerdotessa – Lezione in classe
 
-Trascrizione dell’audio `tafti-la-sacerdotessa.mp3`: il professore spiega a Giulia *Tafti la sacerdotessa* di Vadim Zeland (OM edizioni, 2019).
+Trascrizione dell’audio `06-tafti-la-sacerdotessa.mp3`: il professore spiega a Giulia *Tafti la sacerdotessa* di Vadim Zeland (OM edizioni, 2019).
 
 **Prof:** Ciao Giulia, bentornata. Allora, come sono andati i compiti dell'ultima volta?
 

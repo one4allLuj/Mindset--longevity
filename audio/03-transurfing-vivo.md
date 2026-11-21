@@ -1,6 +1,6 @@
 # Transurfing vivo – Lezione in classe
 
-Trascrizione dell’audio `transurfing-vivo.mp3`: il professore spiega a Giulia *Transurfing vivo. Oltre i confini della Matrix* di Vadim Zeland (Macro Edizioni, 2021; prima edizione italiana 2012).
+Trascrizione dell’audio `03-transurfing-vivo.mp3`: il professore spiega a Giulia *Transurfing vivo. Oltre i confini della Matrix* di Vadim Zeland (Macro Edizioni, 2021; prima edizione italiana 2012).
 
 **Prof:** Ciao Giulia. Vedo che oggi hai portato un mattone.
 
