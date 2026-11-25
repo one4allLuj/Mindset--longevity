@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Respiro Libero | Seduta ipnotica per smettere di fumare · MINDSET LABS</title>
+  <meta name="description" content="Seduta di ipnosi guidata di 20–25 minuti per smettere di fumare senza forza di volontà, ispirata ai principi del libro «È facile smettere di fumare se sai come farlo».">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #08090C;
+      --bg2: #0C0E14;
+      --card: #0F1218;
+      --line: rgba(255,255,255,.08);
+      --line2: rgba(255,255,255,.16);
+      --text: #F1F5F9;
+      --soft: #CBD5E1;
+      --muted: #94A3B8;
+      --dim: #64748B;
+      --cyan: #22D3EE;
+      --cyan-soft: rgba(34,211,238,.10);
+      --teal: #5EEAD4;
+      --violet: #A78BFA;
+      --emerald: #34D399;
+      --amber: #FBBF24;
+      color-scheme: dark;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: "";
+      position: fixed; inset: 0;
+      background: radial-gradient(ellipse at top, rgba(8,51,68,.35), transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
+    .wrap { position: relative; z-index: 1; max-width: 1040px; margin: 0 auto; padding: 0 16px; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .display { font-family: 'Space Grotesk', sans-serif; }
+
+    /* Header */
+    .top { position: sticky; top: 0; z-index: 20; background: rgba(8,9,12,.82); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+    .top-in { display: flex; justify-content: space-between; align-items: center; height: 64px; gap: 12px; }
+    .brand { color: #fff; text-decoration: none; font-family: 'JetBrains Mono', monospace; font-weight: 600; letter-spacing: .08em; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+    .brand b { color: var(--cyan); font-size: 10px; padding: 2px 6px; border: 1px solid rgba(34,211,238,.3); border-radius: 4px; background: var(--cyan-soft); }
+    .tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; text-align: right; }
+
+    /* Hero */
+    .hero { padding: 64px 16px 48px; text-align: center; }
+    .badge { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--cyan); background: var(--cyan-soft); border: 1px solid rgba(34,211,238,.3); padding: 6px 14px; border-radius: 999px; margin-bottom: 22px; }
+    h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(34px, 7vw, 64px); line-height: 1.05; letter-spacing: -.02em; font-weight: 700; margin-bottom: 20px; }
+    .grad { background: linear-gradient(90deg, var(--cyan), var(--teal) 45%, var(--violet)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .lead { max-width: 660px; margin: 0 auto 32px; color: var(--soft); font-size: 18px; }
+    h2 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(26px, 4.4vw, 38px); line-height: 1.15; letter-spacing: -.01em; margin-bottom: 12px; }
+    .kicker { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--cyan); margin-bottom: 10px; }
+    .section { padding-top: 56px; padding-bottom: 56px; }
+    .section-head { max-width: 680px; margin-bottom: 28px; }
+    .section-head p { color: var(--muted); }
+
+    /* Buttons */
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font: inherit; font-weight: 600; font-size: 15px; color: var(--text); background: rgba(255,255,255,.05); border: 1px solid var(--line2); border-radius: 14px; padding: 12px 20px; cursor: pointer; text-decoration: none; transition: background .2s, border-color .2s, transform .15s; }
+    .btn:hover { background: rgba(255,255,255,.09); border-color: rgba(255,255,255,.28); }
+    .btn:active { transform: scale(.98); }
+    .btn:focus-visible, select:focus-visible, input:focus-visible, summary:focus-visible, .chap:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+    .btn.primary { background: linear-gradient(90deg, var(--cyan), var(--emerald)); color: #04110F; border: none; font-weight: 800; box-shadow: 0 0 28px rgba(34,211,238,.25); }
+    .btn.primary:hover { opacity: .92; }
+    .btn.big { min-width: 220px; padding: 16px 28px; font-size: 16px; border-radius: 999px; }
+    .btn.icon { width: 52px; height: 52px; padding: 0; border-radius: 50%; font-size: 22px; line-height: 1; }
+    .btn.ghost { background: transparent; border-color: transparent; color: var(--muted); font-weight: 500; font-size: 14px; padding: 8px 12px; }
+    .btn.ghost:hover { color: var(--text); background: rgba(255,255,255,.04); }
+
+    /* Cards */
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+    .card { background: rgba(255,255,255,.025); border: 1px solid var(--line); border-radius: 18px; padding: 22px; }
+    .card .num { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--cyan); margin-bottom: 8px; display: block; }
+    .card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 18px; margin-bottom: 6px; }
+    .card p { color: var(--muted); font-size: 15px; }
+    .card p strong { color: var(--text); }
+
+    /* Player */
+    .player { background: linear-gradient(180deg, #0E121A, #0A0C11); border: 1px solid var(--line); border-radius: 28px; padding: 36px 20px 28px; text-align: center; box-shadow: 0 30px 80px rgba(0,0,0,.6); }
+    .stage { position: relative; height: 230px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
+    .orb { position: relative; width: 190px; height: 190px; border-radius: 50%; transform: scale(.8); animation: breathe 10s ease-in-out infinite; animation-play-state: paused; }
+    .orb::before { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 50% 42%, rgba(167,243,235,.95), rgba(34,211,238,.55) 34%, rgba(139,92,246,.18) 64%, transparent 71%); box-shadow: 0 0 90px rgba(34,211,238,.28); }
+    .orb::after { content: ""; position: absolute; inset: -18px; border-radius: 50%; border: 1px solid rgba(94,234,212,.18); }
+    .player.playing .orb { animation-play-state: running; }
+    @keyframes breathe {
+      0%, 100% { transform: scale(.78); opacity: .72; }
+      40%, 50% { transform: scale(1.05); opacity: 1; }
+    }
+    .phase-label { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; min-height: 1.4em; }
+    .subtitle { font-family: 'Space Grotesk', sans-serif; font-size: clamp(20px, 3.4vw, 28px); line-height: 1.42; color: #E2E8F0; max-width: 700px; margin: 0 auto 26px; min-height: 4.3em; display: flex; align-items: center; justify-content: center; }
+    .subtitle.in { animation: fadein .9s ease; }
+    @keyframes fadein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+    .progress { height: 4px; background: rgba(255,255,255,.08); border-radius: 4px; overflow: hidden; max-width: 560px; margin: 0 auto; }
+    .bar { height: 100%; width: 0; background: linear-gradient(90deg, var(--cyan), var(--violet)); transition: width 1s ease; }
+    .time { display: flex; justify-content: space-between; max-width: 560px; margin: 8px auto 22px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--dim); }
+    .controls { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; }
+    .stop-row { margin-top: 10px; }
+    .settings { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 26px; margin-top: 24px; padding-top: 22px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); }
+    .settings label { display: inline-flex; align-items: center; gap: 10px; }
+    select { font: inherit; font-size: 14px; color: var(--text); background: #12161E; border: 1px solid var(--line2); border-radius: 10px; padding: 8px 10px; max-width: 260px; }
+    input[type=range] { accent-color: var(--cyan); width: 120px; }
+    input[type=checkbox] { accent-color: var(--cyan); width: 18px; height: 18px; }
+    output { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--soft); min-width: 3.4em; text-align: left; }
+    .note { font-size: 13px; color: var(--dim); margin-top: 14px; max-width: 620px; margin-left: auto; margin-right: auto; }
+    .streak { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 18px; font-size: 13px; color: var(--muted); flex-wrap: wrap; }
+    .dots { display: inline-flex; gap: 6px; }
+    .dots i { width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--line2); }
+    .dots i.on { background: var(--emerald); border-color: var(--emerald); box-shadow: 0 0 8px rgba(52,211,153,.5); }
+
+    /* Chapters */
+    .chapters { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 8px; margin-top: 18px; }
+    .chap { width: 100%; display: flex; align-items: baseline; gap: 10px; text-align: left; font: inherit; font-size: 14px; color: var(--soft); background: rgba(255,255,255,.02); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; cursor: pointer; transition: border-color .2s, background .2s; }
+    .chap:hover { border-color: rgba(34,211,238,.35); }
+    .chap .n { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--dim); min-width: 1.6em; }
+    .chap .t { flex: 1; }
+    .chap .m { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--dim); }
+    .chap.active { border-color: var(--cyan); background: var(--cyan-soft); color: #fff; }
+    .chap.active .n { color: var(--cyan); }
+
+    /* Script */
+    .script-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+    details { background: rgba(255,255,255,.02); border: 1px solid var(--line); border-radius: 18px; }
+    summary { cursor: pointer; padding: 18px 22px; font-weight: 600; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: "+"; font-family: 'JetBrains Mono', monospace; color: var(--cyan); font-size: 18px; }
+    details[open] summary::after { content: "–"; }
+    .script { padding: 4px 22px 26px; max-width: 760px; }
+    .script h3 { font-family: 'Space Grotesk', sans-serif; font-size: 19px; color: #fff; margin: 26px 0 10px; }
+    .script h3 span { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--cyan); margin-right: 8px; }
+    .script p { color: var(--soft); margin-bottom: 6px; }
+    .script .pausa { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--dim); white-space: nowrap; margin-left: 6px; }
+
+    /* Footer */
+    footer { border-top: 1px solid var(--line); padding: 36px 0 48px; color: var(--dim); font-size: 13px; }
+    footer p + p { margin-top: 10px; }
+    footer a { color: var(--muted); }
+    footer strong { color: var(--soft); }
+
+    @media (max-width: 560px) {
+      .hero { padding-top: 44px; }
+      .tag { display: none; }
+      .player { padding: 28px 14px 22px; border-radius: 22px; }
+      .stage { height: 200px; }
+      .orb { width: 160px; height: 160px; }
+      .btn.big { min-width: 0; flex: 1; }
+      .settings { flex-direction: column; align-items: stretch; }
+      .settings label { justify-content: space-between; }
+      select { max-width: 62vw; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .orb, .player.playing .orb { animation: none; transform: scale(.92); }
+      .subtitle.in { animation: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top">
+    <div class="wrap top-in">
+      <a href="index.html" class="brand">🧠 MINDSET <b>LABS</b></a>
+      <span class="tag">Seduta guidata · 20–25 min</span>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero wrap">
+    <p class="badge">Protocollo Respiro Libero</p>
+    <h1>Smetti di fumare.<br><span class="grad">Senza forza di volontà.</span></h1>
+    <p class="lead">
+      Una seduta di ipnosi guidata di 20–25 minuti, costruita sui principi del libro
+      <em>«È facile smettere di fumare se sai come farlo»</em>. L'idea centrale è semplice:
+      non stai rinunciando a niente. Stai uscendo da una trappola.
+    </p>
+    <a href="#seduta" class="btn primary big">Vai alla seduta</a>
+  </section>
+
+  <!-- PRIMA DI INIZIARE -->
+  <section class="section wrap" aria-labelledby="h-prima">
+    <div class="section-head">
+      <p class="kicker">Prima di iniziare</p>
+      <h2 id="h-prima">Tre cose da sapere</h2>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <span class="num">01</span>
+        <h3>Mezz'ora solo per te</h3>
+        <p>Un luogo tranquillo, una posizione comoda, meglio con le cuffie. <strong>Mai alla guida</strong> o mentre fai qualcosa che richiede attenzione.</p>
+      </div>
+      <div class="card">
+        <span class="num">02</span>
+        <h3>Non serve smettere prima</h3>
+        <p>Non devi ridurre né resistere prima della seduta. Tieni vicino il pacchetto e l'accendino: alla fine li butterai via.</p>
+      </div>
+      <div class="card">
+        <span class="num">03</span>
+        <h3>Ripetila per 7 giorni</h3>
+        <p>Ascoltala una volta al giorno per la prima settimana, idealmente la sera. Poi ogni volta che ne senti il bisogno.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLAYER -->
+  <section id="seduta" class="section wrap" aria-labelledby="h-seduta">
+    <div class="section-head">
+      <p class="kicker">La seduta</p>
+      <h2 id="h-seduta">Chiudi gli occhi quando la voce te lo chiede</h2>
+      <p>La luce respira lentamente: se vuoi, lascia che il tuo respiro la segua. Tieni lo schermo acceso e la pagina aperta fino alla fine.</p>
+    </div>
+
+    <div class="player" id="player">
+      <div class="stage" aria-hidden="true"><div class="orb"></div></div>
+      <p class="phase-label" id="phaseLabel"></p>
+      <p class="subtitle in" id="subtitle">Trova un luogo tranquillo, indossa le cuffie e premi «Avvia la seduta».</p>
+
+      <div class="progress" aria-hidden="true"><div class="bar" id="bar"></div></div>
+      <div class="time"><span id="tElapsed">0:00</span><span id="tTotal"></span></div>
+
+      <div class="controls">
+        <button class="btn icon" id="btnPrev" type="button" aria-label="Frase precedente" title="Frase precedente">‹</button>
+        <button class="btn primary big" id="btnPlay" type="button">Avvia la seduta</button>
+        <button class="btn icon" id="btnNext" type="button" aria-label="Frase successiva" title="Frase successiva">›</button>
+      </div>
+      <div class="stop-row"><button class="btn ghost" id="btnStop" type="button">↺ Ricomincia da capo</button></div>
+
+      <div class="settings">
+        <label>Voce <select id="selVoice" aria-label="Voce"></select></label>
+        <label>Velocità <input type="range" id="rngRate" min="0.7" max="1.1" step="0.05" value="0.85" aria-label="Velocità della voce"><output id="outRate">0.85×</output></label>
+        <label><input type="checkbox" id="chkAmbient"> Sottofondo di onde</label>
+      </div>
+      <p class="note" id="voiceNote"></p>
+
+      <div class="streak">
+        <span id="streakText">Ascolti completati: 0 di 7</span>
+        <span class="dots" id="dots" aria-hidden="true"></span>
+      </div>
+    </div>
+
+    <ol class="chapters" id="chapters" aria-label="Fasi della seduta"></ol>
+  </section>
+
+  <!-- DOPO LA SEDUTA -->
+  <section class="section wrap" aria-labelledby="h-dopo">
+    <div class="section-head">
+      <p class="kicker">Dopo la seduta</p>
+      <h2 id="h-dopo">Le prossime tre settimane</h2>
+      <p>Il metodo funziona se cambi il modo in cui guardi la sigaretta, non se stringi i denti. Queste sono le regole da tenere a mente.</p>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <span class="num">01</span>
+        <h3>Butta via tutto, subito</h3>
+        <p>Pacchetto, accendino, posacenere. Niente «scorta di emergenza»: tenerla significa che una parte di te crede ancora di rinunciare a qualcosa.</p>
+      </div>
+      <div class="card">
+        <span class="num">02</span>
+        <h3>Quando arriva il pensiero</h3>
+        <p>Non combatterlo e non pensare «non posso». Pensa: <strong>«Che bello: non ne ho più bisogno».</strong> Unisci pollice e indice e fai un respiro profondo.</p>
+      </div>
+      <div class="card">
+        <span class="num">03</span>
+        <h3>Il piccolo vuoto passa</h3>
+        <p>Il disagio fisico è lieve e cala in pochi giorni; in circa tre settimane anche l'abitudine perde forza. È il segnale che stai guarendo, non un pericolo.</p>
+      </div>
+      <div class="card">
+        <span class="num">04</span>
+        <h3>Non evitare la vita</h3>
+        <p>Caffè, cene, amici, giornate difficili: vivili da subito. Ogni situazione affrontata senza fumo ti dimostra che non ti serviva.</p>
+      </div>
+      <div class="card">
+        <span class="num">05</span>
+        <h3>Non esiste «solo una»</h3>
+        <p>Una sigaretta è tutto ciò che serve per richiudere la trappola. Non c'è niente da provare: la risposta è sempre «No, grazie. Non fumo».</p>
+      </div>
+      <div class="card">
+        <span class="num">06</span>
+        <h3>Nessun vuoto da riempire</h3>
+        <p>Non stai perdendo niente, quindi non servono dolci o snack al suo posto. Se segui una terapia su consiglio medico, continua a seguire le indicazioni del medico.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- COPIONE -->
+  <section id="copione" class="section wrap" aria-labelledby="h-copione">
+    <div class="section-head">
+      <p class="kicker">Il copione</p>
+      <h2 id="h-copione">Il testo completo della seduta</h2>
+      <p>Puoi leggerlo o registrarlo con la tua voce, o con quella di una persona di cui ti fidi: una voce umana, calma e lenta, funziona meglio di qualunque sintetizzatore. Le pause sono indicate tra parentesi.</p>
+    </div>
+    <div class="script-actions">
+      <button class="btn" id="btnDownload" type="button">⤓ Scarica il copione (.txt)</button>
+    </div>
+    <details>
+      <summary>Mostra il testo della seduta</summary>
+      <div class="script" id="scriptText"></div>
+    </details>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <p><strong>Avvertenze.</strong> Questa seduta è uno strumento di rilassamento e autosuggestione: non sostituisce il parere del medico né un percorso di cura. Non ascoltarla alla guida o mentre usi macchinari. Se soffri di disturbi psichiatrici o di epilessia, parlane prima con il tuo medico. Se assumi farmaci regolarmente, avvisa il medico che stai smettendo: smettere di fumare può modificare l'effetto di alcuni medicinali.</p>
+      <p><strong>Aiuto gratuito.</strong> Telefono Verde contro il Fumo dell'Istituto Superiore di Sanità: <a href="tel:800554088">800 554 088</a> · <a href="https://smettodifumare.iss.it" rel="noopener">smettodifumare.iss.it</a>, dove trovi anche i Centri Antifumo del Servizio Sanitario Nazionale.</p>
+      <p>Testo originale ispirato ai principi del metodo descritto da Allen Carr in «È facile smettere di fumare se sai come farlo». Non affiliato né approvato da Allen Carr's Easyway.</p>
+    </div>
+  </footer>
+
+  <script>
+  /* ------------------------------------------------------------------
+     COPIONE DELLA SEDUTA
+     Una riga = una frase. {n} alla fine = pausa di n secondi dopo la frase
+     (senza indicazione: 1,2 secondi). Il testo usa forme neutre, valide
+     per chiunque ascolti.
+  ------------------------------------------------------------------ */
+  const FASI = [
+    { titolo: 'Accoglienza', testo: `
+Ciao. Ti do il benvenuto in questa seduta. {2}
+Per i prossimi minuti non devi fare niente di speciale. {1.5}
+Non devi sforzarti. Non devi credere a niente. Non devi nemmeno decidere adesso di smettere. {2.5}
+Ti chiedo soltanto di ascoltare, con la stessa curiosità con cui si ascolta una bella storia. {2.5}
+Se arriva un pensiero, va bene così. Lascialo passare, come una nuvola, e torna alla mia voce. {2.5}
+E ricorda: sei tu ad avere il controllo, in ogni momento. Se ne hai bisogno, puoi aprire gli occhi e sarai subito vigile e presente. {3}
+` },
+    { titolo: 'Rilassamento', testo: `
+Trova una posizione comoda, seduta o sdraiata, con la schiena ben sostenuta. {3}
+Lascia che le mani si appoggino dove vogliono. {2.5}
+Ora scegli un punto davanti a te, un po' più in alto dei tuoi occhi, e guardalo. {3}
+Guardalo e basta, senza fare nient'altro. {4}
+Mentre lo guardi, forse ti accorgi che le palpebre diventano un po' più pesanti… {3}
+e quando sono pronte, possono chiudersi da sole. {5}
+Bene. {2}
+Fai un respiro lento e profondo. Dentro… {4}
+e fuori, piano, lasciando andare tutta l'aria. {4}
+Ancora una volta. Inspira… {4}
+ed espira, ancora più lentamente. {5}
+Un'ultima volta. Riempi i polmoni di aria pulita… {4}
+e mentre l'aria esce, lascia uscire con lei anche un po' di tensione. {5}
+Ora lascia che il respiro trovi da solo il suo ritmo. Non devi controllarlo: il tuo corpo sa respirare da sé. {4}
+Porta l'attenzione alla fronte, e lascia che si distenda, come se una mano gentile la lisciasse. {4}
+Gli occhi e le palpebre diventano morbidi, pesanti, in pace. {4}
+La mascella si scioglie. I denti si separano appena. La lingua riposa. {4}
+La calma scende nel collo… nelle spalle… e le spalle si abbassano, libere da un peso che non serve più portare. {5}
+Scende lungo le braccia, fino alle mani, fino alla punta delle dita. Forse le senti calde, o leggere, o pesanti. Qualunque sensazione va bene. {5}
+Il petto si muove piano, insieme al respiro. E ogni respiro ti porta un po' più giù, in una calma sempre più profonda. {5}
+La pancia si rilassa. La schiena si abbandona al suo appoggio. {4}
+La calma scende nelle gambe… nelle ginocchia… nei polpacci… fino ai piedi. {5}
+Ora tutto il corpo riposa, dalla testa ai piedi. {4}
+E ogni suono intorno a te, ogni rumore lontano, può soltanto aiutarti ad andare ancora più in profondità. {5}
+` },
+    { titolo: 'La discesa', testo: `
+Ora immagina di trovarti in cima a una scala. Una scala morbida, sicura, con dieci gradini che scendono verso un luogo di quiete. {4}
+Tra poco conterò da dieci a uno. A ogni numero scenderai un gradino, e a ogni gradino la calma diventerà più profonda. {4}
+Dieci… il primo passo. {3}
+Nove… sempre più giù. {3}
+Otto… il corpo pesante e comodo. {3}
+Sette… la mente si fa quieta. {3}
+Sei… lasci andare ogni preoccupazione. {3}
+Cinque… a metà strada, e sempre più in profondità. {3}
+Quattro… {3}
+Tre… la mia voce ti accompagna. {3}
+Due… quasi in fondo… {3}
+Uno. {3}
+Sei in fondo alla scala, in uno stato di rilassamento profondo, piacevole, sicuro. {5}
+` },
+    { titolo: 'Il tuo luogo sicuro', testo: `
+Davanti a te si apre un luogo in cui ti senti completamente al sicuro. Può essere una spiaggia, un bosco, una montagna, una stanza che conosci. Lascia che appaia da solo. {6}
+Guardati intorno. Nota i colori… la luce… {4}
+Ascolta i suoni di questo posto. {4}
+Senti la temperatura dell'aria sulla pelle. {4}
+E respira. Qui l'aria è limpida, fresca, pulita. Entra nei polmoni fino in fondo, e ogni respiro è un piacere. {6}
+Questo è il tuo posto. Qui puoi guardare la verità con calma, senza nessuna paura. {5}
+` },
+    { titolo: 'Niente a cui rinunciare', testo: `
+Mentre il corpo riposa, la parte più profonda e saggia di te può ascoltare alcune cose semplici. Cose che, in fondo, hai sempre saputo. {5}
+Per anni ti hanno fatto credere che smettere di fumare fosse difficile. Che servisse una forza di volontà enorme. Che avresti dovuto rinunciare a qualcosa di prezioso. {4}
+Ma questa idea nasce da un errore. {3}
+Non si può rinunciare a qualcosa che non ti ha mai dato niente. {5}
+Pensaci. Prima della tua primissima sigaretta stavi benissimo senza. Non ti mancava. Non ti serviva per rilassarti, né per concentrarti, né per goderti un caffè. {5}
+E ricordi il sapore di quella prima sigaretta? Il fumo che graffiava la gola. Forse la tosse, forse un po' di nausea. Il tuo corpo, saggio, ti stava dicendo la verità. {6}
+` },
+    { titolo: 'Come funziona la trappola', testo: `
+Ecco come funziona davvero la trappola. {3}
+La nicotina lascia il corpo in fretta. E quando se ne va, lascia dietro di sé una sensazione leggera: un piccolo vuoto, un'inquietudine, come un prurito che chiede di essere grattato. {5}
+È quello che possiamo chiamare il piccolo mostro. {3}
+Accendi una sigaretta, e quel vuoto si chiude. E per un attimo ti sembra di provare piacere. {4}
+Ma quel piacere è soltanto la fine di un fastidio. Un fastidio che era stata la sigaretta precedente a creare. {5}
+È come mettersi un sassolino nella scarpa, solo per il sollievo di toglierlo. {5}
+Ogni sigaretta non fa che riportarti, per qualche minuto, a come si sente sempre una persona che non fuma. {5}
+Chi non fuma vive in quella calma tutto il giorno. E non paga niente. {5}
+` },
+    { titolo: 'Il fumo si dirada', testo: `
+Allora perché sembra così difficile smettere? {3}
+Non per la nicotina. Quel vuoto fisico è debolissimo: così debole che ogni notte dormi per ore, senza che ti svegli. {5}
+La vera catena è un'altra. Sono le idee che ti hanno messo in testa. È il grande mostro. {4}
+L'idea che la sigaretta ti calmi. Che ti aiuti a concentrarti. Che riempia la noia. Che renda migliore un caffè, un pasto, una serata con gli amici. {5}
+Ascolta bene, adesso. {2}
+La sigaretta non toglie lo stress: ne aggiunge un po', ogni volta che il suo effetto svanisce. {4}
+Non ti aiuta a concentrarti: toglie soltanto la distrazione di quel vuoto che lei stessa ha creato. {4}
+E nelle pause, non è la sigaretta a farti bene. È la pausa stessa. Il respiro profondo. Il momento per te. E tutto questo puoi averlo, sempre, senza fumo. {5}
+Il caffè resta buono. Il pasto resta buono. Gli amici restano gli amici. Anzi: tutto ha più sapore, più profumo, più vita. {6}
+Ora, nel tuo luogo sicuro, immagina davanti a te una nuvola di fumo grigio. Dentro ci sono tutte le vecchie convinzioni: «mi rilassa», «mi aiuta», «senza non ce la faccio». {6}
+E adesso arriva un vento fresco, pulito. {3}
+Guarda il vento che spinge via il fumo, pezzo dopo pezzo… {4}
+il grigio si dirada… {3}
+e dietro appare un cielo limpido, luminoso. {4}
+Quello che rimane è la verità: non ti serve. Non ti è mai servita. {6}
+` },
+    { titolo: 'La porta aperta', testo: `
+Ora immagina una gabbia. Per anni ci hai vissuto dentro, credendo che la porta fosse chiusa a chiave. {4}
+Guarda bene quella porta. Non c'è nessuna serratura. Non c'è mai stata. {4}
+Allunga la mano. Spingi. {3}
+La porta si apre, senza nessuno sforzo. {3}
+Esci. {4}
+Senti l'aria sul viso. Lo spazio intorno a te. La leggerezza. {5}
+Non hai dovuto lottare. Non hai usato la forza di volontà. Hai soltanto visto la verità, e la verità ha aperto la porta. {6}
+` },
+    { titolo: 'I prossimi giorni', testo: `
+Nei prossimi giorni il tuo corpo eliminerà gli ultimi residui di nicotina. {3}
+Forse, ogni tanto, sentirai ancora quel piccolo vuoto. Quella vocina che dice: «una sigaretta». {4}
+Quando succede, non è un pericolo. È il segnale che stai guarendo. {4}
+È il piccolo mostro che si sta spegnendo, perché non lo nutri più. {4}
+Puoi osservarlo con un sorriso, come si guarda una candela che si consuma. {4}
+E dentro di te puoi dire: «Che bello: non ne ho più bisogno». {5}
+In pochi giorni quella vocina diventa più debole. Poi un sussurro. Poi silenzio. {5}
+E sai anche un'altra cosa, con assoluta chiarezza: non esiste «una sigaretta sola». {4}
+Una sola sigaretta è proprio il modo in cui la trappola si richiude. È così che ti ha trattenuto per tutto questo tempo. {4}
+Così, se un giorno qualcuno ti offrirà una sigaretta, o un pensiero ti suggerirà «solo questa», sorriderai, perché conosci la verità. E dirai, con leggerezza: «No, grazie. Non fumo». {6}
+` },
+    { titolo: 'Viaggio nel futuro', testo: `
+Ora lascia che la mente faccia un piccolo viaggio nel futuro. {3}
+È mattina. Ti svegli e respiri più a fondo. Bevi il caffè, e il suo aroma è più ricco che mai. Lo gusti, così com'è. {6}
+Ora è la fine di un buon pasto. Ti appoggi allo schienale con soddisfazione. Il pasto è completo così. Non manca niente. {6}
+Ora arriva un momento di stress: una scadenza, una discussione, un imprevisto. Fai un respiro profondo, la mente è lucida, e lo affronti meglio di come avresti fatto fumando. Perché adesso hai un problema in meno, non uno in più. {7}
+Ora sei in compagnia: amici, un bicchiere, risate. Qualcuno accende una sigaretta. Lo guardi senza invidia, anzi, con un po' di tenerezza. E ti godi la serata, completamente presente. {7}
+Ora è un momento di attesa, di noia. E ti accorgi che le mani sono tranquille, il respiro è calmo, e va bene così. {5}
+E intanto, giorno dopo giorno, il tuo corpo si ripulisce. Il sangue porta più ossigeno. Il respiro si allunga. Il gusto e l'olfatto si risvegliano. L'energia ritorna. {6}
+Ogni cellula del tuo corpo ti ringrazia. {5}
+` },
+    { titolo: 'La tua scelta', testo: `
+E adesso, nel tuo luogo sicuro, è il momento di una scelta semplice. Non un sacrificio: una liberazione. {4}
+Se senti che è giusto per te, ripeti dentro di te, con calma e con gioia: «Da adesso, non fumo più». {6}
+«Non rinuncio a niente. Mi riprendo tutto». {6}
+Senti la gioia che arriva? Non devi aspettare settimane per sentirti una persona libera. Lo sei già, da questo momento. {6}
+` },
+    { titolo: 'Il gesto della libertà', testo: `
+Ora fissiamo questa sensazione, così potrai ritrovarla quando vuoi. {3}
+Unisci delicatamente la punta del pollice e dell'indice di una mano. {4}
+Mentre le dita si toccano, senti tutta la leggerezza, la gioia, la libertà di questo momento… e lasciala crescere. {6}
+Fai un respiro profondo, e ripeti dentro di te: «Che bello: non ne ho più bisogno». {6}
+Bene. Ora puoi lasciare andare le dita. {3}
+Da adesso, ogni volta che unirai pollice e indice e farai un respiro profondo, questa sensazione tornerà, rapida e chiara. {5}
+Tutto quello che hai ascoltato oggi resta con te, e diventa ogni giorno più forte, anche quando non ci pensi. {4}
+Ogni volta che ti verrà in mente la sigaretta, non penserai «non posso». Penserai: «Che bello: non ne ho più bisogno». E sentirai sollievo. {5}
+Ogni respiro pulito ti ricorderà la tua scelta. E ogni giorno sarà più naturale, più facile, finché un giorno ti accorgerai di non pensarci più. {5}
+` },
+    { titolo: 'Risveglio', testo: `
+Ora è il momento di tornare, portando con te tutto quello che hai scoperto. {3}
+Conterò da uno a cinque. Al cinque aprirai gli occhi, con la mente lucida, piena di energia e di buon umore. {3}
+Uno… inizi a risalire, lentamente. {3}
+Due… senti di nuovo il peso del corpo, il contatto con la sedia o con il letto. {3}
+Tre… muovi un po' le dita delle mani e dei piedi. Il respiro si fa più vivace. {3}
+Quattro… l'energia sale, come in una mattina di sole. {3}
+Cinque. Apri gli occhi. Fai un bel respiro… ed eccoti qui. {3}
+Se hai vicino il pacchetto, prendilo e buttalo via, insieme all'accendino. Non con tristezza: con il sollievo di chi si toglie finalmente un sassolino dalla scarpa. {4}
+Questa è la tua nuova vita. Goditela. {2}
+` }
+  ];
+
+  /* ---------------- Preparazione dei segmenti ---------------- */
+  const SEG = [];
+  FASI.forEach((f, fi) => {
+    f.inizio = SEG.length;
+    f.testo.trim().split('\n').forEach(riga => {
+      riga = riga.trim();
+      if (!riga) return;
+      const m = riga.match(/^(.*?)\s*\{(\d+(?:\.\d+)?)\}$/);
+      SEG.push({ f: fi, t: m ? m[1] : riga, p: m ? parseFloat(m[2]) : 1.2 });
+    });
+    f.fine = SEG.length;
+  });
+
+  /* ---------------- Stato e preferenze ---------------- */
+  const $ = id => document.getElementById(id);
+  const player = $('player'), subtitle = $('subtitle'), phaseLabel = $('phaseLabel');
+  const bar = $('bar'), tElapsed = $('tElapsed'), tTotal = $('tTotal');
+  const btnPlay = $('btnPlay'), btnPrev = $('btnPrev'), btnNext = $('btnNext'), btnStop = $('btnStop');
+  const selVoice = $('selVoice'), rngRate = $('rngRate'), outRate = $('outRate'), chkAmbient = $('chkAmbient');
+  const voiceNote = $('voiceNote');
+
+  const STORE = 'respiroLibero.v1';
+  let prefs = {};
+  try { prefs = JSON.parse(localStorage.getItem(STORE)) || {}; } catch (e) { prefs = {}; }
+  if (!Array.isArray(prefs.days)) prefs.days = [];
+  function savePrefs() { try { localStorage.setItem(STORE, JSON.stringify(prefs)); } catch (e) {} }
+
+  const synth = ('speechSynthesis' in window) ? window.speechSynthesis : null;
+  let voices = [], voice = null;
+  let rate = (typeof prefs.rate === 'number' && prefs.rate >= 0.7 && prefs.rate <= 1.1) ? prefs.rate : 0.85;
+  let idx = 0, playing = false, timer = null, watchdog = null, currentU = null, wakeLock = null;
+  let cum = [];
+
+  /* ---------------- Tempi stimati ---------------- */
+  function speechSec(s) {
+    const words = s.t.split(/\s+/).length;
+    return words / (2.6 * rate) + 0.5;
+  }
+  function recomputeTimes() {
+    cum = [0];
+    SEG.forEach((s, i) => { cum[i + 1] = cum[i] + speechSec(s) + s.p; });
+  }
+  function fmt(sec) {
+    sec = Math.max(0, Math.round(sec));
+    return Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0');
+  }
+
+  /* ---------------- Capitoli ---------------- */
+  const chapters = $('chapters');
+  function buildChapters() {
+    chapters.innerHTML = '';
+    FASI.forEach((f, fi) => {
+      const li = document.createElement('li');
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'chap';
+      b.dataset.f = fi;
+      const min = Math.max(1, Math.round((cum[f.fine] - cum[f.inizio]) / 60));
+      b.innerHTML = '<span class="n">' + String(fi + 1).padStart(2, '0') + '</span><span class="t"></span><span class="m">' + min + ' min</span>';
+      b.querySelector('.t').textContent = f.titolo;
+      b.addEventListener('click', () => jump(f.inizio));
+      li.appendChild(b);
+      chapters.appendChild(li);
+    });
+  }
+
+  /* ---------------- Visualizzazione ---------------- */
+  function show(text) {
+    subtitle.classList.remove('in');
+    void subtitle.offsetWidth;
+    subtitle.textContent = text;
+    subtitle.classList.add('in');
+  }
+  function updateProgress() {
+    const total = cum[SEG.length];
+    const i = Math.min(idx, SEG.length);
+    bar.style.width = (100 * cum[i] / total).toFixed(2) + '%';
+    tElapsed.textContent = fmt(cum[i]);
+    tTotal.textContent = 'circa ' + fmt(total);
+    const fi = i < SEG.length ? SEG[i].f : FASI.length - 1;
+    phaseLabel.textContent = (i === 0 && !playing)
+      ? FASI.length + ' fasi · circa ' + Math.round(total / 60) + ' minuti'
+      : 'Fase ' + (fi + 1) + ' di ' + FASI.length + ' · ' + FASI[fi].titolo;
+    chapters.querySelectorAll('.chap').forEach(c => c.classList.toggle('active', Number(c.dataset.f) === fi && (playing || i > 0)));
+  }
+  function ui() {
+    player.classList.toggle('playing', playing);
+    if (playing) btnPlay.textContent = 'Pausa';
+    else if (idx > 0 && idx < SEG.length) btnPlay.textContent = 'Riprendi';
+    else btnPlay.textContent = 'Avvia la seduta';
+    updateProgress();
+  }
+
+  /* ---------------- Riproduzione ---------------- */
+  function useVoice() { return !!(synth && voice); }
+  function clearTimers() { clearTimeout(timer); clearTimeout(watchdog); timer = watchdog = null; }
+
+  function runCurrent() {
+    clearTimers();
+    if (idx >= SEG.length) return finish();
+    const s = SEG[idx];
+    show(s.t);
+    updateProgress();
+    if (useVoice()) {
+      if (synth.speaking || synth.pending) synth.cancel();
+      const u = new SpeechSynthesisUtterance(s.t);
+      u.voice = voice;
+      u.lang = voice.lang;
+      u.rate = rate;
+      u.pitch = 0.95;
+      const done = () => {
+        if (currentU !== u) return;
+        currentU = null;
+        clearTimeout(watchdog);
+        afterSpeech(s);
+      };
+      u.onend = done;
+      u.onerror = e => { if (e.error === 'interrupted' || e.error === 'canceled') return; done(); };
+      currentU = u;
+      synth.speak(u);
+      // Rete di sicurezza: alcuni browser non segnalano la fine della frase.
+      watchdog = setTimeout(done, (speechSec(s) * 2 + 6) * 1000);
+    } else {
+      timer = setTimeout(() => afterSpeech(s), speechSec(s) * 1000);
+    }
+  }
+  function afterSpeech(s) {
+    if (!playing) return;
+    timer = setTimeout(() => {
+      if (!playing) return;
+      idx++;
+      runCurrent();
+    }, s.p * 1000);
+  }
+  function play() {
+    if (idx >= SEG.length) idx = 0;
+    playing = true;
+    ui();
+    requestWake();
+    if (chkAmbient.checked) startAmbient();
+    runCurrent();
+  }
+  function pause() {
+    playing = false;
+    clearTimers();
+    currentU = null;
+    if (synth) synth.cancel();
+    releaseWake();
+    stopAmbient();
+    ui();
+  }
+  function jump(i) {
+    idx = Math.max(0, Math.min(SEG.length - 1, i));
+    if (playing) {
+      currentU = null;
+      if (synth) synth.cancel();
+      runCurrent();
+    } else {
+      show(SEG[idx].t);
+      ui();
+    }
+  }
+  function restart() {
+    pause();
+    idx = 0;
+    show('Trova un luogo tranquillo, indossa le cuffie e premi «Avvia la seduta».');
+    ui();
+  }
+  function finish() {
+    playing = false;
+    clearTimers();
+    idx = SEG.length;
+    releaseWake();
+    stopAmbient();
+    const d = new Date();
+    const key = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+    if (!prefs.days.includes(key)) { prefs.days.push(key); savePrefs(); }
+    renderStreak();
+    show('Seduta completata. Butta via pacchetto e accendino: da adesso sei fuori dalla trappola.');
+    ui();
+    phaseLabel.textContent = 'Seduta completata';
+  }
+
+  btnPlay.addEventListener('click', () => (playing ? pause() : play()));
+  btnPrev.addEventListener('click', () => jump(idx - 1));
+  btnNext.addEventListener('click', () => jump(idx + 1));
+  btnStop.addEventListener('click', restart);
+
+  /* ---------------- Voci ---------------- */
+  function voiceScore(v) {
+    let s = 0;
+    if (/natural|neural|online/i.test(v.name)) s += 4;
+    if (/enhanced|premium|siri/i.test(v.name)) s += 3;
+    if (/google/i.test(v.name)) s += 2;
+    return s;
+  }
+  function populateVoices() {
+    if (!synth) return renderVoiceSelect();
+    voices = synth.getVoices()
+      .filter(v => /^it([-_]|$)/i.test(v.lang))
+      .sort((a, b) => voiceScore(b) - voiceScore(a));
+    renderVoiceSelect();
+  }
+  function renderVoiceSelect() {
+    selVoice.innerHTML = '';
+    voices.forEach((v, i) => {
+      const o = document.createElement('option');
+      o.value = String(i);
+      o.textContent = v.name.replace(/^Microsoft\s+/, '').replace(/\s*-\s*Italian.*$/i, '');
+      selVoice.appendChild(o);
+    });
+    const none = document.createElement('option');
+    none.value = 'none';
+    none.textContent = 'Solo testo (leggo io ad alta voce)';
+    selVoice.appendChild(none);
+
+    if (prefs.voice === 'none' || !voices.length) {
+      selVoice.value = 'none';
+      voice = null;
+    } else {
+      const saved = voices.findIndex(v => v.name === prefs.voice);
+      const i = saved >= 0 ? saved : 0;
+      selVoice.value = String(i);
+      voice = voices[i];
+    }
+    renderVoiceNote();
+  }
+  function renderVoiceNote() {
+    if (!synth) {
+      voiceNote.textContent = 'Questo browser non supporta la sintesi vocale: la seduta scorre come testo, con il ritmo e le pause giuste, così puoi leggerla ad alta voce o farla leggere a qualcuno.';
+    } else if (!voices.length) {
+      voiceNote.textContent = 'Nessuna voce italiana trovata su questo dispositivo: la seduta scorre come testo, con il ritmo e le pause giuste. Su Chrome, Edge e Safari le voci italiane di solito sono disponibili.';
+    } else if (!voice) {
+      voiceNote.textContent = 'Modalità solo testo: le frasi scorrono con il ritmo e le pause giuste, così puoi leggerle ad alta voce a te o a un\'altra persona.';
+    } else {
+      voiceNote.textContent = 'Le voci «Natural», «Siri» o «Google» sono le più morbide. Se la voce ti sembra meccanica, registra il copione qui sotto con la tua voce.';
+    }
+  }
+  selVoice.addEventListener('change', () => {
+    if (selVoice.value === 'none') { voice = null; prefs.voice = 'none'; }
+    else { voice = voices[Number(selVoice.value)]; prefs.voice = voice.name; }
+    savePrefs();
+    renderVoiceNote();
+  });
+  if (synth) {
+    if ('onvoiceschanged' in synth) synth.addEventListener('voiceschanged', populateVoices);
+    [300, 1200, 3000].forEach(ms => setTimeout(() => { if (!voices.length) populateVoices(); }, ms));
+  }
+  populateVoices();
+
+  /* ---------------- Velocità ---------------- */
+  rngRate.value = String(rate);
+  outRate.textContent = rate.toFixed(2) + '×';
+  rngRate.addEventListener('input', () => {
+    rate = parseFloat(rngRate.value);
+    outRate.textContent = rate.toFixed(2) + '×';
+    prefs.rate = rate;
+    savePrefs();
+    recomputeTimes();
+    buildChapters();
+    updateProgress();
+  });
+
+  /* ---------------- Sottofondo di onde (Web Audio) ---------------- */
+  let actx = null, ambGain = null;
+  function buildAmbient() {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return false;
+    actx = new AC();
+    const len = actx.sampleRate * 8;
+    const buf = actx.createBuffer(2, len, actx.sampleRate);
+    for (let ch = 0; ch < 2; ch++) {
+      const d = buf.getChannelData(ch);
+      let last = 0;
+      for (let i = 0; i < len; i++) {
+        last = (last + 0.02 * (Math.random() * 2 - 1)) / 1.02;
+        d[i] = last * 3.5;
+      }
+      // Raccorda inizio e fine del ciclo per evitare scatti nel loop.
+      const drift = d[len - 1] - d[0];
+      for (let i = 0; i < len; i++) d[i] -= drift * i / (len - 1);
+    }
+    const src = actx.createBufferSource();
+    src.buffer = buf;
+    src.loop = true;
+    const lp = actx.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 520;
+    const waves = actx.createGain();
+    waves.gain.value = 0.6;
+    const lfo = actx.createOscillator();
+    lfo.frequency.value = 0.09;
+    const lfoAmt = actx.createGain();
+    lfoAmt.gain.value = 0.4;
+    lfo.connect(lfoAmt).connect(waves.gain);
+    ambGain = actx.createGain();
+    ambGain.gain.value = 0;
+    src.connect(lp).connect(waves).connect(ambGain).connect(actx.destination);
+    src.start();
+    lfo.start();
+    return true;
+  }
+  function startAmbient() {
+    try {
+      if (!actx && !buildAmbient()) return;
+      actx.resume();
+      ambGain.gain.setTargetAtTime(0.12, actx.currentTime, 1.5);
+    } catch (e) {}
+  }
+  function stopAmbient() {
+    try { if (actx && ambGain) ambGain.gain.setTargetAtTime(0, actx.currentTime, 0.6); } catch (e) {}
+  }
+  chkAmbient.checked = !!prefs.ambient;
+  chkAmbient.addEventListener('change', () => {
+    prefs.ambient = chkAmbient.checked;
+    savePrefs();
+    if (chkAmbient.checked && playing) startAmbient(); else stopAmbient();
+  });
+
+  /* ---------------- Schermo sempre acceso ---------------- */
+  async function requestWake() {
+    try {
+      if ('wakeLock' in navigator && !wakeLock) {
+        wakeLock = await navigator.wakeLock.request('screen');
+        wakeLock.addEventListener('release', () => { wakeLock = null; });
+      }
+    } catch (e) { wakeLock = null; }
+  }
+  function releaseWake() {
+    try { if (wakeLock) wakeLock.release(); } catch (e) {}
+    wakeLock = null;
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && playing) requestWake();
+  });
+
+  /* ---------------- Ascolti completati ---------------- */
+  function renderStreak() {
+    const n = prefs.days.length;
+    $('streakText').textContent = n >= 7
+      ? 'Prima settimana completata. Da ora ascoltala quando vuoi.'
+      : 'Ascolti completati: ' + n + ' di 7';
+    const dots = $('dots');
+    dots.innerHTML = '';
+    for (let i = 0; i < 7; i++) {
+      const el = document.createElement('i');
+      if (i < n) el.className = 'on';
+      dots.appendChild(el);
+    }
+  }
+
+  /* ---------------- Copione: testo e download ---------------- */
+  function renderScript() {
+    const box = $('scriptText');
+    FASI.forEach((f, fi) => {
+      const h = document.createElement('h3');
+      h.innerHTML = '<span>' + String(fi + 1).padStart(2, '0') + '</span>';
+      h.appendChild(document.createTextNode(f.titolo));
+      box.appendChild(h);
+      SEG.slice(f.inizio, f.fine).forEach(s => {
+        const p = document.createElement('p');
+        p.textContent = s.t;
+        if (s.p >= 3) {
+          const sp = document.createElement('span');
+          sp.className = 'pausa';
+          sp.textContent = '(pausa ' + Math.round(s.p) + ' s)';
+          p.appendChild(sp);
+        }
+        box.appendChild(p);
+      });
+    });
+  }
+  function scriptTxt() {
+    let out = 'RESPIRO LIBERO\nSeduta ipnotica per smettere di fumare\n';
+    out += 'Ispirata ai principi del libro «È facile smettere di fumare se sai come farlo».\n\n';
+    out += 'Come registrarla: voce calma e lenta, tono basso, sorriso nella voce.\n';
+    out += 'Rispetta le pause indicate tra parentesi; dove non ci sono, lascia un secondo di silenzio.\n';
+    FASI.forEach((f, fi) => {
+      out += '\n\n' + (fi + 1) + '. ' + f.titolo.toUpperCase() + '\n\n';
+      SEG.slice(f.inizio, f.fine).forEach(s => {
+        out += s.t + (s.p >= 3 ? '   (pausa ' + Math.round(s.p) + ' s)' : '') + '\n';
+      });
+    });
+    out += '\n\n---\nNon ascoltare alla guida o mentre usi macchinari. Non sostituisce il parere del medico.\n';
+    out += 'Telefono Verde contro il Fumo (ISS): 800 554 088 · smettodifumare.iss.it\n';
+    return out;
+  }
+  $('btnDownload').addEventListener('click', () => {
+    const blob = new Blob(['﻿' + scriptTxt()], { type: 'text/plain;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'respiro-libero-copione.txt';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  });
+
+  /* ---------------- Avvio ---------------- */
+  recomputeTimes();
+  buildChapters();
+  renderScript();
+  renderStreak();
+  ui();
+  </script>
+</body>
+</html>
