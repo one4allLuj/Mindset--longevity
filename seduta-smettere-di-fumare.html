@@ -30,6 +30,7 @@
       color-scheme: dark;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    [hidden] { display: none !important; }
     html { scroll-behavior: smooth; }
     body {
       background: var(--bg);
@@ -217,7 +218,7 @@
     <div class="section-head">
       <p class="kicker">La seduta</p>
       <h2 id="h-seduta">Chiudi gli occhi quando la voce te lo chiede</h2>
-      <p>La luce respira lentamente: se vuoi, lascia che il tuo respiro la segua. Tieni lo schermo acceso e la pagina aperta fino alla fine.</p>
+      <p>La luce respira lentamente: se vuoi, lascia che il tuo respiro la segua.</p>
     </div>
 
     <div class="player" id="player">
@@ -233,12 +234,16 @@
         <button class="btn primary big" id="btnPlay" type="button">Avvia la seduta</button>
         <button class="btn icon" id="btnNext" type="button" aria-label="Frase successiva" title="Frase successiva">›</button>
       </div>
-      <div class="stop-row"><button class="btn ghost" id="btnStop" type="button">↺ Ricomincia da capo</button></div>
+      <div class="stop-row">
+        <button class="btn ghost" id="btnStop" type="button">↺ Ricomincia da capo</button>
+        <a class="btn ghost" id="lnkAudio" download="respiro-libero.mp3" hidden>⤓ Scarica l'audio</a>
+      </div>
+      <audio id="track" preload="metadata"></audio>
 
       <div class="settings">
         <label>Voce <select id="selVoice" aria-label="Voce"></select></label>
         <label>Velocità <input type="range" id="rngRate" min="0.7" max="1.1" step="0.05" value="0.85" aria-label="Velocità della voce"><output id="outRate">0.85×</output></label>
-        <label><input type="checkbox" id="chkAmbient"> Sottofondo di onde</label>
+        <label id="rowAmbient"><input type="checkbox" id="chkAmbient"> Sottofondo di onde</label>
       </div>
       <p class="note" id="voiceNote"></p>
 
@@ -316,6 +321,7 @@
     </div>
   </footer>
 
+  <script src="audio/respiro-libero-tempi.js"></script>
   <script>
   /* ------------------------------------------------------------------
      COPIONE DELLA SEDUTA
@@ -496,7 +502,8 @@ Questa è la tua nuova vita. Goditela. {2}
   const bar = $('bar'), tElapsed = $('tElapsed'), tTotal = $('tTotal');
   const btnPlay = $('btnPlay'), btnPrev = $('btnPrev'), btnNext = $('btnNext'), btnStop = $('btnStop');
   const selVoice = $('selVoice'), rngRate = $('rngRate'), outRate = $('outRate'), chkAmbient = $('chkAmbient');
-  const voiceNote = $('voiceNote');
+  const voiceNote = $('voiceNote'), track = $('track'), lnkAudio = $('lnkAudio'), rowAmbient = $('rowAmbient');
+  const INTRO = 'Trova un luogo tranquillo, indossa le cuffie e premi «Avvia la seduta».';
 
   const STORE = 'respiroLibero.v1';
   let prefs = {};
@@ -504,20 +511,43 @@ Questa è la tua nuova vita. Goditela. {2}
   if (!Array.isArray(prefs.days)) prefs.days = [];
   function savePrefs() { try { localStorage.setItem(STORE, JSON.stringify(prefs)); } catch (e) {} }
 
+  /* Audio professionale (audio/respiro-libero-tempi.js): lo uso solo se è stato
+     prodotto da questo esatto copione, altrimenti i sottotitoli non sarebbero allineati. */
+  function fnv(str) {
+    const bytes = new TextEncoder().encode(str);
+    let h = 0x811c9dc5;
+    for (const b of bytes) { h ^= b; h = Math.imul(h, 0x01000193) >>> 0; }
+    return h.toString(16).padStart(8, '0');
+  }
+  const AUDIO = (() => {
+    const a = window.RESPIRO_AUDIO;
+    if (!a || !Array.isArray(a.segmenti) || a.n !== SEG.length || a.segmenti.length !== SEG.length) return null;
+    return a.firma === fnv(SEG.map(s => s.t).join('\n')) ? a : null;
+  })();
+  if (AUDIO && !prefs.proSeen) { prefs.voice = 'pro'; prefs.proSeen = true; savePrefs(); }
+
   const synth = ('speechSynthesis' in window) ? window.speechSynthesis : null;
   let voices = [], voice = null;
-  let rate = (typeof prefs.rate === 'number' && prefs.rate >= 0.7 && prefs.rate <= 1.1) ? prefs.rate : 0.85;
-  let idx = 0, playing = false, timer = null, watchdog = null, currentU = null, wakeLock = null;
+  let mode = (AUDIO && (prefs.voice === 'pro' || !prefs.voice)) ? 'audio' : 'tts';
+  let audioFailed = false;
+  let rate = 1;
+  let idx = 0, shown = -1, playing = false, timer = null, watchdog = null, currentU = null, wakeLock = null;
   let cum = [];
+  const isAudio = () => mode === 'audio';
+  const validRate = (r, lo, hi) => (typeof r === 'number' && r >= lo && r <= hi) ? r : 0;
 
-  /* ---------------- Tempi stimati ---------------- */
+  /* ---------------- Tempi ---------------- */
   function speechSec(s) {
     const words = s.t.split(/\s+/).length;
     return words / (2.6 * rate) + 0.5;
   }
   function recomputeTimes() {
     cum = [0];
-    SEG.forEach((s, i) => { cum[i + 1] = cum[i] + speechSec(s) + s.p; });
+    if (isAudio()) {
+      SEG.forEach((s, i) => { cum[i + 1] = i + 1 < SEG.length ? AUDIO.segmenti[i + 1][0] : AUDIO.durata; });
+    } else {
+      SEG.forEach((s, i) => { cum[i + 1] = cum[i] + speechSec(s) + s.p; });
+    }
   }
   function fmt(sec) {
     sec = Math.max(0, Math.round(sec));
@@ -550,22 +580,28 @@ Questa è la tua nuova vita. Goditela. {2}
     subtitle.textContent = text;
     subtitle.classList.add('in');
   }
+  function totalTime() { return isAudio() ? AUDIO.durata : cum[SEG.length]; }
+  function nowTime() {
+    if (idx >= SEG.length) return totalTime();
+    return isAudio() ? (track.currentTime || 0) : cum[idx];
+  }
+  function started() { return playing || idx > 0 || (isAudio() && track.currentTime > 0.5); }
   function updateProgress() {
-    const total = cum[SEG.length];
-    const i = Math.min(idx, SEG.length);
-    bar.style.width = (100 * cum[i] / total).toFixed(2) + '%';
-    tElapsed.textContent = fmt(cum[i]);
-    tTotal.textContent = 'circa ' + fmt(total);
-    const fi = i < SEG.length ? SEG[i].f : FASI.length - 1;
-    phaseLabel.textContent = (i === 0 && !playing)
-      ? FASI.length + ' fasi · circa ' + Math.round(total / 60) + ' minuti'
+    const total = totalTime();
+    const t = nowTime();
+    bar.style.width = (100 * Math.min(1, t / total)).toFixed(2) + '%';
+    tElapsed.textContent = fmt(t);
+    tTotal.textContent = (isAudio() ? '' : 'circa ') + fmt(total);
+    const fi = idx < SEG.length ? SEG[idx].f : FASI.length - 1;
+    phaseLabel.textContent = !started()
+      ? FASI.length + ' fasi · ' + (isAudio() ? '' : 'circa ') + Math.round(total / 60) + ' minuti'
       : 'Fase ' + (fi + 1) + ' di ' + FASI.length + ' · ' + FASI[fi].titolo;
-    chapters.querySelectorAll('.chap').forEach(c => c.classList.toggle('active', Number(c.dataset.f) === fi && (playing || i > 0)));
+    chapters.querySelectorAll('.chap').forEach(c => c.classList.toggle('active', Number(c.dataset.f) === fi && started()));
   }
   function ui() {
     player.classList.toggle('playing', playing);
     if (playing) btnPlay.textContent = 'Pausa';
-    else if (idx > 0 && idx < SEG.length) btnPlay.textContent = 'Riprendi';
+    else if (started() && idx < SEG.length) btnPlay.textContent = 'Riprendi';
     else btnPlay.textContent = 'Avvia la seduta';
     updateProgress();
   }
@@ -574,6 +610,7 @@ Questa è la tua nuova vita. Goditela. {2}
   function useVoice() { return !!(synth && voice); }
   function clearTimers() { clearTimeout(timer); clearTimeout(watchdog); timer = watchdog = null; }
 
+  // Voce del dispositivo: una frase alla volta, con le pause del copione.
   function runCurrent() {
     clearTimers();
     if (idx >= SEG.length) return finish();
@@ -612,15 +649,31 @@ Questa è la tua nuova vita. Goditela. {2}
     }, s.p * 1000);
   }
   function play() {
-    if (idx >= SEG.length) idx = 0;
+    if (idx >= SEG.length) {
+      idx = 0;
+      shown = -1;
+      if (isAudio()) track.currentTime = 0;
+    }
     playing = true;
     ui();
+    if (isAudio()) {
+      if (shown < 0) show('La seduta sta per iniziare…');
+      track.playbackRate = rate;
+      const p = track.play();
+      if (p && p.catch) p.catch(() => { playing = false; ui(); });
+      return;
+    }
     requestWake();
     if (chkAmbient.checked) startAmbient();
     runCurrent();
   }
   function pause() {
     playing = false;
+    if (isAudio()) {
+      track.pause();
+      ui();
+      return;
+    }
     clearTimers();
     currentU = null;
     if (synth) synth.cancel();
@@ -630,6 +683,13 @@ Questa è la tua nuova vita. Goditela. {2}
   }
   function jump(i) {
     idx = Math.max(0, Math.min(SEG.length - 1, i));
+    if (isAudio()) {
+      track.currentTime = Math.max(0, AUDIO.segmenti[idx][0] - 0.3);
+      shown = idx;
+      show(SEG[idx].t);
+      ui();
+      return;
+    }
     if (playing) {
       currentU = null;
       if (synth) synth.cancel();
@@ -642,7 +702,9 @@ Questa è la tua nuova vita. Goditela. {2}
   function restart() {
     pause();
     idx = 0;
-    show('Trova un luogo tranquillo, indossa le cuffie e premi «Avvia la seduta».');
+    shown = -1;
+    if (isAudio()) track.currentTime = 0;
+    show(INTRO);
     ui();
   }
   function finish() {
@@ -665,6 +727,68 @@ Questa è la tua nuova vita. Goditela. {2}
   btnNext.addEventListener('click', () => jump(idx + 1));
   btnStop.addEventListener('click', restart);
 
+  /* ---------------- Audio professionale ---------------- */
+  function segmentAt(t) {
+    let lo = 0, hi = SEG.length - 1, k = -1;
+    while (lo <= hi) {
+      const m = (lo + hi) >> 1;
+      if (AUDIO.segmenti[m][0] <= t) { k = m; lo = m + 1; } else hi = m - 1;
+    }
+    return k;
+  }
+  track.addEventListener('timeupdate', () => {
+    if (!isAudio() || idx >= SEG.length) return;
+    const k = segmentAt(track.currentTime + 0.08);
+    if (k >= 0 && k !== shown) { shown = k; idx = k; show(SEG[k].t); }
+    updateProgress();
+  });
+  track.addEventListener('ended', () => { if (isAudio()) finish(); });
+  track.addEventListener('pause', () => { if (isAudio() && playing && !track.ended) { playing = false; ui(); } });
+  track.addEventListener('play', () => { if (isAudio() && !playing) { playing = true; ui(); } });
+  track.addEventListener('error', () => {
+    if (!AUDIO || audioFailed) return;
+    audioFailed = true;
+    if (isAudio()) { prefs.voice = ''; setMode('tts'); }
+    renderVoiceSelect();
+  });
+  if (AUDIO) {
+    track.src = AUDIO.src;
+    lnkAudio.href = AUDIO.src;
+  }
+  if (AUDIO && 'mediaSession' in navigator) {
+    try {
+      const ms = navigator.mediaSession;
+      ms.metadata = new MediaMetadata({ title: 'Respiro Libero', artist: 'MINDSET LABS', album: 'Seduta per smettere di fumare' });
+      const curF = () => SEG[Math.min(idx, SEG.length - 1)].f;
+      ms.setActionHandler('play', () => { if (isAudio()) play(); });
+      ms.setActionHandler('pause', () => { if (isAudio()) pause(); });
+      ms.setActionHandler('seekbackward', () => { if (isAudio()) track.currentTime = Math.max(0, track.currentTime - 15); });
+      ms.setActionHandler('seekforward', () => { if (isAudio()) track.currentTime = Math.min(AUDIO.durata, track.currentTime + 15); });
+      ms.setActionHandler('previoustrack', () => { if (isAudio()) jump(FASI[Math.max(0, curF() - 1)].inizio); });
+      ms.setActionHandler('nexttrack', () => { if (isAudio() && curF() + 1 < FASI.length) jump(FASI[curF() + 1].inizio); });
+    } catch (e) {}
+  }
+
+  function setMode(m) {
+    if (playing) pause();
+    mode = m;
+    rate = isAudio() ? (validRate(prefs.audioRate, 0.8, 1.15) || 1) : (validRate(prefs.rate, 0.7, 1.1) || 0.85);
+    rngRate.min = isAudio() ? '0.8' : '0.7';
+    rngRate.max = isAudio() ? '1.15' : '1.1';
+    rngRate.value = String(rate);
+    outRate.textContent = rate.toFixed(2) + '×';
+    rowAmbient.hidden = isAudio();
+    lnkAudio.hidden = !isAudio();
+    if (isAudio()) {
+      track.playbackRate = rate;
+      if (idx > 0 && idx < SEG.length) { track.currentTime = AUDIO.segmenti[idx][0]; shown = idx; }
+    }
+    recomputeTimes();
+    buildChapters();
+    renderVoiceNote();
+    ui();
+  }
+
   /* ---------------- Voci ---------------- */
   function voiceScore(v) {
     let s = 0;
@@ -682,10 +806,16 @@ Questa è la tua nuova vita. Goditela. {2}
   }
   function renderVoiceSelect() {
     selVoice.innerHTML = '';
+    if (AUDIO && !audioFailed) {
+      const pro = document.createElement('option');
+      pro.value = 'pro';
+      pro.textContent = 'Voce professionale (consigliata)';
+      selVoice.appendChild(pro);
+    }
     voices.forEach((v, i) => {
       const o = document.createElement('option');
       o.value = String(i);
-      o.textContent = v.name.replace(/^Microsoft\s+/, '').replace(/\s*-\s*Italian.*$/i, '');
+      o.textContent = 'Dispositivo: ' + v.name.replace(/^Microsoft\s+/, '').replace(/\s*-\s*Italian.*$/i, '');
       selVoice.appendChild(o);
     });
     const none = document.createElement('option');
@@ -693,7 +823,9 @@ Questa è la tua nuova vita. Goditela. {2}
     none.textContent = 'Solo testo (leggo io ad alta voce)';
     selVoice.appendChild(none);
 
-    if (prefs.voice === 'none' || !voices.length) {
+    if (isAudio()) {
+      selVoice.value = 'pro';
+    } else if (prefs.voice === 'none' || !voices.length) {
       selVoice.value = 'none';
       voice = null;
     } else {
@@ -705,21 +837,34 @@ Questa è la tua nuova vita. Goditela. {2}
     renderVoiceNote();
   }
   function renderVoiceNote() {
-    if (!synth) {
-      voiceNote.textContent = 'Questo browser non supporta la sintesi vocale: la seduta scorre come testo, con il ritmo e le pause giuste, così puoi leggerla ad alta voce o farla leggere a qualcuno.';
+    const pre = audioFailed ? 'Audio professionale non raggiungibile, uso un\'alternativa. ' : '';
+    voiceNote.textContent = pre + voiceNoteText();
+  }
+  function voiceNoteText() {
+    if (isAudio()) {
+      return 'Voce professionale con sottofondo musicale e pause calibrate. Puoi bloccare lo schermo: la seduta continua.';
+    } else if (!synth) {
+      return 'Questo browser non supporta la sintesi vocale: la seduta scorre come testo, con il ritmo e le pause giuste, così puoi leggerla ad alta voce o farla leggere a qualcuno.';
     } else if (!voices.length) {
-      voiceNote.textContent = 'Nessuna voce italiana trovata su questo dispositivo: la seduta scorre come testo, con il ritmo e le pause giuste. Su Chrome, Edge e Safari le voci italiane di solito sono disponibili.';
+      return 'Nessuna voce italiana trovata su questo dispositivo: la seduta scorre come testo, con il ritmo e le pause giuste.';
     } else if (!voice) {
-      voiceNote.textContent = 'Modalità solo testo: le frasi scorrono con il ritmo e le pause giuste, così puoi leggerle ad alta voce a te o a un\'altra persona.';
+      return 'Modalità solo testo: le frasi scorrono con il ritmo e le pause giuste, così puoi leggerle ad alta voce a te o a un\'altra persona.';
     } else {
-      voiceNote.textContent = 'Le voci «Natural», «Siri» o «Google» sono le più morbide. Se la voce ti sembra meccanica, registra il copione qui sotto con la tua voce.';
+      return 'Voce del dispositivo: tieni lo schermo acceso e la pagina aperta fino alla fine.';
     }
   }
   selVoice.addEventListener('change', () => {
-    if (selVoice.value === 'none') { voice = null; prefs.voice = 'none'; }
-    else { voice = voices[Number(selVoice.value)]; prefs.voice = voice.name; }
+    const v = selVoice.value;
+    if (v === 'pro') {
+      prefs.voice = 'pro';
+      savePrefs();
+      setMode('audio');
+      return;
+    }
+    if (v === 'none') { voice = null; prefs.voice = 'none'; }
+    else { voice = voices[Number(v)]; prefs.voice = voice.name; }
     savePrefs();
-    renderVoiceNote();
+    if (isAudio()) setMode('tts'); else renderVoiceNote();
   });
   if (synth) {
     if ('onvoiceschanged' in synth) synth.addEventListener('voiceschanged', populateVoices);
@@ -728,19 +873,22 @@ Questa è la tua nuova vita. Goditela. {2}
   populateVoices();
 
   /* ---------------- Velocità ---------------- */
-  rngRate.value = String(rate);
-  outRate.textContent = rate.toFixed(2) + '×';
   rngRate.addEventListener('input', () => {
     rate = parseFloat(rngRate.value);
     outRate.textContent = rate.toFixed(2) + '×';
-    prefs.rate = rate;
+    if (isAudio()) {
+      prefs.audioRate = rate;
+      track.playbackRate = rate;
+    } else {
+      prefs.rate = rate;
+      recomputeTimes();
+      buildChapters();
+    }
     savePrefs();
-    recomputeTimes();
-    buildChapters();
     updateProgress();
   });
 
-  /* ---------------- Sottofondo di onde (Web Audio) ---------------- */
+  /* ---------------- Sottofondo di onde (solo voce del dispositivo) ---------------- */
   let actx = null, ambGain = null;
   function buildAmbient() {
     const AC = window.AudioContext || window.webkitAudioContext;
@@ -793,10 +941,10 @@ Questa è la tua nuova vita. Goditela. {2}
   chkAmbient.addEventListener('change', () => {
     prefs.ambient = chkAmbient.checked;
     savePrefs();
-    if (chkAmbient.checked && playing) startAmbient(); else stopAmbient();
+    if (chkAmbient.checked && playing && !isAudio()) startAmbient(); else stopAmbient();
   });
 
-  /* ---------------- Schermo sempre acceso ---------------- */
+  /* ---------------- Schermo sempre acceso (solo voce del dispositivo) ---------------- */
   async function requestWake() {
     try {
       if ('wakeLock' in navigator && !wakeLock) {
@@ -810,7 +958,7 @@ Questa è la tua nuova vita. Goditela. {2}
     wakeLock = null;
   }
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible' && playing) requestWake();
+    if (document.visibilityState === 'visible' && playing && !isAudio()) requestWake();
   });
 
   /* ---------------- Ascolti completati ---------------- */
@@ -876,11 +1024,9 @@ Questa è la tua nuova vita. Goditela. {2}
   });
 
   /* ---------------- Avvio ---------------- */
-  recomputeTimes();
-  buildChapters();
   renderScript();
   renderStreak();
-  ui();
+  setMode(mode);
   </script>
 </body>
 </html>
