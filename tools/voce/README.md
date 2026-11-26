@@ -53,6 +53,18 @@ python3 tools/voce/produci_voce.py rigenera               # rifà insieme le fra
 python3 tools/voce/produci_voce.py monta                  # montaggio, sottofondo, mastering
 ```
 
+### Registrazione a mano in AI Studio
+
+In alternativa all'API, le fasi si possono generare nella pagina «Generate speech»
+di Google AI Studio, che ha una quota giornaliera propria. Ogni fase va
+incollata con le `<long pause>` tra le frasi e salvata come `fase01.wav` …
+`fase13.wav`; poi:
+
+```bash
+python3 tools/voce/produci_voce.py importa cartella-con-i-file --voce aistudio-donna
+python3 tools/voce/produci_voce.py qa && python3 tools/voce/produci_voce.py monta
+```
+
 `genera` divide ogni ripresa nelle singole frasi. Se la divisione non riesce,
 la ripresa resta salvata e `dividi` riprova senza nuove richieste.
 `--fasi 4 5 6` limita `genera` e `qa` ad alcune fasi (numerate da 1 a 13).

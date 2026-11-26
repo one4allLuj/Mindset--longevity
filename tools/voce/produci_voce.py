@@ -81,11 +81,138 @@ STILI = {
 }
 # Tono di singole frasi (chiave = testo esatto della frase).
 STILI_FRASE = {
-    'Cinque. Apri gli occhi. Fai un bel respiro… ed eccoti qui.': 'warm, bright and fully awake',
-    'Questa è la tua nuova vita. Goditela.': 'warm, bright, with a gentle smile',
+    "Mentre lo guardi, forse ti accorgi che le palpebre diventano un po' più pesanti…":
+        'slower and softer, gently heavy, hypnotic and soothing',
+    'e quando sono pronte, possono chiudersi da sole.':
+        'slower and softer, gently heavy, hypnotic and soothing',
+    'Bene.':
+        'very soft, low and quietly approving',
+    'Fai un respiro lento e profondo. Dentro…':
+        'soft, slow and gently breathy, drawing out the final word',
+    "e fuori, piano, lasciando andare tutta l'aria.":
+        'soft, slow and releasing, like a long exhale',
+    'Ancora una volta. Inspira…':
+        'soft, slow and gently breathy, inviting a deep inhale',
+    'ed espira, ancora più lentamente.':
+        'very slow and soft, drawn out like a long exhale',
+    "Un'ultima volta. Riempi i polmoni di aria pulita…":
+        'soft, slow and spacious, gently breathy, inviting a full inhale',
+    "e mentre l'aria esce, lascia uscire con lei anche un po' di tensione.":
+        'soft, slow and releasing, letting tension melt away',
+    'Uno.':
+        'slowest and softest, settled and deeply soothing',
+    'Sei in fondo alla scala, in uno stato di rilassamento profondo, piacevole, sicuro.':
+        'very slow, soft and deeply settled',
+    'Mentre il corpo riposa, la parte più profonda e saggia di te può ascoltare alcune cose semplici. Cose che, in fondo, hai sempre saputo.':
+        'soft, slow and intimate, still deeply relaxed',
+    'Non si può rinunciare a qualcosa che non ti ha mai dato niente.':
+        'slower, quietly certain, letting each word land',
+    'È quello che possiamo chiamare il piccolo mostro.':
+        'calm and warm, with a soft, gently amused smile',
+    'È come mettersi un sassolino nella scarpa, solo per il sollievo di toglierlo.':
+        'warm, with a light, knowing smile',
+    'Ascolta bene, adesso.':
+        'softer and slower, intimate, gently drawing attention',
+    'Ora, nel tuo luogo sicuro, immagina davanti a te una nuvola di fumo grigio. Dentro ci sono tutte le vecchie convinzioni: «mi rilassa», «mi aiuta», «senza non ce la faccio».':
+        'soft, slow and dreamy, evocative',
+    'E adesso arriva un vento fresco, pulito.':
+        'soft, slow and dreamy, airy and fresh',
+    'Guarda il vento che spinge via il fumo, pezzo dopo pezzo…':
+        'soft, slow and dreamy',
+    'il grigio si dirada…':
+        'soft, slow and dreamy, gently trailing off',
+    'e dietro appare un cielo limpido, luminoso.':
+        'softly brightening, with gentle wonder',
+    'Allunga la mano. Spingi.':
+        'soft, slow and gently encouraging',
+    'Esci.':
+        'soft and inviting, with a gentle sense of release',
+    'Non hai dovuto lottare. Non hai usato la forza di volontà. Hai soltanto visto la verità, e la verità ha aperto la porta.':
+        'warm, quietly certain, gently proud',
+    'E dentro di te puoi dire: «Che bello: non ne ho più bisogno».':
+        'warm, with quiet joy on the quoted phrase',
+    'In pochi giorni quella vocina diventa più debole. Poi un sussurro. Poi silenzio.':
+        'gradually softer and slower, the last words quiet but clear',
+    "E sai anche un'altra cosa, con assoluta chiarezza: non esiste «una sigaretta sola».":
+        'calm, clear and firm, quietly certain',
+    'Una sola sigaretta è proprio il modo in cui la trappola si richiude. È così che ti ha trattenuto per tutto questo tempo.':
+        'calm, clear and firm, quietly certain',
+    'Così, se un giorno qualcuno ti offrirà una sigaretta, o un pensiero ti suggerirà «solo questa», sorriderai, perché conosci la verità. E dirai, con leggerezza: «No, grazie. Non fumo».':
+        'warm and light, with an easy smile',
+    '«Non rinuncio a niente. Mi riprendo tutto».':
+        'slow, joyful conviction, gentle emphasis on the last word',
+    "Unisci delicatamente la punta del pollice e dell'indice di una mano.":
+        'calm, slow and clear, a gentle instruction',
+    'Ora è il momento di tornare, portando con te tutto quello che hai scoperto.':
+        'calm and warm, still soft, beginning to lift',
+    'Conterò da uno a cinque. Al cinque aprirai gli occhi, con la mente lucida, piena di energia e di buon umore.':
+        'calm and warm, softly beginning to lift',
+    'Uno… inizi a risalire, lentamente.':
+        'warm, still soft and slow, just beginning to rise',
+    'Due… senti di nuovo il peso del corpo, il contatto con la sedia o con il letto.':
+        'warm, a little brighter and more present',
+    "Tre… muovi un po' le dita delle mani e dei piedi. Il respiro si fa più vivace.":
+        'warm and brighter, with more energy, gently awakening',
+    "Quattro… l'energia sale, come in una mattina di sole.":
+        'bright, energized, warm and lively',
+    'Cinque. Apri gli occhi. Fai un bel respiro… ed eccoti qui.':
+        'warm, bright and fully awake',
+    "Se hai vicino il pacchetto, prendilo e buttalo via, insieme all'accendino. Non con tristezza: con il sollievo di chi si toglie finalmente un sassolino dalla scarpa.":
+        'warm, bright and fully awake, light and encouraging',
+    'Questa è la tua nuova vita. Goditela.':
+        'warm, bright, with a gentle smile',
 }
 # Ritocchi del testo letto (il sottotitolo resta quello del copione).
-RITOCCHI = {}
+RITOCCHI = {
+    # Congiuntivo appòggino, accentato sulla terzultima con ò aperta. Senza accento il TTS può l
+    'Lascia che le mani si appoggino dove vogliono.':
+        'Lascia che le mani si appòggino dove vogliono.',
+    # Accento corretto sèparano (/ˈsɛparano/). L'errore 'sepàrano' è frequente e si sentirebbe i
+    'La mascella si scioglie. I denti si separano appena. La lingua riposa.':
+        'La mascella si scioglie. I denti si sèparano appena. La lingua riposa.',
+    # Omografo: qui è l'aggettivo leggère, non il verbo lèggere, che è più frequente. Priorità a
+    'Scende lungo le braccia, fino alle mani, fino alla punta delle dita. Forse le senti calde, o leggere, o pesanti. Qualunque sensazione va bene.':
+        'Scende lungo le braccia, fino alle mani, fino alla punta delle dita. Forse le senti calde, o leggère, o pesanti. Qualunque sensazione va bene.',
+    # Un respiro udibile tra le due frasi rende concreta la suggestione e aiuta l'approfondiment
+    "Il petto si muove piano, insieme al respiro. E ogni respiro ti porta un po' più giù, in una calma sempre più profonda.":
+        "Il petto si muove piano, insieme al respiro. <breath> E ogni respiro ti porta un po' più giù, in una calma sempre più profonda.",
+    # Unisce due ritocchi: la breve pausa di regia dopo la domanda, che lascia affiorare il rico
+    "E ricordi il sapore di quella prima sigaretta? Il fumo che graffiava la gola. Forse la tosse, forse un po' di nausea. Il tuo corpo, saggio, ti stava dicendo la verità.":
+        "E ricordi il sapore di quella prima sigaretta? <short pause> Il fumo che graffiava la gola. Forse la tosse, forse un po' di nàusea. Il tuo corpo, saggio, ti stava dicendo la verità.",
+    # La breve pausa dopo i due punti dà peso alla rivelazione centrale.
+    'Quello che rimane è la verità: non ti serve. Non ti è mai servita.':
+        'Quello che rimane è la verità: <short pause> non ti serve. Non ti è mai servita.',
+    # Lascia il tempo di guardare la porta prima di scoprire che non c'è nessuna serratura.
+    "Guarda bene quella porta. Non c'è nessuna serratura. Non c'è mai stata.":
+        "Guarda bene quella porta. <short pause> Non c'è nessuna serratura. Non c'è mai stata.",
+    # Il primo respiro fuori dalla gabbia, subito dopo 'Esci.'. Va a inizio riga, come da correz
+    "Senti l'aria sul viso. Lo spazio intorno a te. La leggerezza.":
+        "<breath> Senti l'aria sul viso. Lo spazio intorno a te. La leggerezza.",
+    # Accento corretto resìdui. Con lo iato finale -ui il TTS può leggere 'residùi' (voce aggiun
+    'Nei prossimi giorni il tuo corpo eliminerà gli ultimi residui di nicotina.':
+        'Nei prossimi giorni il tuo corpo eliminerà gli ultimi resìdui di nicotina.',
+    # Il respiro risponde all'istruzione esplicita, prende il posto della sigaretta nel momento 
+    'Ora arriva un momento di stress: una scadenza, una discussione, un imprevisto. Fai un respiro profondo, la mente è lucida, e lo affronti meglio di come avresti fatto fumando. Perché adesso hai un problema in meno, non uno in più.':
+        'Ora arriva un momento di stress: una scadenza, una discussione, un imprevisto. Fai un respiro profondo, <breath> la mente è lucida, e lo affronti meglio di come avresti fatto fumando. Perché adesso hai un problema in meno, non uno in più.',
+    # La micro-pausa mette in risalto il ribaltamento da sacrificio a liberazione.
+    'E adesso, nel tuo luogo sicuro, è il momento di una scelta semplice. Non un sacrificio: una liberazione.':
+        'E adesso, nel tuo luogo sicuro, è il momento di una scelta semplice. Non un sacrificio: <short pause> una liberazione.',
+    # Il respiro prima del proposito lo rende solenne e fa da modello all'ascoltatore.
+    'Se senti che è giusto per te, ripeti dentro di te, con calma e con gioia: «Da adesso, non fumo più».':
+        'Se senti che è giusto per te, ripeti dentro di te, con calma e con gioia: <breath> «Da adesso, non fumo più».',
+    # Come nella 54, la domanda invita a sentire qualcosa adesso. La micro-pausa dà il tempo di 
+    'Senti la gioia che arriva? Non devi aspettare settimane per sentirti una persona libera. Lo sei già, da questo momento.':
+        'Senti la gioia che arriva? <short pause> Non devi aspettare settimane per sentirti una persona libera. Lo sei già, da questo momento.',
+    # Momento di ancoraggio: il respiro udibile segue l'istruzione, guida quello dell'ascoltator
+    'Fai un respiro profondo, e ripeti dentro di te: «Che bello: non ne ho più bisogno».':
+        'Fai un respiro profondo, <breath> e ripeti dentro di te: «Che bello: non ne ho più bisogno».',
+    # Il respiro del risveglio accompagna quello dell'ascoltatore prima di 'eccoti qui'. Lo stil
+    'Cinque. Apri gli occhi. Fai un bel respiro… ed eccoti qui.':
+        'Cinque. Apri gli occhi. Fai un bel respiro… <breath> ed eccoti qui.',
+    # Imperativo con due enclitici: il TTS rischia di dire 'goditèla'. È la frase finale, quindi
+    'Questa è la tua nuova vita. Goditela.':
+        'Questa è la tua nuova vita. Gòditela.',
+}
 
 # Voci progettate con Voice design (timbro permanente).
 VOCI_PROGETTATE = {
@@ -641,6 +768,46 @@ def cmd_dividi(args):
             controllo_asr(gsegs, pieces)
 
 
+def load_audio(path):
+    """Qualsiasi file audio (wav, mp3, m4a...) → mono float32 a SR, tramite ffmpeg."""
+    r = subprocess.run(['ffmpeg', '-v', 'error', '-i', str(path), '-ac', '1', '-ar', str(SR), '-f', 'f32le', '-'],
+                       capture_output=True, check=True)
+    return np.frombuffer(r.stdout, dtype='<f4').copy()
+
+
+def cmd_importa(args):
+    """Importa le fasi registrate a mano (es. in AI Studio): fase01.wav … fase13.wav."""
+    titles, segs = load_script()
+    st = load_state()
+    voice_name = args.voce
+    st['voce'] = voice_name
+    files = {}
+    for f in sorted(Path(args.cartella).iterdir()):
+        m = re.match(r'fase\s*0*(\d+)', f.stem, re.I)
+        if m and f.suffix.lower() in ('.wav', '.mp3', '.m4a', '.ogg', '.flac', '.aac'):
+            files[int(m.group(1)) - 1] = f
+    if not files:
+        sys.exit('Nessun file faseNN trovato in ' + args.cartella)
+    for fi, f in sorted(files.items()):
+        fsegs = [s for s in segs if s['f'] == fi]
+        x = load_audio(f)
+        raw = TAKES / f'gruppo-f{fi + 1:02d}-f{fi + 1:02d}-{slug(voice_name)}.wav'
+        write_wav(raw, x)
+        pieces, why = split_takes(x, fsegs)
+        print(f'Fase {fi + 1} {titles[fi]}: {len(x) / SR / 60:.1f} min → {why}', flush=True)
+        if pieces is None:
+            st.setdefault('grezzi', {})[raw.name] = {'fasi': [fi], 'voce': voice_name, 'motivo': why}
+            save_state(st)
+            continue
+        salva_pezzi(st, fsegs, pieces, voice_name, voice_name)
+        st.get('grezzi', {}).pop(raw.name, None)
+        save_state(st)
+        controllo_asr(fsegs, pieces)
+    mancanti = sorted(set(range(len(titles))) - set(files))
+    if mancanti:
+        print('Fasi non ancora importate:', ', '.join(str(m + 1) for m in mancanti))
+
+
 # ================================================================ controllo locale (Whisper)
 _ASR = None
 
@@ -666,11 +833,14 @@ def get_asr():
     return _ASR or None
 
 
+NUMERI = ['zero', 'uno', 'due', 'tre', 'quattro', 'cinque', 'sei', 'sette', 'otto', 'nove', 'dieci']
+
+
 def norm_words(t):
     import unicodedata
     t = unicodedata.normalize('NFD', t.lower())
     t = ''.join(c for c in t if not unicodedata.combining(c))
-    return re.findall(r"[a-z0-9]+", t)
+    return [NUMERI[int(w)] if w.isdigit() and int(w) <= 10 else w for w in re.findall(r"[a-z0-9]+", t)]
 
 
 def wer(ref, hyp):
@@ -705,6 +875,8 @@ def controllo_asr(segs, takes, soglia=0.2):
     for s, x in zip(segs, takes):
         heard = asr(x)
         w = wer(s['t'], heard)
+        if words(s['t']) < 4:
+            w = min(w, soglia)   # Whisper è inaffidabile su frasi di 1-3 parole: non bastano per scartarle
         res[s['i']] = {'heard': heard, 'wer': round(w, 2)}
         if w > soglia:
             cattive += 1
@@ -1116,6 +1288,9 @@ def main():
     p.add_argument('--fasi', nargs='*', help='numeri di fase da 1 a 13')
     p.add_argument('--max-minuti', type=float, default=MAX_RICHIESTA)
     sub.add_parser('dividi')
+    p = sub.add_parser('importa')
+    p.add_argument('cartella')
+    p.add_argument('--voce', default='aistudio-donna')
     p = sub.add_parser('qa')
     p.add_argument('--fasi', nargs='*', help='numeri di fase da 1 a 13')
     p = sub.add_parser('rigenera')
@@ -1127,7 +1302,7 @@ def main():
     p.add_argument('--bitrate', default='112k')
     args = ap.parse_args()
     {'voci': cmd_voci, 'progetta': cmd_progetta, 'campioni': cmd_campioni, 'piano': cmd_piano,
-     'genera': cmd_genera, 'dividi': cmd_dividi, 'qa': cmd_qa, 'rigenera': cmd_rigenera,
+     'genera': cmd_genera, 'dividi': cmd_dividi, 'importa': cmd_importa, 'qa': cmd_qa, 'rigenera': cmd_rigenera,
      'monta': cmd_monta}[args.cmd](args)
 
 
