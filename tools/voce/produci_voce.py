@@ -623,9 +623,16 @@ def cmd_progetta(args):
             write_wav(out / f'{nome}-anteprima.wav', decode_audio(base64.b64decode(sa['data'])))
 
 
+# Voci create con Voice design sul progetto della chiave (gli id non sono segreti:
+# funzionano solo con la chiave). Servono se lo stato locale viene perso.
+VOCI_SALVATE = {
+    'ipnoterapeuta-donna': 'voice_0n9pveczr6t2',
+}
+
+
 def resolve_voice(name):
     st = load_state()
-    return st['voci_progettate'].get(name, name)
+    return st['voci_progettate'].get(name) or VOCI_SALVATE.get(name, name)
 
 
 def cmd_campioni(args):
