@@ -69,6 +69,32 @@ python3 tools/voce/produci_voce.py qa && python3 tools/voce/produci_voce.py mont
 la ripresa resta salvata e `dividi` riprova senza nuove richieste.
 `--fasi 4 5 6` limita `genera` e `qa` ad alcune fasi (numerate da 1 a 13).
 
+Regole che proteggono la quota e la qualità:
+
+- ogni ripresa è legata al testo della sua frase: se modifichi il copione,
+  `genera` rifà solo le frasi cambiate;
+- nessuna ripresa pagata va persa: se una divisione non riesce resta in
+  `lavoro/riprese` e `dividi` (con `--forza` per sostituire) la recupera;
+- se il controllo di Gemini non risponde o ha finito la quota, i giudizi
+  precedenti restano validi e `rigenera` non sostituisce frasi che non può valutare;
+- `rigenera 12 37` rifà frasi precise (numerate da 0) anche se il controllo le
+  aveva approvate;
+- `monta` si rifiuta se qualche frase è segnalata o non è stata valutata da
+  Gemini (`--forza` per montare comunque);
+- `api` ripete una richiesta di voce al massimo 3 volte, perché anche un
+  tentativo fallito può consumare quota.
+
+Prima di registrare la seduta conviene misurare le pause reali di Gemini su
+una ripresa grezza (per esempio un campione in `lavoro/campioni/grezzi/`):
+
+```bash
+python3 tools/voce/produci_voce.py pause tools/voce/lavoro/campioni/grezzi/VOCE.wav --frasi 5
+```
+
+Se il margine tra la pausa più breve fra due frasi e la pausa interna più
+lunga è sotto 1,3, allunga la pausa tra le frasi, per esempio
+`VOCE_SEPARATORE=' <long pause> <long pause>'`.
+
 ### Controllo locale con Whisper (facoltativo, gratuito)
 
 Oltre al QA di Gemini, ogni frase può essere trascritta in locale e confrontata
