@@ -334,12 +334,29 @@ def plausible(seg, dur):
     return 0.6 <= rate <= 3.8 and dur < 4 + w * 1.2
 
 
+def expected_weight(t):
+    """Durata attesa relativa di una frase: lettere + pause della punteggiatura."""
+    letters = len(re.findall(r'\w', t))
+    return letters + 6 * len(re.findall(r'[,;:]', t)) + 10 * len(re.findall(r'[.!?…]', t))
+
+
 def split_takes(x, segs):
-    """Divide la ripresa di una fase nelle sue frasi usando i silenzi più lunghi."""
+    """Divide la ripresa di una fase nelle sue frasi.
+
+    Sceglie i tagli tra i silenzi con una programmazione dinamica che premia i
+    silenzi lunghi (le <long pause> tra le frasi) e le durate coerenti con la
+    lunghezza del testo, così una pausa interna a una frase non viene scambiata
+    per un confine.
+    """
     n = len(segs)
     db, h = frames_db(x)
     thr = speech_threshold(db)
     quiet = db < thr
+    v = np.where(~quiet)[0]
+    if not len(v):
+        return None, 'nessun parlato'
+    if n == 1:
+        return [trim(x, thr)], 'ok'
     runs, start = [], None
     for i, q in enumerate(quiet):
         if q and start is None:
@@ -347,25 +364,64 @@ def split_takes(x, segs):
         elif not q and start is not None:
             runs.append((start, i))
             start = None
-    v = np.where(~quiet)[0]
-    if not len(v):
-        return None, 'nessun parlato'
     runs = [r for r in runs if r[0] > v[0] and r[1] <= v[-1] and (r[1] - r[0]) * h / SR >= 0.25]
-    if n == 1:
-        return [trim(x, thr)], 'ok'
-    if len(runs) < n - 1:
-        return None, f'{len(runs)} pause trovate, ne servono {n - 1}'
-    by_len = sorted(runs, key=lambda r: r[1] - r[0], reverse=True)
-    chosen = sorted(by_len[:n - 1])
-    shortest = min(r[1] - r[0] for r in chosen) * h / SR
-    nxt = (by_len[n - 1][1] - by_len[n - 1][0]) * h / SR if len(by_len) >= n else 0
-    cuts = [0] + [((a + b) // 2) * h for a, b in chosen] + [len(x)]
+    m = len(runs)
+    if m < n - 1:
+        return None, f'{m} pause trovate, ne servono {n - 1}'
+    t0, t1 = v[0] * h / SR, v[-1] * h / SR
+    mid = [((a + b) / 2) * h / SR for a, b in runs]
+    sil = [(b - a) * h / SR for a, b in runs]
+    w = np.array([expected_weight(tts_text(sg)) for sg in segs], float)
+    # tempo di parlato atteso per frase (le pause scelte sono escluse a posteriori)
+    total_sil_guess = sum(sorted(sil, reverse=True)[:n - 1])
+    speech = max(1e-3, (t1 - t0) - total_sil_guess)
+    exp = w / w.sum() * speech
+
+    def piece_cost(k, a_t, a_sil, b_t, b_sil):
+        dur = (b_t - a_t) - a_sil / 2 - b_sil / 2
+        r = dur / exp[k]
+        return 6.0 * np.log(max(r, 0.05)) ** 2
+
+    INF = float('inf')
+    # dp[k][j]: costo migliore con il k-esimo taglio (1..n-1) nella pausa j
+    dp = np.full((n, m), INF)
+    back = np.full((n, m), -1, int)
+    for j in range(m):
+        dp[1][j] = piece_cost(0, t0, 0, mid[j], sil[j]) - 2.5 * np.log(sil[j])
+    for k in range(2, n):
+        for j in range(k - 1, m):
+            best, arg = INF, -1
+            for i in range(k - 2, j):
+                if dp[k - 1][i] == INF:
+                    continue
+                c = dp[k - 1][i] + piece_cost(k - 1, mid[i], sil[i], mid[j], sil[j])
+                if c < best:
+                    best, arg = c, i
+            if arg >= 0:
+                dp[k][j] = best - 2.5 * np.log(sil[j])
+                back[k][j] = arg
+    best, last = INF, -1
+    for j in range(n - 2, m):
+        if dp[n - 1][j] == INF:
+            continue
+        c = dp[n - 1][j] + piece_cost(n - 1, mid[j], sil[j], t1, 0)
+        if c < best:
+            best, last = c, j
+    if last < 0:
+        return None, 'nessuna divisione possibile'
+    chosen, j = [], last
+    for k in range(n - 1, 0, -1):
+        chosen.append(j)
+        j = back[k][j]
+    chosen = sorted(chosen)
+    cuts = [0] + [int(mid[j] * SR) for j in chosen] + [len(x)]
     pieces = [trim(x[cuts[k]:cuts[k + 1]], thr) for k in range(n)]
-    for seg, p in zip(segs, pieces):
-        if not plausible(seg, len(p) / SR):
-            return None, f'durata anomala nella frase {seg["i"]} ({len(p) / SR:.1f}s)'
-    if shortest < 0.45 or (nxt and shortest < nxt * 1.15):
-        return None, f'pause poco distinte ({shortest:.2f}s contro {nxt:.2f}s)'
+    for sg, pc in zip(segs, pieces):
+        if not plausible(sg, len(pc) / SR):
+            return None, f'durata anomala nella frase {sg["i"]} ({len(pc) / SR:.1f}s)'
+    shortest = min(sil[j] for j in chosen)
+    if shortest < 0.45:
+        return None, f'pausa tra frasi troppo breve ({shortest:.2f}s)'
     return pieces, 'ok'
 
 
@@ -398,8 +454,8 @@ def cmd_progetta(args):
         voice = {'model': TTS_MODEL, 'type': 'prompted', 'display_name': spec['display_name'],
                  'gender': spec['gender'], 'language_code': 'it-IT', 'prompted': {'input': spec['input']}}
         r = None
-        for attempt in (('POST', '/voices', voice, {'store': 'true'}),
-                        ('POST', '/voices', {'store': True, 'voice': voice}, None)):
+        for attempt in (('POST', '/voices', {'store': True, 'voice': voice}, None),
+                        ('POST', '/voices', voice, {'store': 'true'})):
             try:
                 r = api(attempt[0], attempt[1], attempt[2], attempt[3])
                 break
@@ -436,6 +492,7 @@ def cmd_campioni(args):
         except ApiError as e:
             print('  errore:', e)
             continue
+        write_wav(outdir / 'grezzi' / f'{slug(name)}.wav', x)
         pieces, why = split_takes(x, sample)
         if pieces is None:
             print('  (divisione non riuscita:', why, '→ frasi una per una)')
