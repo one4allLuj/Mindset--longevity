@@ -298,15 +298,21 @@ def load_state():
     for k, v in (('voce', None), ('voci_progettate', {}), ('riprese', {}), ('qa', {}),
                  ('grezzi', {}), ('voci_importate', [])):
         st.setdefault(k, v)
-    # formato vecchio: riprese e qa indicizzati per numero di frase
-    if any(k.isdigit() for k in st['riprese']):
+    # formato vecchio (prima del 26/11/2026): voci indicizzate per numero di frase,
+    # riconoscibili perché contengono il campo 'key'. Le voci nuove restano intatte.
+    if st.get('formato') != 2:
         old_r, old_q = st['riprese'], st['qa']
         st['riprese'], st['qa'] = {}, {}
-        for i, e in old_r.items():
+        for k, e in old_r.items():
             if 'key' in e:
-                st['riprese'][e['key']] = {'file': e['file'], 'voce': e.get('voce'), 'i': int(i)}
-                if i in old_q:
-                    st['qa'][e['key']] = old_q[i]
+                st['riprese'][e['key']] = {'file': e['file'], 'voce': e.get('voce'), 'i': int(k)}
+                if k in old_q:
+                    st['qa'][e['key']] = old_q[k]
+            else:
+                st['riprese'][k] = e
+                if k in old_q:
+                    st['qa'][k] = old_q[k]
+        st['formato'] = 2
     st.pop('richieste', None)
     return st
 
@@ -382,7 +388,8 @@ def conta_richiesta(model):
     RICHIESTE.write_text(json.dumps(d, indent=1), 'utf-8')
 
 
-def api(method, path, body=None, query=None, timeout=600, tentativi=8):
+def api(method, path, body=None, query=None, timeout=600, tentativi=8, conta=None):
+    """conta: nome del modello di cui contare ogni invio (anche fallito, tranne i 429)."""
     url = API + path
     if query:
         url += '?' + urllib.parse.urlencode(query, doseq=True)
@@ -396,9 +403,13 @@ def api(method, path, body=None, query=None, timeout=600, tentativi=8):
         try:
             with urllib.request.urlopen(req, timeout=timeout) as r:
                 raw = r.read()
+                if conta:
+                    conta_richiesta(conta)
                 return json.loads(raw) if raw else {}
         except urllib.error.HTTPError as e:
             txt = e.read().decode('utf-8', 'replace')
+            if conta and e.code != 429:
+                conta_richiesta(conta)
             if e.code == 429 and re.search(r'PerDay|per day|daily|requests per day', txt, re.I):
                 raise QuotaError(e.code, 'Quota giornaliera esaurita: riprova dopo il reset. ' + txt)
             if e.code in (429, 500, 502, 503, 504) and not last:
@@ -409,6 +420,8 @@ def api(method, path, body=None, query=None, timeout=600, tentativi=8):
                 continue
             raise ApiError(e.code, txt)
         except (urllib.error.URLError, TimeoutError, ConnectionError) as e:
+            if conta:
+                conta_richiesta(conta)
             if not last:
                 print(f'   … rete ({e}), riprovo', flush=True)
                 time.sleep(10 * (attempt + 1))
@@ -472,14 +485,7 @@ def tts(items, voice):
         'response_format': {'type': 'audio'},
         'generation_config': {'speech_config': [{'voice': voice}]},
     }
-    try:
-        r = api('POST', '/interactions', body, tentativi=3)
-    except QuotaError:
-        raise
-    except Exception:
-        conta_richiesta(TTS_MODEL)   # una richiesta fallita può consumare quota
-        raise
-    conta_richiesta(TTS_MODEL)
+    r = api('POST', '/interactions', body, tentativi=3, conta=TTS_MODEL)
     return decode_audio(base64.b64decode(find_audio(r)))
 
 
@@ -801,13 +807,18 @@ def items_for(segs):
             for k, s in enumerate(segs)]
 
 
-def salva_pezzi(st, segs, pieces, voice, voice_name, suffix='', sovrascrivi=True):
+def nome_ripresa(s, key, tag=''):
+    """Nome unico: una ripresa nuova non sovrascrive mai il file di una precedente."""
+    return f'f{s["f"]:02d}-s{s["i"]:03d}-{key}{tag}-{time.time_ns() % 10**12:012d}.wav'
+
+
+def salva_pezzi(st, segs, pieces, voice, voice_name, sovrascrivi=True):
     salvate = 0
     for s, pc in zip(segs, pieces):
         key = take_key(voice, s)
         if not sovrascrivi and key in st['riprese']:
             continue
-        f = TAKES / f'f{s["f"]:02d}-s{s["i"]:03d}-{key}{suffix}.wav'
+        f = TAKES / nome_ripresa(s, key)
         write_wav(f, pc)
         st['riprese'][key] = {'file': f.name, 'voce': voice_name, 'i': s['i']}
         st['qa'].pop(key, None)
@@ -826,6 +837,10 @@ def giudizio(st, voice, s):
 def fasi_da_fare(segs, st, voice, fasi):
     return [fi for fi in fasi
             if not all(take_key(voice, s) in st['riprese'] for s in segs if s['f'] == fi)]
+
+
+def divisione_dubbia(why):
+    return 'incerta' in why or 'insolita' in why
 
 
 def registra_grezzo(st, raw, segs, voice, voice_name, motivo):
@@ -887,10 +902,15 @@ def cmd_genera(args):
             save_state(st)
             print('  → ripresa salvata: riprova con «dividi» (nessuna nuova richiesta)')
             continue
-        salva_pezzi(st, gsegs, pieces, voice, voice_name)
-        del st['grezzi'][raw.name]
+        n = salva_pezzi(st, gsegs, pieces, voice, voice_name, sovrascrivi=False)
+        if divisione_dubbia(why):
+            st['grezzi'][raw.name]['motivo'] = why
+            print(f'  ripresa tenuta come {raw.name}: con Whisper (VOCE_ASR_DIR) «dividi {raw.name} --forza» '
+                  'la ridivide senza nuove richieste')
+        else:
+            del st['grezzi'][raw.name]
         save_state(st)
-        print(f'  ✓ {len(gsegs)} frasi', flush=True)
+        print(f'  ✓ {n} frasi salvate', flush=True)
         controllo_asr(gsegs, pieces)
 
 
@@ -901,7 +921,13 @@ def cmd_dividi(args):
     if not st['grezzi']:
         print('Nessuna ripresa da dividere.')
         return
+    if args.forza and not args.nome:
+        sys.exit('--forza vale per una ripresa precisa: «dividi NOME --forza» (i nomi li stampa «dividi»).')
+    if args.nome and args.nome not in st['grezzi']:
+        sys.exit(f'Nessuna ripresa da dividere chiamata {args.nome}. Disponibili: {", ".join(st["grezzi"])}')
     for name, info in list(st['grezzi'].items()):
+        if args.nome and name != args.nome:
+            continue
         voice = resolve_voice(info['voce'])
         by_key = {take_key(voice, s): s for s in segs}
         keys = info.get('keys')
@@ -910,13 +936,16 @@ def cmd_dividi(args):
             continue
         gsegs = [by_key[k] for k in keys]
         if not args.forza and all(k in st['riprese'] for k in keys):
-            print(f'{name}: tutte le sue frasi hanno già una ripresa (usa --forza per sostituirle)')
+            print(f'{name}: tutte le sue frasi hanno già una ripresa (per sostituirle: «dividi {name} --forza»)')
             continue
         pieces, why = split_takes(read_wav(TAKES / name), gsegs)
         print(f'{name}: {why}')
         if pieces is not None:
             n = salva_pezzi(st, gsegs, pieces, voice, info['voce'], sovrascrivi=args.forza)
-            del st['grezzi'][name]
+            if divisione_dubbia(why):
+                info['motivo'] = why
+            else:
+                del st['grezzi'][name]
             save_state(st)
             print(f'  {n} frasi salvate')
             controllo_asr(gsegs, pieces)
@@ -934,9 +963,10 @@ def cmd_importa(args):
     titles, segs = load_script()
     st = load_state()
     voice_name = args.voce
+    voice = resolve_voice(voice_name)
     st['voce'] = voice_name
-    if voice_name not in st['voci_importate']:
-        st['voci_importate'].append(voice_name)
+    if voice == voice_name and voice_name not in st['voci_importate']:
+        st['voci_importate'].append(voice_name)   # etichetta di una voce non disponibile nell'API
     files = {}
     for f in sorted(Path(args.cartella).iterdir()):
         m = re.match(r'fase\s*0*(\d+)', f.stem, re.I)
@@ -951,15 +981,18 @@ def cmd_importa(args):
         x = load_audio(f)
         raw = TAKES / f'importata-f{fi + 1:02d}-{slug(voice_name)}-{int(time.time())}.wav'
         write_wav(raw, x)
-        registra_grezzo(st, raw, fsegs, voice_name, voice_name, 'da dividere')
+        registra_grezzo(st, raw, fsegs, voice, voice_name, 'da dividere')
         pieces, why = split_takes(x, fsegs)
         print(f'Fase {fi + 1} {titles[fi]}: {len(x) / SR / 60:.1f} min → {why}', flush=True)
         if pieces is None:
             st['grezzi'][raw.name]['motivo'] = why
             save_state(st)
             continue
-        salva_pezzi(st, fsegs, pieces, voice_name, voice_name)
-        del st['grezzi'][raw.name]
+        salva_pezzi(st, fsegs, pieces, voice, voice_name)
+        if divisione_dubbia(why):
+            st['grezzi'][raw.name]['motivo'] = why
+        else:
+            del st['grezzi'][raw.name]
         save_state(st)
         controllo_asr(fsegs, pieces)
     mancanti = sorted(set(range(len(titles))) - set(files))
@@ -1242,15 +1275,19 @@ def cmd_qa(args):
 
 
 def cmd_rigenera(args):
-    """Rifà le frasi segnalate raggruppandole: una richiesta per gruppo, non una per frase."""
+    """Rifà le frasi segnalate raggruppandole: una richiesta per gruppo, non una per frase.
+
+    Usa sempre la voce della sessione (quella di «genera»): una ripresa con un'altra
+    voce non verrebbe mai montata.
+    """
     titles, segs = load_script()
     st = load_state()
-    voice_name = args.voce or st['voce']
+    voice_name = st['voce']
     if not voice_name:
-        sys.exit('Nessuna voce: indica --voce oppure esegui prima «genera».')
+        sys.exit('Nessuna voce: esegui prima «genera VOCE».')
     if voice_name in st['voci_importate']:
-        sys.exit(f'«{voice_name}» è una voce registrata a mano: rifai le frasi in AI Studio e importale, '
-                 'oppure indica una voce dell\'API con --voce.')
+        sys.exit(f'«{voice_name}» è una voce registrata a mano: rifai quelle frasi in AI Studio e importale di nuovo, '
+                 'oppure registra la seduta con una voce dell\'API usando «genera VOCE».')
     voice = resolve_voice(voice_name)
     esplicite = bool(args.frasi)
     if esplicite:
@@ -1267,12 +1304,12 @@ def cmd_rigenera(args):
         return
     model = pick_qa_model()
     max_s = args.max_minuti * 60
-    non_divise = set()
+    escluse = set()          # frasi da non rimandare all'API in questo comando
     for rnd in range(args.tentativi):
         if esplicite and rnd == 0:
             todo = list(targets)
         else:
-            todo = [i for i in targets if i not in non_divise and is_flagged(giudizio(st, voice, segs[i]))]
+            todo = [i for i in targets if i not in escluse and is_flagged(giudizio(st, voice, segs[i]))]
         if not todo:
             break
         batches, cur, tot = [], [], 0.0
@@ -1294,16 +1331,19 @@ def cmd_rigenera(args):
                 return
             except ApiError as e:
                 print('  errore:', e)
+                escluse.update(s['i'] for s in bsegs)
                 continue
             raw = TAKES / f'rigenera-s{bsegs[0]["i"]:03d}-s{bsegs[-1]["i"]:03d}-r{rnd + 1}-{int(time.time())}.wav'
             write_wav(raw, x)
             registra_grezzo(st, raw, bsegs, voice, voice_name, 'rifacimento da valutare')
             pieces, why = split_takes(x, bsegs)
-            if pieces is None:
+            print('  divisione:', why, flush=True)
+            if pieces is None or (divisione_dubbia(why) and not get_asr()):
                 st['grezzi'][raw.name]['motivo'] = why
                 save_state(st)
-                non_divise.update(s['i'] for s in bsegs)
-                print('  divisione non riuscita:', why, '→ ripresa salvata («dividi --forza» per usarla)')
+                escluse.update(s['i'] for s in bsegs)
+                print(f'  → ripresa conservata come {raw.name}, frasi lasciate come sono. '
+                      'Se è un problema di pause, allunga VOCE_SEPARATORE o configura VOCE_ASR_DIR.')
                 continue
             qs, stato = valuta(model, bsegs, pieces)
             for s, pc, q in zip(bsegs, pieces, qs):
@@ -1311,11 +1351,12 @@ def cmd_rigenera(args):
                 old = st['qa'].get(key, {})
                 nuova = key not in st['riprese']
                 if not q['gemini'] and not nuova:
-                    alt = TAKES / f'f{s["f"]:02d}-s{s["i"]:03d}-{key}-alt{rnd + 1}.wav'
+                    alt = TAKES / nome_ripresa(s, key, f'-alt{rnd + 1}')
                     write_wav(alt, pc)
+                    escluse.add(s['i'])
                     esito = f'senza giudizio Gemini: tenuta la precedente (alternativa in {alt.name})'
                 elif nuova or (esplicite and not is_flagged(q)) or punteggio(q) > punteggio(old):
-                    f = TAKES / f'f{s["f"]:02d}-s{s["i"]:03d}-{key}-r{rnd + 1}.wav'
+                    f = TAKES / nome_ripresa(s, key, f'-r{rnd + 1}')
                     write_wav(f, pc)
                     st['riprese'][key] = {'file': f.name, 'voce': voice_name, 'i': s['i']}
                     st['qa'][key] = q
@@ -1325,8 +1366,9 @@ def cmd_rigenera(args):
                 print(f'  [{s["i"]}] {esito} (punteggio {punteggio(q):.1f} contro {punteggio(old):.1f})')
             del st['grezzi'][raw.name]
             save_state(st)
-            if stato == 'quota':
-                print('Quota del controllo Gemini esaurita: mi fermo per non rifare frasi senza poterle valutare.')
+            if stato != 'ok':
+                print('Il controllo di Gemini non è disponibile: mi fermo per non spendere richieste '
+                      'su frasi che non posso valutare.')
                 return
 
 
@@ -1538,7 +1580,8 @@ def main():
     p.add_argument('--fasi', nargs='*', help='numeri di fase da 1 a 13')
     p.add_argument('--max-minuti', type=float, default=MAX_RICHIESTA)
     p = sub.add_parser('dividi')
-    p.add_argument('--forza', action='store_true', help='sostituisce anche frasi che hanno già una ripresa')
+    p.add_argument('nome', nargs='?', help='una ripresa precisa (i nomi li stampa «dividi»)')
+    p.add_argument('--forza', action='store_true', help='con NOME: sostituisce anche frasi che hanno già una ripresa')
     p = sub.add_parser('pause')
     p.add_argument('file')
     p.add_argument('--frasi', type=int, help='quante frasi contiene la ripresa')
@@ -1550,7 +1593,6 @@ def main():
     p.add_argument('--fasi', nargs='*', help='numeri di fase da 1 a 13')
     p = sub.add_parser('rigenera')
     p.add_argument('frasi', nargs='*', help='numeri di frase (da 0); vuoto = quelle segnalate dal controllo')
-    p.add_argument('--voce', help='voce dell\'API da usare (di norma quella di «genera»)')
     p.add_argument('--tentativi', type=int, default=2)
     p.add_argument('--max-minuti', type=float, default=MAX_RICHIESTA)
     p = sub.add_parser('monta')

@@ -73,16 +73,18 @@ Regole che proteggono la quota e la qualità:
 
 - ogni ripresa è legata al testo della sua frase: se modifichi il copione,
   `genera` rifà solo le frasi cambiate;
-- nessuna ripresa pagata va persa: se una divisione non riesce resta in
-  `lavoro/riprese` e `dividi` (con `--forza` per sostituire) la recupera;
+- nessuna ripresa pagata va persa e nessun file viene sovrascritto: se una
+  divisione non riesce, o è incerta, la ripresa resta in `lavoro/riprese`;
+  `dividi` la recupera e `dividi NOME --forza` sostituisce le frasi già registrate;
 - se il controllo di Gemini non risponde o ha finito la quota, i giudizi
   precedenti restano validi e `rigenera` non sostituisce frasi che non può valutare;
 - `rigenera 12 37` rifà frasi precise (numerate da 0) anche se il controllo le
-  aveva approvate;
+  aveva approvate, sempre con la voce di `genera`; si ferma se il controllo di
+  Gemini non è disponibile;
 - `monta` si rifiuta se qualche frase è segnalata o non è stata valutata da
   Gemini (`--forza` per montare comunque);
-- `api` ripete una richiesta di voce al massimo 3 volte, perché anche un
-  tentativo fallito può consumare quota.
+- `api` ripete una richiesta di voce al massimo 3 volte e conta ogni invio,
+  perché anche un tentativo fallito può consumare quota.
 
 Prima di registrare la seduta conviene misurare le pause reali di Gemini su
 una ripresa grezza (per esempio un campione in `lavoro/campioni/grezzi/`):
