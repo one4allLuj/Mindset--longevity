@@ -58,6 +58,8 @@ SR = 24000          # frequenza delle riprese Gemini
 SR_OUT = 48000      # frequenza del master
 LEAD_IN = 5.0       # secondi di musica prima della prima parola
 TAIL = 14.0         # secondi di musica dopo l'ultima parola
+MAX_RICHIESTA = 6.5 # minuti di voce stimati per richiesta (il limite del modello è ~10,9)
+ASR_DIR = os.environ.get('VOCE_ASR_DIR', '')   # Whisper sherpa-onnx facoltativo per il controllo locale
 
 # ---------------------------------------------------------------- regia
 # Tono per fase (indice = fase del copione). Frasi brevi: Gemini 3.8 rende
@@ -183,6 +185,27 @@ class ApiError(Exception):
         self.body = body
 
 
+class QuotaError(ApiError):
+    """Quota giornaliera esaurita: inutile riprovare prima del reset."""
+
+
+def oggi_quota():
+    """Le quote giornaliere gratuite si azzerano a mezzanotte, ora del Pacifico."""
+    try:
+        from datetime import datetime
+        from zoneinfo import ZoneInfo
+        return datetime.now(ZoneInfo('America/Los_Angeles')).strftime('%Y-%m-%d')
+    except Exception:  # zoneinfo assente: approssimazione UTC-8
+        return time.strftime('%Y-%m-%d', time.gmtime(time.time() - 8 * 3600))
+
+
+def conta_richiesta(model):
+    st = load_state()
+    giorno = st.setdefault('richieste', {}).setdefault(oggi_quota(), {})
+    giorno[model] = giorno.get(model, 0) + 1
+    save_state(st)
+
+
 def api(method, path, body=None, query=None, timeout=600):
     url = API + path
     if query:
@@ -199,8 +222,8 @@ def api(method, path, body=None, query=None, timeout=600):
                 return json.loads(raw) if raw else {}
         except urllib.error.HTTPError as e:
             txt = e.read().decode('utf-8', 'replace')
-            if e.code == 429 and re.search(r'PerDay|per day|daily', txt, re.I):
-                raise ApiError(e.code, 'Quota giornaliera gratuita esaurita. Riprova domani. ' + txt)
+            if e.code == 429 and re.search(r'PerDay|per day|daily|requests per day', txt, re.I):
+                raise QuotaError(e.code, 'Quota giornaliera esaurita: riprova dopo il reset. ' + txt)
             if e.code in (429, 500, 502, 503, 504) and attempt < 7:
                 m = re.search(r'"retryDelay":\s*"(\d+)', txt)
                 wait = int(m.group(1)) + 2 if m else min(90, 8 * 2 ** attempt)
@@ -273,6 +296,7 @@ def tts(items, voice):
         'generation_config': {'speech_config': [{'voice': voice}]},
     }
     r = api('POST', '/interactions', body)
+    conta_richiesta(TTS_MODEL)
     return decode_audio(base64.b64decode(find_audio(r)))
 
 
@@ -478,6 +502,7 @@ def resolve_voice(name):
 
 
 def cmd_campioni(args):
+    """Un campione per voce: una sola richiesta ciascuno, senza divisione in frasi."""
     titles, segs = load_script()
     by_text = {s['t']: s for s in segs}
     sample = [by_text[t] for t in FRASI_CAMPIONE]
@@ -489,17 +514,72 @@ def cmd_campioni(args):
                  for k, s in enumerate(sample)]
         try:
             x = tts(items, voice)
+        except QuotaError as e:
+            sys.exit(f'Quota giornaliera esaurita: {e}')
         except ApiError as e:
             print('  errore:', e)
             continue
         write_wav(outdir / 'grezzi' / f'{slug(name)}.wav', x)
-        pieces, why = split_takes(x, sample)
-        if pieces is None:
-            print('  (divisione non riuscita:', why, '→ frasi una per una)')
-            pieces = [trim(tts([(tts_text(s), tts_style(s))], voice)) for s in sample]
-        voice_track, _ = assemble(sample, pieces, lead=3.0, tail=6.0)
-        master(voice_track, outdir / f'campione-{slug(name)}.mp3', bitrate='128k')
+        x = trim(x)
+        track = np.concatenate([np.zeros(int(3.0 * SR), np.float32), x, np.zeros(int(6.0 * SR), np.float32)])
+        master(track, outdir / f'campione-{slug(name)}.mp3', bitrate='128k')
         print('  ✓', outdir / f'campione-{slug(name)}.mp3')
+
+
+def est_seconds(seg):
+    """Durata stimata di una frase letta lentamente, più la pausa che la segue."""
+    t = tts_text(seg)
+    return words(t) / 1.75 + 0.35 * len(re.findall(r'[,;:…]', t)) + 1.5
+
+
+def gruppi_fasi(segs, fasi, max_s):
+    """Raggruppa fasi consecutive in richieste di durata stimata <= max_s."""
+    groups, cur, tot = [], [], 0.0
+    for fi in fasi:
+        d = sum(est_seconds(s) for s in segs if s['f'] == fi)
+        if cur and (tot + d > max_s or fi != cur[-1] + 1):
+            groups.append(cur)
+            cur, tot = [], 0.0
+        cur.append(fi)
+        tot += d
+    if cur:
+        groups.append(cur)
+    return groups
+
+
+def items_for(segs):
+    return [(tts_text(s) + ('' if k == len(segs) - 1 else ' <long pause>'), tts_style(s))
+            for k, s in enumerate(segs)]
+
+
+def salva_pezzi(st, segs, pieces, voice, voice_name, suffix=''):
+    for s, pc in zip(segs, pieces):
+        key = take_key(voice, s)
+        f = TAKES / f'f{s["f"]:02d}-s{s["i"]:03d}-{key}{suffix}.wav'
+        write_wav(f, pc)
+        st['riprese'][str(s['i'])] = {'key': key, 'file': f.name, 'voce': voice_name}
+        st['qa'].pop(str(s['i']), None)
+
+
+def fasi_da_fare(segs, st, voice, fasi):
+    return [fi for fi in fasi
+            if not all(st['riprese'].get(str(s['i']), {}).get('key') == take_key(voice, s)
+                       for s in segs if s['f'] == fi)]
+
+
+def cmd_piano(args):
+    titles, segs = load_script()
+    st = load_state()
+    voice_name = args.voce or st.get('voce')
+    fasi = sorted({s['f'] for s in segs})
+    todo = fasi_da_fare(segs, st, resolve_voice(voice_name), fasi) if voice_name else fasi
+    groups = gruppi_fasi(segs, todo, args.max_minuti * 60)
+    print(f'Voce: {voice_name or "(da scegliere)"} · fasi da registrare: {len(todo)} · richieste: {len(groups)}')
+    for g in groups:
+        gs = [s for s in segs if s['f'] in g]
+        print(f'  fasi {g[0] + 1}-{g[-1] + 1}: {len(gs)} frasi, ~{sum(est_seconds(s) for s in gs) / 60:.1f} min')
+    usate = st.get('richieste', {}).get(oggi_quota(), {})
+    print(f'Richieste TTS usate oggi ({oggi_quota()}, ora del Pacifico): {usate.get(TTS_MODEL, 0)}')
 
 
 def cmd_genera(args):
@@ -508,37 +588,129 @@ def cmd_genera(args):
     voice_name = args.voce
     voice = resolve_voice(voice_name)
     st['voce'] = voice_name
-    fasi = sorted({s['f'] for s in segs}) if not args.fasi else [int(f) for f in args.fasi]
-    for fi in fasi:
-        fsegs = [s for s in segs if s['f'] == fi]
-        if all(st['riprese'].get(str(s['i']), {}).get('key') == take_key(voice, s) for s in fsegs):
-            print(f'= Fase {fi + 1} già registrata')
-            continue
-        print(f'▶ Fase {fi + 1}: {titles[fi]} ({len(fsegs)} frasi)', flush=True)
-        items = [(tts_text(s) + ('' if k == len(fsegs) - 1 else ' <long pause>'), tts_style(s))
-                 for k, s in enumerate(fsegs)]
-        pieces = None
+    save_state(st)
+    fasi = sorted({s['f'] for s in segs}) if not args.fasi else [int(f) - 1 for f in args.fasi]
+    todo = fasi_da_fare(segs, st, voice, fasi)
+    for fi in sorted(set(fasi) - set(todo)):
+        print(f'= Fase {fi + 1} già registrata')
+    groups = gruppi_fasi(segs, todo, args.max_minuti * 60)
+    print(f'Richieste previste: {len(groups)}', flush=True)
+    for g in groups:
+        gsegs = [s for s in segs if s['f'] in g]
+        nomi = ', '.join(titles[fi] for fi in g)
+        print(f'▶ Fasi {g[0] + 1}-{g[-1] + 1} ({nomi}): {len(gsegs)} frasi', flush=True)
         try:
-            x = tts(items, voice)
-            write_wav(TAKES / f'fase{fi:02d}-{slug(voice_name)}.wav', x)
-            pieces, why = split_takes(x, fsegs)
-            if pieces is None:
-                print('  divisione non riuscita:', why)
+            x = tts(items_for(gsegs), voice)
+        except QuotaError as e:
+            print('  Quota giornaliera esaurita: i progressi sono salvati, riprendi dopo il reset.')
+            print('  ', str(e)[:300])
+            return
         except ApiError as e:
-            print('  errore fase intera:', e)
+            print('  errore:', e)
+            continue
+        raw = TAKES / f'gruppo-f{g[0] + 1:02d}-f{g[-1] + 1:02d}-{slug(voice_name)}.wav'
+        write_wav(raw, x)
+        print(f'  ripresa: {len(x) / SR / 60:.1f} min', flush=True)
+        pieces, why = split_takes(x, gsegs)
         if pieces is None:
-            print('  → registro le frasi una per una')
-            pieces = []
-            for s in fsegs:
-                pieces.append(trim(tts([(tts_text(s), tts_style(s))], voice)))
-        for s, p in zip(fsegs, pieces):
-            key = take_key(voice, s)
-            f = TAKES / f'f{fi:02d}-s{s["i"]:03d}-{key}.wav'
-            write_wav(f, p)
-            st['riprese'][str(s['i'])] = {'key': key, 'file': f.name, 'voce': voice_name}
-            st['qa'].pop(str(s['i']), None)
+            print('  divisione non riuscita:', why, '→ ripresa salvata, usa «dividi» o «genera» con fasi più piccole')
+            st.setdefault('grezzi', {})[raw.name] = {'fasi': g, 'voce': voice_name, 'motivo': why}
+            save_state(st)
+            continue
+        salva_pezzi(st, gsegs, pieces, voice, voice_name)
+        st.get('grezzi', {}).pop(raw.name, None)
         save_state(st)
-        print(f'  ✓ {len(fsegs)} frasi', flush=True)
+        print(f'  ✓ {len(gsegs)} frasi', flush=True)
+        controllo_asr(gsegs, pieces)
+
+
+def cmd_dividi(args):
+    """Riprova a dividere le riprese di gruppo salvate (nessuna richiesta all'API)."""
+    titles, segs = load_script()
+    st = load_state()
+    for name, info in list(st.get('grezzi', {}).items()):
+        voice = resolve_voice(info['voce'])
+        gsegs = [s for s in segs if s['f'] in info['fasi']]
+        x = read_wav(TAKES / name)
+        pieces, why = split_takes(x, gsegs)
+        print(f'{name}: {why}')
+        if pieces is not None:
+            salva_pezzi(st, gsegs, pieces, voice, info['voce'])
+            del st['grezzi'][name]
+            save_state(st)
+            controllo_asr(gsegs, pieces)
+
+
+# ================================================================ controllo locale (Whisper)
+_ASR = None
+
+
+def get_asr():
+    """Riconoscitore Whisper locale (sherpa-onnx), se configurato con VOCE_ASR_DIR."""
+    global _ASR
+    if _ASR is not None or not ASR_DIR:
+        return _ASR or None
+    try:
+        import sherpa_onnx
+        d = Path(ASR_DIR)
+        enc = sorted(d.glob('*encoder*.onnx'))
+        dec = sorted(d.glob('*decoder*.onnx'))
+        tok = sorted(d.glob('*tokens.txt'))
+        pick = lambda fs: next((f for f in fs if 'int8' in f.name), fs[0])
+        _ASR = sherpa_onnx.OfflineRecognizer.from_whisper(
+            encoder=str(pick(enc)), decoder=str(pick(dec)), tokens=str(tok[0]),
+            language='it', task='transcribe', num_threads=max(1, (os.cpu_count() or 2) - 1))
+    except Exception as e:
+        print('Controllo locale non disponibile:', e)
+        _ASR = False
+    return _ASR or None
+
+
+def norm_words(t):
+    import unicodedata
+    t = unicodedata.normalize('NFD', t.lower())
+    t = ''.join(c for c in t if not unicodedata.combining(c))
+    return re.findall(r"[a-z0-9]+", t)
+
+
+def wer(ref, hyp):
+    r, h = norm_words(ref), norm_words(hyp)
+    d = list(range(len(h) + 1))
+    for i in range(1, len(r) + 1):
+        prev, d[0] = d[:], i
+        for j in range(1, len(h) + 1):
+            d[j] = min(prev[j] + 1, d[j - 1] + 1, prev[j - 1] + (r[i - 1] != h[j - 1]))
+    return d[len(h)] / max(1, len(r))
+
+
+def asr(x):
+    rec = get_asr()
+    if not rec:
+        return None
+    out = []
+    x = resample(x, SR, 16000)
+    for a in range(0, len(x), 16000 * 28):
+        st = rec.create_stream()
+        st.accept_waveform(16000, x[a:a + 16000 * 28].astype(np.float32))
+        rec.decode_stream(st)
+        out.append(st.result.text.strip())
+    return ' '.join(out)
+
+
+def controllo_asr(segs, takes, soglia=0.2):
+    """Trascrive ogni frase in locale e segnala quelle che non corrispondono al copione."""
+    if not get_asr():
+        return {}
+    res, cattive = {}, 0
+    for s, x in zip(segs, takes):
+        heard = asr(x)
+        w = wer(s['t'], heard)
+        res[s['i']] = {'heard': heard, 'wer': round(w, 2)}
+        if w > soglia:
+            cattive += 1
+            print(f'  ⚠ [{s["i"]}] WER {w:.2f}: «{s["t"][:50]}» → «{heard[:60]}»')
+    print(f'  controllo locale: {len(segs) - cattive}/{len(segs)} frasi corrispondono al copione', flush=True)
+    return res
 
 
 # ================================================================ controllo qualità
@@ -632,7 +804,35 @@ def local_checks(seg, x):
 
 def is_flagged(q):
     return bool(q.get('locale')) or not q.get('text_ok', True) or not q.get('pronunciation_ok', True) \
-        or not q.get('natural_italian', True) or q.get('artifacts') or (q.get('tone') or 5) <= 3
+        or not q.get('natural_italian', True) or q.get('artifacts') or (q.get('tone') or 5) <= 3 \
+        or (q.get('asr') or {}).get('wer', 0) > 0.2
+
+
+def punteggio(q):
+    if not q:
+        return -1
+    return (0 if is_flagged(q) else 10) + (q.get('tone') or 0) - 5 * (q.get('asr') or {}).get('wer', 0)
+
+
+def valuta(model, fsegs, takes):
+    """QA di Gemini (se c'è quota) + controlli locali + Whisper locale (se configurato)."""
+    try:
+        res = qa_phase(model, fsegs, takes)
+    except QuotaError:
+        print('  quota del modello QA esaurita: uso solo i controlli locali')
+        res = []
+    except (ApiError, KeyError, IndexError, json.JSONDecodeError) as e:
+        print(f'  QA Gemini non riuscito ({str(e)[:120]})')
+        res = []
+    asr_res = controllo_asr(fsegs, takes)
+    out = []
+    for k, s in enumerate(fsegs):
+        q = dict(next((r for r in res if r.get('n') == k + 1), {}))
+        q['locale'] = local_checks(s, takes[k])
+        if s['i'] in asr_res:
+            q['asr'] = asr_res[s['i']]
+        out.append(q)
+    return out
 
 
 def cmd_qa(args):
@@ -640,7 +840,7 @@ def cmd_qa(args):
     st = load_state()
     model = pick_qa_model()
     print('Modello QA:', model)
-    fasi = sorted({s['f'] for s in segs}) if not args.fasi else [int(f) for f in args.fasi]
+    fasi = sorted({s['f'] for s in segs}) if not args.fasi else [int(f) - 1 for f in args.fasi]
     tot_flag = 0
     for fi in fasi:
         fsegs = [s for s in segs if s['f'] == fi]
@@ -648,19 +848,12 @@ def cmd_qa(args):
             print(f'- Fase {fi + 1}: riprese mancanti, salto')
             continue
         takes = [read_wav(TAKES / st['riprese'][str(s['i'])]['file']) for s in fsegs]
-        try:
-            res = qa_phase(model, fsegs, takes)
-        except (ApiError, KeyError, json.JSONDecodeError) as e:
-            print(f'- Fase {fi + 1}: QA non riuscito ({e})')
-            continue
-        for k, s in enumerate(fsegs):
-            q = next((r for r in res if r.get('n') == k + 1), {}) if res else {}
-            q['locale'] = local_checks(s, takes[k])
+        for s, q in zip(fsegs, valuta(model, fsegs, takes)):
             st['qa'][str(s['i'])] = q
             if is_flagged(q):
                 tot_flag += 1
                 print(f'  ⚠ [{s["i"]}] «{s["t"][:60]}» → {q.get("problem") or ""} '
-                      f'{"; ".join(q["locale"])} (tono {q.get("tone")})')
+                      f'{"; ".join(q["locale"])} (tono {q.get("tone")}, WER {(q.get("asr") or {}).get("wer")})')
         tones = [st['qa'][str(s['i'])].get('tone') or 0 for s in fsegs]
         print(f'- Fase {fi + 1} {titles[fi]}: tono medio {np.mean(tones):.1f}/5')
         save_state(st)
@@ -668,38 +861,59 @@ def cmd_qa(args):
 
 
 def cmd_rigenera(args):
+    """Rifà le frasi segnalate raggruppandole: una richiesta per gruppo, non una per frase."""
     titles, segs = load_script()
     st = load_state()
     voice_name = st['voce']
     voice = resolve_voice(voice_name)
-    targets = [int(i) for i in args.frasi] if args.frasi else \
-        [int(i) for i, q in st['qa'].items() if is_flagged(q)]
+    targets = sorted(int(i) for i in args.frasi) if args.frasi else \
+        sorted(int(i) for i, q in st['qa'].items() if is_flagged(q))
     if not targets:
         print('Nessuna frase da rifare.')
         return
     model = pick_qa_model()
-    for i in sorted(targets):
-        s = segs[i]
-        best = None
-        for attempt in range(args.tentativi):
-            x = trim(tts([(tts_text(s), tts_style(s))], voice))
+    max_s = args.max_minuti * 60
+    for rnd in range(args.tentativi):
+        todo = [i for i in targets if rnd == 0 and args.frasi or is_flagged(st['qa'].get(str(i), {}))]
+        if not todo:
+            break
+        batches, cur, tot = [], [], 0.0
+        for i in todo:
+            d = est_seconds(segs[i])
+            if cur and tot + d > max_s:
+                batches.append(cur)
+                cur, tot = [], 0.0
+            cur.append(segs[i])
+            tot += d
+        if cur:
+            batches.append(cur)
+        print(f'Giro {rnd + 1}: {len(todo)} frasi in {len(batches)} richieste', flush=True)
+        for bsegs in batches:
             try:
-                q = qa_phase(model, [s], [x])[0]
-            except (ApiError, IndexError, KeyError, json.JSONDecodeError):
-                q = {}
-            q['locale'] = local_checks(s, x)
-            score = (0 if is_flagged(q) else 10) + (q.get('tone') or 0)
-            print(f'  [{i}] tentativo {attempt + 1}: punteggio {score} {q.get("problem") or ""}')
-            if best is None or score > best[0]:
-                best = (score, x, q)
-            if not is_flagged(q) and (q.get('tone') or 0) >= 4:
-                break
-        key = take_key(voice, s)
-        f = TAKES / f'f{s["f"]:02d}-s{i:03d}-{key}-r.wav'
-        write_wav(f, best[1])
-        st['riprese'][str(i)] = {'key': key, 'file': f.name, 'voce': voice_name}
-        st['qa'][str(i)] = best[2]
-        save_state(st)
+                x = tts(items_for(bsegs), voice)
+            except QuotaError:
+                print('  Quota giornaliera esaurita: riprendi dopo il reset.')
+                return
+            except ApiError as e:
+                print('  errore:', e)
+                continue
+            pieces, why = split_takes(x, bsegs)
+            if pieces is None:
+                print('  divisione non riuscita:', why)
+                continue
+            for s, pc, q in zip(bsegs, pieces, valuta(model, bsegs, pieces)):
+                old = st['qa'].get(str(s['i']), {})
+                if punteggio(q) > punteggio(old):
+                    key = take_key(voice, s)
+                    f = TAKES / f'f{s["f"]:02d}-s{s["i"]:03d}-{key}-r{rnd + 1}.wav'
+                    write_wav(f, pc)
+                    st['riprese'][str(s['i'])] = {'key': key, 'file': f.name, 'voce': voice_name}
+                    st['qa'][str(s['i'])] = q
+                    esito = 'sostituita'
+                else:
+                    esito = 'tenuta la precedente'
+                print(f'  [{s["i"]}] {esito} (punteggio {punteggio(q):.1f} contro {punteggio(old):.1f})')
+            save_state(st)
 
 
 # ================================================================ montaggio e mastering
@@ -894,20 +1108,27 @@ def main():
     p = sub.add_parser('campioni')
     p.add_argument('voci', nargs='+')
     p.add_argument('--out')
+    p = sub.add_parser('piano')
+    p.add_argument('voce', nargs='?')
+    p.add_argument('--max-minuti', type=float, default=MAX_RICHIESTA)
     p = sub.add_parser('genera')
     p.add_argument('voce')
-    p.add_argument('--fasi', nargs='*')
+    p.add_argument('--fasi', nargs='*', help='numeri di fase da 1 a 13')
+    p.add_argument('--max-minuti', type=float, default=MAX_RICHIESTA)
+    sub.add_parser('dividi')
     p = sub.add_parser('qa')
-    p.add_argument('--fasi', nargs='*')
+    p.add_argument('--fasi', nargs='*', help='numeri di fase da 1 a 13')
     p = sub.add_parser('rigenera')
     p.add_argument('frasi', nargs='*')
-    p.add_argument('--tentativi', type=int, default=3)
+    p.add_argument('--tentativi', type=int, default=2)
+    p.add_argument('--max-minuti', type=float, default=MAX_RICHIESTA)
     p = sub.add_parser('monta')
     p.add_argument('--forza', action='store_true')
     p.add_argument('--bitrate', default='112k')
     args = ap.parse_args()
-    {'voci': cmd_voci, 'progetta': cmd_progetta, 'campioni': cmd_campioni, 'genera': cmd_genera,
-     'qa': cmd_qa, 'rigenera': cmd_rigenera, 'monta': cmd_monta}[args.cmd](args)
+    {'voci': cmd_voci, 'progetta': cmd_progetta, 'campioni': cmd_campioni, 'piano': cmd_piano,
+     'genera': cmd_genera, 'dividi': cmd_dividi, 'qa': cmd_qa, 'rigenera': cmd_rigenera,
+     'monta': cmd_monta}[args.cmd](args)
 
 
 if __name__ == '__main__':

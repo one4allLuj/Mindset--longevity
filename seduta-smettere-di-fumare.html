@@ -317,6 +317,7 @@
     <div class="wrap">
       <p><strong>Avvertenze.</strong> Questa seduta è uno strumento di rilassamento e autosuggestione: non sostituisce il parere del medico né un percorso di cura. Non ascoltarla alla guida o mentre usi macchinari. Se soffri di disturbi psichiatrici o di epilessia, parlane prima con il tuo medico. Se assumi farmaci regolarmente, avvisa il medico che stai smettendo: smettere di fumare può modificare l'effetto di alcuni medicinali.</p>
       <p><strong>Aiuto gratuito.</strong> Telefono Verde contro il Fumo dell'Istituto Superiore di Sanità: <a href="tel:800554088">800 554 088</a> · <a href="https://smettodifumare.iss.it" rel="noopener">smettodifumare.iss.it</a>, dove trovi anche i Centri Antifumo del Servizio Sanitario Nazionale.</p>
+      <p>Le voci della seduta sono generate al computer: l'audio professionale con intelligenza artificiale (Google Gemini), le altre con la sintesi vocale del tuo dispositivo.</p>
       <p>Testo originale ispirato ai principi del metodo descritto da Allen Carr in «È facile smettere di fumare se sai come farlo». Non affiliato né approvato da Allen Carr's Easyway.</p>
     </div>
   </footer>
@@ -842,7 +843,7 @@ Questa è la tua nuova vita. Goditela. {2}
   }
   function voiceNoteText() {
     if (isAudio()) {
-      return 'Voce professionale con sottofondo musicale e pause calibrate. Puoi bloccare lo schermo: la seduta continua.';
+      return 'Voce narrante generata con intelligenza artificiale, con sottofondo musicale e pause calibrate. Puoi bloccare lo schermo: la seduta continua.';
     } else if (!synth) {
       return 'Questo browser non supporta la sintesi vocale: la seduta scorre come testo, con il ritmo e le pause giuste, così puoi leggerla ad alta voce o farla leggere a qualcuno.';
     } else if (!voices.length) {

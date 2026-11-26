@@ -25,19 +25,47 @@ prodotti. Non attivare la fatturazione sul progetto se vuoi restare a costo zero
 
 La chiave non va mai scritta nel codice né nei commit.
 
+## Quote e costi
+
+Il piano gratuito di Gemini 3.8 Flash TTS consente **10 richieste al giorno**
+(si azzerano a mezzanotte, ora del Pacifico). Per questo lo strumento raggruppa
+più fasi in una sola richiesta: la seduta intera richiede **4 richieste**
+(`piano` mostra il conto). Se la quota finisce, lo strumento si ferma e
+salva i progressi; basta rilanciare lo stesso comando dopo il reset.
+
+Con Google AI Pro si possono riscattare in AI Studio 10 $ al mese di crediti
+per l'API (pagina «Google AI plans» della documentazione). Con una chiave a pagamento
+non c'è il limite giornaliero e l'intera seduta costa meno di 1 $.
+
 ## Produzione, passo per passo
 
 Dalla radice del repository:
 
 ```bash
 python3 tools/voce/produci_voce.py voci                   # voci italiane disponibili
-python3 tools/voce/produci_voce.py progetta               # crea le voci "ipnoterapeuta" donna e uomo
-python3 tools/voce/produci_voce.py campioni ipnoterapeuta-donna ipnoterapeuta-uomo Sulafat Enceladus
-#   → ascolta i campioni in tools/voce/lavoro/campioni/ e scegli la voce
-python3 tools/voce/produci_voce.py genera ipnoterapeuta-donna   # registra le 13 fasi
+python3 tools/voce/produci_voce.py progetta               # crea le voci "ipnoterapeuta" (Voice design)
+python3 tools/voce/produci_voce.py campioni ipnoterapeuta-donna it-it-csagent-7 it-it-storyteller-1
+#   → una richiesta per voce; ascolta i campioni in tools/voce/lavoro/campioni/
+python3 tools/voce/produci_voce.py piano ipnoterapeuta-donna    # quante richieste servono
+python3 tools/voce/produci_voce.py genera ipnoterapeuta-donna   # registra tutte le fasi (4 richieste)
 python3 tools/voce/produci_voce.py qa                     # controllo qualità frase per frase
-python3 tools/voce/produci_voce.py rigenera               # rifà solo le frasi segnalate
+python3 tools/voce/produci_voce.py rigenera               # rifà insieme le frasi segnalate
 python3 tools/voce/produci_voce.py monta                  # montaggio, sottofondo, mastering
+```
+
+`genera` divide ogni ripresa nelle singole frasi. Se la divisione non riesce,
+la ripresa resta salvata e `dividi` riprova senza nuove richieste.
+`--fasi 4 5 6` limita `genera` e `qa` ad alcune fasi (numerate da 1 a 13).
+
+### Controllo locale con Whisper (facoltativo, gratuito)
+
+Oltre al QA di Gemini, ogni frase può essere trascritta in locale e confrontata
+con il copione: serve `pip install sherpa-onnx` e un modello Whisper per
+sherpa-onnx (per esempio `sherpa-onnx-whisper-turbo` dalle release di
+k2-fsa/sherpa-onnx su GitHub). Indica la cartella del modello:
+
+```bash
+export VOCE_ASR_DIR=/percorso/sherpa-onnx-whisper-turbo
 ```
 
 `monta` scrive:
