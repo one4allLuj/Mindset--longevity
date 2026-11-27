@@ -555,8 +555,86 @@ def expected_weight(t):
     return letters + 6 * len(re.findall(r'[,;:]', t)) + 10 * len(re.findall(r'[.!?…]', t))
 
 
+def word_edit(a, b):
+    """Distanza di edit tra due liste di parole."""
+    if not a:
+        return len(b)
+    if not b:
+        return len(a)
+    prev = list(range(len(b) + 1))
+    for i in range(1, len(a) + 1):
+        cur = [i] + [0] * len(b)
+        ai = a[i - 1]
+        for j in range(1, len(b) + 1):
+            cur[j] = min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (ai != b[j - 1]))
+        prev = cur
+    return prev[-1]
+
+
+def allinea_asr(x, segs, min_sil=0.3, max_span=18):
+    """Divide una ripresa lunga allineandola al testo, non alle pause.
+
+    La ripresa viene spezzata in tutti i suoi silenzi; ogni pezzo viene trascritto
+    con Whisper e una programmazione dinamica assegna pezzi consecutivi alle frasi
+    del copione minimizzando la distanza tra parole trascritte e parole scritte.
+    Funziona anche quando le pause tra le frasi sono corte quanto quelle interne.
+    Restituisce (pezzi, errore medio per parola) oppure (None, motivo).
+    """
+    n = len(segs)
+    db, h = frames_db(x)
+    thr = speech_threshold(db)
+    quiet = db < thr
+    v = np.where(~quiet)[0]
+    if not len(v):
+        return None, 'nessun parlato'
+    runs, start = [], None
+    for i, q in enumerate(quiet):
+        if q and start is None:
+            start = i
+        elif not q and start is not None:
+            if start > v[0] and (i - start) * h / SR >= min_sil:
+                runs.append((start, i))
+            start = None
+    bounds = [0] + [((a + b) // 2) * h for a, b in runs] + [len(x)]
+    chunks = [(bounds[k], bounds[k + 1]) for k in range(len(bounds) - 1)]
+    C = len(chunks)
+    if C < n:
+        return None, f'{C} pezzi per {n} frasi'
+    heard = [norm_words(asr(trim(x[a:b], thr)) or '') for a, b in chunks]
+    ref = [norm_words(sg['t']) for sg in segs]
+    INF = float('inf')
+    dp = [[INF] * (C + 1) for _ in range(n + 1)]
+    back = [[-1] * (C + 1) for _ in range(n + 1)]
+    dp[0][0] = 0.0
+    for k in range(n):
+        rem = n - k - 1                       # frasi ancora da assegnare dopo questa
+        for c in range(C):
+            if dp[k][c] == INF:
+                continue
+            acc = []
+            for c2 in range(c + 1, min(C - rem, c + max_span) + 1):
+                acc = acc + heard[c2 - 1]
+                cost = dp[k][c] + word_edit(ref[k], acc)
+                if cost < dp[k + 1][c2]:
+                    dp[k + 1][c2] = cost
+                    back[k + 1][c2] = c
+    if dp[n][C] == INF:
+        return None, 'allineamento impossibile'
+    cuts, c = [C], C
+    for k in range(n, 0, -1):
+        c = back[k][c]
+        cuts.append(c)
+    cuts = cuts[::-1]                          # indici di pezzo: frase k = pezzi cuts[k]..cuts[k+1]
+    pieces = [trim(x[chunks[cuts[k]][0]:chunks[cuts[k + 1] - 1][1]], thr) for k in range(n)]
+    errore = dp[n][C] / max(1, sum(len(r) for r in ref))
+    return pieces, errore
+
+
 def split_takes(x, segs):
     """Divide la ripresa di una fase nelle sue frasi.
+
+    Con Whisper disponibile la divisione segue il testo (allinea_asr); altrimenti
+    segue le pause e le durate attese.
 
     Sceglie i tagli tra i silenzi con una programmazione dinamica che premia i
     silenzi lunghi (le <long pause> tra le frasi) e le durate coerenti con la
@@ -572,6 +650,16 @@ def split_takes(x, segs):
         return None, 'nessun parlato'
     if n == 1:
         return [trim(x, thr)], 'ok'
+    if get_asr():
+        pieces, err = allinea_asr(x, segs)
+        if pieces is not None and err <= 0.25:
+            strane = [sg['i'] for sg, pc in zip(segs, pieces) if not plausible(sg, len(pc) / SR)]
+            why = f'ok (allineata al testo, errore {err:.0%})'
+            if strane:
+                why += f'; durata insolita da controllare: {strane}'
+            return pieces, why
+        print(f'  allineamento al testo non riuscito ({err if pieces is None else f"errore {err:.0%}"}): '
+              'divido con le pause', flush=True)
     runs, start = [], None
     for i, q in enumerate(quiet):
         if q and start is None:
