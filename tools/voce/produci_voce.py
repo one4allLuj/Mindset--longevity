@@ -1644,7 +1644,7 @@ def cmd_monta(args):
     master(voice_track, mp3, bitrate=args.bitrate)
     data = {
         'src': f'audio/{OUT_NAME}.mp3',
-        'voce': st['voce'],
+        'voce': 'sintetica (Google Gemini)',   # etichetta pubblica: nessun titolo professionale
         'durata': round(len(voice_track) / SR, 2),
         'n': len(segs),
         'firma': firma(segs),
