@@ -626,12 +626,12 @@ def allinea_asr(x, segs, min_sil=0.3, max_span=18):
         cuts.append(c)
     cuts = cuts[::-1]                          # indici di pezzo: frase k = pezzi cuts[k]..cuts[k+1]
     pieces = [trim(x[chunks[cuts[k]][0]:chunks[cuts[k + 1] - 1][1]], thr) for k in range(n)]
-    # quota di frasi che corrispondono al testo (un'allucinazione di Whisper su una
-    # parola isolata, o una frase improvvisata da Gemini, non devono invalidare tutto)
+    # quota di frasi che corrispondono al testo, trascrivendo ogni frase ricomposta
+    # (i pezzetti corti si trascrivono male). Un'allucinazione di Whisper su una
+    # parola isolata, o una frase improvvisata da Gemini, non invalidano tutto.
     buone = 0
     for k in range(n):
-        udito = [w for c in range(cuts[k], cuts[k + 1]) for w in heard[c]]
-        if word_edit(ref[k], udito) <= max(1, 0.3 * len(ref[k])):
+        if len(ref[k]) < 4 or word_edit(ref[k], norm_words(asr(pieces[k]) or '')) <= max(1, 0.3 * len(ref[k])):
             buone += 1
     return pieces, 1 - buone / n
 
