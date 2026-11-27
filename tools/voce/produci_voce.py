@@ -141,7 +141,7 @@ STILI_FRASE = {
         'calm, clear and firm, quietly certain',
     'Una sola sigaretta è proprio il modo in cui la trappola si richiude. È così che ti ha trattenuto per tutto questo tempo.':
         'calm, clear and firm, quietly certain',
-    'Così, se un giorno qualcuno ti offrirà una sigaretta, o un pensiero ti suggerirà «solo questa», sorriderai, perché conosci la verità. E dirai, con leggerezza: «No, grazie. Non fumo».':
+    'Così, se un giorno qualcuno ti offrirà una sigaretta, o un pensiero ti suggerirà «solo questa», sorriderai, perché conosci la verità. E dirai, con leggerezza: «No, grazie, sto bene così».':
         'warm and light, with an easy smile',
     '«Non rinuncio a niente. Mi riprendo tutto».':
         'slow, joyful conviction, gentle emphasis on the last word',
