@@ -161,7 +161,7 @@ STILI_FRASE = {
         'bright, energized, warm and lively',
     'Cinque. Apri gli occhi. Fai un bel respiro… ed eccoti qui.':
         'warm, bright and fully awake',
-    "Se hai vicino il pacchetto, prendilo e buttalo via, insieme all'accendino. Non con tristezza: con il sollievo di chi si toglie finalmente un sassolino dalla scarpa.":
+    "Se hai vicino il pacchetto, prendilo e buttalo via, insieme all'accendino. Non con tristezza, ma con il sollievo di chi si toglie finalmente un sassolino dalla scarpa.":
         'warm, bright and fully awake, light and encouraging',
     'Questa è la tua nuova vita. Goditela.':
         'warm, bright, with a gentle smile',
@@ -181,8 +181,8 @@ RITOCCHI = {
     "Il petto si muove piano, insieme al respiro. E ogni respiro ti porta un po' più giù, in una calma sempre più profonda.":
         "Il petto si muove piano, insieme al respiro. <breath> E ogni respiro ti porta un po' più giù, in una calma sempre più profonda.",
     # Unisce due ritocchi: la breve pausa di regia dopo la domanda, che lascia affiorare il rico
-    "E ricordi il sapore di quella prima sigaretta? Il fumo che graffiava la gola. Forse la tosse, forse un po' di nausea. Il tuo corpo, saggio, ti stava dicendo la verità.":
-        "E ricordi il sapore di quella prima sigaretta? <short pause> Il fumo che graffiava la gola. Forse la tosse, forse un po' di nàusea. Il tuo corpo, saggio, ti stava dicendo la verità.",
+    "E ricordi il sapore di quella prima sigaretta? Il fumo che graffiava la gola. Forse la tosse, forse un po' di nausea. Il tuo corpo lo sapeva già. Ti stava dicendo la verità.":
+        "E ricordi il sapore di quella prima sigaretta? <short pause> Il fumo che graffiava la gola. Forse la tosse, forse un po' di nàusea. Il tuo corpo lo sapeva già. Ti stava dicendo la verità.",
     # La breve pausa dopo i due punti dà peso alla rivelazione centrale.
     'Quello che rimane è la verità: non ti serve. Non ti è mai servita.':
         'Quello che rimane è la verità: <short pause> non ti serve. Non ti è mai servita.',
@@ -199,8 +199,8 @@ RITOCCHI = {
     'Ora arriva un momento di stress: una scadenza, una discussione, un imprevisto. Fai un respiro profondo, la mente è lucida, e lo affronti meglio di come avresti fatto fumando. Perché adesso hai un problema in meno, non uno in più.':
         'Ora arriva un momento di stress: una scadenza, una discussione, un imprevisto. Fai un respiro profondo, <breath> la mente è lucida, e lo affronti meglio di come avresti fatto fumando. Perché adesso hai un problema in meno, non uno in più.',
     # La micro-pausa mette in risalto il ribaltamento da sacrificio a liberazione.
-    'E adesso, nel tuo luogo sicuro, è il momento di una scelta semplice. Non un sacrificio: una liberazione.':
-        'E adesso, nel tuo luogo sicuro, è il momento di una scelta semplice. Non un sacrificio: <short pause> una liberazione.',
+    'E adesso, nel tuo luogo sicuro, è il momento di una scelta semplice. Non è un sacrificio. È una liberazione.':
+        'E adesso, nel tuo luogo sicuro, è il momento di una scelta semplice. Non è un sacrificio. <short pause> È una liberazione.',
     # Il respiro prima del proposito lo rende solenne e fa da modello all'ascoltatore.
     'Se senti che è giusto per te, ripeti dentro di te, con calma e con gioia: «Da adesso, non fumo più».':
         'Se senti che è giusto per te, ripeti dentro di te, con calma e con gioia: <breath> «Da adesso, non fumo più».',
