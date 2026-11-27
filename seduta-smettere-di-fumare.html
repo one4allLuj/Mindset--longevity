@@ -37,7 +37,8 @@
     @property --ink-soft { syntax: '<color>'; inherits: true; initial-value: #48534F; }
     @property --muted { syntax: '<color>'; inherits: true; initial-value: #5A635F; }
     @property --accent { syntax: '<color>'; inherits: true; initial-value: #284B7A; }
-    @property --accent-hover { syntax: '<color>'; inherits: true; initial-value: #1D3A61; }
+    @property --accent-fill { syntax: '<color>'; inherits: true; initial-value: #284B7A; }
+    @property --accent-fill-hover { syntax: '<color>'; inherits: true; initial-value: #1D3A61; }
     @property --on-accent { syntax: '<color>'; inherits: true; initial-value: #FFFFFF; }
     @property --on-ink { syntax: '<color>'; inherits: true; initial-value: #FFFFFF; }
     @property --line { syntax: '<color>'; inherits: true; initial-value: #D5D1C8; }
@@ -52,7 +53,9 @@
     @property --st-line { syntax: '<color>'; inherits: true; initial-value: transparent; }
     @property --st-line-ui { syntax: '<color>'; inherits: true; initial-value: transparent; }
     @property --st-accent { syntax: '<color>'; inherits: true; initial-value: transparent; }
-    @property --st-accent-hover { syntax: '<color>'; inherits: true; initial-value: transparent; }
+    @property --st-play { syntax: '<color>'; inherits: true; initial-value: transparent; }
+    @property --st-play-hover { syntax: '<color>'; inherits: true; initial-value: transparent; }
+    @property --st-play-edge { syntax: '<color>'; inherits: true; initial-value: transparent; }
     @property --st-on-accent { syntax: '<color>'; inherits: true; initial-value: transparent; }
     @property --st-rule { syntax: '<color>'; inherits: true; initial-value: transparent; }
     @property --st-sky-far { syntax: '<color>'; inherits: true; initial-value: transparent; }
@@ -73,7 +76,8 @@
       --ink-soft: #48534F;
       --muted: #5A635F;
       --accent: #284B7A;
-      --accent-hover: #1D3A61;
+      --accent-fill: #284B7A;
+      --accent-fill-hover: #1D3A61;
       --on-accent: #FFFFFF;
       --on-ink: #FFFFFF;
       --line: #D5D1C8;
@@ -96,8 +100,9 @@
         --ink-soft: #C7C0B4;
         --muted: #A39C90;
         --accent: #A3BCE4;
-        --accent-hover: #C0D2EE;
-        --on-accent: #14171C;
+        --accent-fill: #34578C;
+        --accent-fill-hover: #3B5F96;
+        --on-accent: #ECE7DE;
         --on-ink: #1A1916;
         --line: #393631;
         --line-ui: #78736B;
@@ -115,8 +120,9 @@
       --ink-soft: #C7C0B4;
       --muted: #A39C90;
       --accent: #A3BCE4;
-      --accent-hover: #C0D2EE;
-      --on-accent: #14171C;
+      --accent-fill: #34578C;
+      --accent-fill-hover: #3B5F96;
+      --on-accent: #ECE7DE;
       --on-ink: #1A1916;
       --line: #393631;
       --line-ui: #78736B;
@@ -124,28 +130,27 @@
       --sky-near: #4A463F;
       --dawn: #C99B70;
     }
-    /* «Abbassa le luci durante l'ascolto»: la pagina passa a toni bassi,
-       sempre leggibili (inchiostro 11:1, testo secondario 5:1). */
+    /* «Abbassa le luci durante l'ascolto»: la pagina passa a toni bassi e
+       smorzati, sempre leggibili (inchiostro 6.9:1, testo secondario 5:1).
+       Il palco notte (#0F151D, testo 14.7:1) resta più scuro e più nitido. */
     :root.luci-basse {
       color-scheme: dark;
-      --paper: #111214;
-      --surface: #17181B;
-      --band: #141518;
-      --ink: #CFCAC0;
-      --ink-soft: #ADA79C;
-      --muted: #928C82;
+      --paper: #1C1B18;
+      --surface: #201F1B;
+      --band: #1A1916;
+      --ink: #A9A399;
+      --ink-soft: #9A948A;
+      --muted: #8F897F;
       --accent: #93AEDA;
-      --accent-hover: #B3C8EA;
-      --on-accent: #111214;
-      --on-ink: #111214;
-      --line: #2A2B2E;
-      --line-ui: #6E6B65;
-      --sky-far: #1E1F22;
-      --sky-near: #35363A;
+      --accent-fill: #2E4A72;
+      --accent-fill-hover: #33507A;
+      --on-accent: #D4CFC5;
+      --on-ink: #1C1B18;
+      --line: #34322E;
+      --line-ui: #7A766E;
+      --sky-far: #262521;
+      --sky-near: #3E3C37;
       --dawn: #C99B70;
-    }
-    @media (prefers-contrast: more) {
-      :root { --line-ui: var(--ink-soft); --line: var(--line-ui); }
     }
     @media (min-width: 600px) { :root { --gutter: 24px; } }
     @media (min-width: 900px) { :root { --gutter: 40px; } }
@@ -253,10 +258,10 @@
     .cta {
       display: inline-flex; align-items: center; justify-content: center; gap: 14px;
       min-height: 56px; padding: 0 26px;
-      background: var(--accent); color: var(--on-accent);
+      background: var(--accent-fill); color: var(--on-accent);
       font: 600 18px/1 var(--sans); text-decoration: none; border-radius: 2px;
     }
-    .cta:hover { background: var(--accent-hover); color: var(--on-accent); }
+    .cta:hover { background: var(--accent-fill-hover); color: var(--on-accent); }
     .cta svg { width: 20px; height: 20px; transition: transform .2s ease; }
     .cta:hover svg { transform: translateX(3px); }
     @media (max-width: 599px) { .cta { width: 100%; } }
@@ -267,6 +272,8 @@
     .tavola .ln { stroke: var(--ink); stroke-width: 1.25; fill: none; vector-effect: non-scaling-stroke; }
     .tavola .onda { stroke: var(--accent); stroke-width: 2; fill: none; vector-effect: non-scaling-stroke; }
     .tavola .ultima { stroke: var(--accent); stroke-width: 2; vector-effect: non-scaling-stroke; }
+    .tavola .riga-cielo { stroke: var(--line-ui); stroke: color-mix(in oklab, var(--ink) var(--k), var(--paper)); stroke-width: 1.25; vector-effect: non-scaling-stroke; }
+    .tavola .orizzonte { stroke: var(--ink); stroke-width: 2; vector-effect: non-scaling-stroke; }
     .tavola-respiro { margin-top: 48px; max-width: 300px; }
     @media (min-width: 900px) {
       .apertura .grid > .occhiello, .apertura .grid > h1 { grid-column: 1 / -1; }
@@ -289,7 +296,7 @@
     }
 
     /* ---------- La seduta ---------- */
-    .lab-seduta { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+    .lab-seduta { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: flex-start; gap: 6px 20px; margin-bottom: 18px; }
     .lab-seduta .etichetta { margin: 0; }
     .numerale { display: flex; align-items: baseline; gap: 8px; margin: 0; }
     .num-cifra { font-family: var(--serif); font-weight: 300; font-variation-settings: "opsz" 72; font-size: 48px; line-height: .8; letter-spacing: -0.02em; font-variant-numeric: lining-nums; white-space: nowrap; }
@@ -304,7 +311,7 @@
     .primo-minuto h3 { display: inline; font: 600 16px/1.4 var(--sans); color: var(--ink); }
     .primo-minuto p { display: inline; }
     @media (min-width: 900px) {
-      .primo-minuto { grid-column: 1 / span 3; grid-row: 3; align-self: start; margin-top: 48px; }
+      .primo-minuto { grid-column: 1 / span 3; grid-row: 3; align-self: start; margin-top: calc(40px + 26px * 1.2 + 12px); }
       .indice { grid-row: 3; }
     }
 
@@ -317,7 +324,9 @@
       --st-line: var(--line);
       --st-line-ui: var(--line-ui);
       --st-accent: var(--accent);
-      --st-accent-hover: var(--accent-hover);
+      --st-play: var(--accent-fill);
+      --st-play-hover: var(--accent-fill-hover);
+      --st-play-edge: transparent;
       --st-on-accent: var(--on-accent);
       --st-rule: var(--ink);
       --st-sky-far: var(--sky-far);
@@ -340,25 +349,29 @@
       scroll-margin-top: 8px;
       overflow: hidden;
     }
+    /* Notte: il tasto resta blu inchiostro (testo 6.6:1) con un bordo chiaro
+       (9.9:1 sul palco); il filetto superiore resta visibile sulla pagina attenuata. */
     .player.notte {
       color-scheme: dark;
       --st-bg: #0F151D;
       --st-text: #EAE6DD;
       --st-soft: #BCC2CA;
       --st-muted: #9BA3AE;
-      --st-line: #243040;
+      --st-line: #2E3A4B;
       --st-line-ui: #687485;
       --st-accent: #A8C0E6;
-      --st-accent-hover: #C3D4EF;
-      --st-on-accent: #0F151D;
-      --st-rule: #243040;
+      --st-play: #33507A;
+      --st-play-hover: #3D5E8E;
+      --st-play-edge: #A8C0E6;
+      --st-on-accent: #EAE6DD;
+      --st-rule: #687485;
       --st-sky-far: #19212C;
       --st-sky-near: #3A4555;
       --st-horizon: #5C6777;
       --st-dawn: #E3B68C;
       --st-fill: #E3B68C;
       --st-wave: #C9CED6;
-      --st-wave-next: #4E5968;
+      --st-wave-next: #687485;
     }
     @media (max-width: 599px) {
       .player { margin-inline: calc(-1 * var(--gutter)); border-left: 0; border-right: 0; border-radius: 0; --st-pad: var(--gutter); }
@@ -367,38 +380,32 @@
 
     .p-testa { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 16px; font: 400 15px/1.4 var(--sans); color: var(--st-soft); font-variant-numeric: tabular-nums; }
     .phase-label { min-height: 1.4em; color: var(--st-text); }
-    .tempo { white-space: nowrap; }
-    .tempo #tElapsed { color: var(--st-text); font-weight: 600; }
+    .tempo { margin-left: auto; white-space: nowrap; font-variant-numeric: proportional-nums; }
+    .tempo #tElapsed { display: inline-block; min-width: 3.2em; text-align: right; color: var(--st-text); font-weight: 600; }
 
-    /* Sottotitolo: la frase intera, una dissolvenza di 450ms */
+    /* Sottotitolo: la frase intera, una dissolvenza di 450ms. Il riquadro tiene
+       5 righe su telefono, 4 su tablet, 3 su desktop: non cresce mai. */
     .subtitle {
       margin: 26px 0 0;
       font-family: var(--serif); font-weight: 400;
       font-variation-settings: "opsz" 36;
       font-size: 26px; line-height: 1.3;
-      min-height: calc(4 * 26px * 1.3);
+      min-height: calc(5 * 26px * 1.3);
       max-width: 24em;
       color: var(--st-text);
       text-wrap: pretty;
     }
-    /* Le battute lunghe (fino a 229 caratteri) scendono di corpo per stare nel riquadro */
-    .subtitle[data-lungo] { max-width: calc(24 * 26px); line-height: 1.25; }
-    .subtitle[data-lungo="1"] { font-size: 21px; }
-    .subtitle[data-lungo="2"] { font-size: 20px; }
-    .subtitle[data-lungo="3"] { font-size: 18px; }
+    /* Un solo gradino: la frase che non sta nelle righe riservate (misurata in
+       misuraFrase) scende di corpo; capita a meno di una frase su dieci. */
+    .subtitle[data-lungo] { font-size: 20px; line-height: 1.25; max-width: calc(24 * 26px); }
+    @media (max-width: 374px) { .subtitle[data-lungo] { font-size: 19px; } }
     @media (min-width: 600px) {
-      .subtitle { font-size: 32px; min-height: calc(4 * 32px * 1.3); }
-      .subtitle[data-lungo] { max-width: calc(24 * 32px); }
-      .subtitle[data-lungo="1"] { font-size: 28px; }
-      .subtitle[data-lungo="2"] { font-size: 25px; }
-      .subtitle[data-lungo="3"] { font-size: 23px; }
+      .subtitle { font-size: 30px; min-height: calc(4 * 30px * 1.3); }
+      .subtitle[data-lungo] { font-size: 25px; max-width: calc(24 * 30px); }
     }
     @media (min-width: 900px) {
-      .subtitle { font-size: 38px; min-height: calc(3 * 38px * 1.3); margin-top: 34px; }
-      .subtitle[data-lungo] { max-width: calc(24 * 38px); }
-      .subtitle[data-lungo="1"] { font-size: 33px; }
-      .subtitle[data-lungo="2"] { font-size: 29px; }
-      .subtitle[data-lungo="3"] { font-size: 27px; }
+      .subtitle { font-size: 36px; min-height: calc(3 * 36px * 1.3); margin-top: 34px; }
+      .subtitle[data-lungo] { font-size: 28px; max-width: calc(28 * 36px); }
     }
     .subtitle.in { animation: frase .45s ease both; }
     @keyframes frase { from { opacity: 0; } to { opacity: 1; } }
@@ -434,7 +441,7 @@
       background: var(--st-horizon);
       background: color-mix(in oklab, var(--st-dawn) calc(var(--p) * 60%), var(--st-horizon));
     }
-    .bar { position: absolute; left: 0; top: 0; height: 100%; width: 0; background: var(--st-fill); transition: width 1s linear; }
+    .bar { position: absolute; z-index: 1; left: 0; top: -1px; height: 4px; width: 0; background: var(--st-fill); transition: width 1s linear; }
     .tacche i { position: absolute; top: 2px; width: 1px; height: 5px; background: var(--st-line-ui); }
 
     /* Comandi */
@@ -450,11 +457,11 @@
     .play {
       display: inline-flex; align-items: center; justify-content: center; gap: 14px;
       min-width: 200px; min-height: 64px; padding: 0 26px;
-      background: var(--st-accent); color: var(--st-on-accent);
-      border: 0; border-radius: 2px; cursor: pointer;
+      background: var(--st-play); color: var(--st-on-accent);
+      border: 1px solid var(--st-play-edge); border-radius: 2px; cursor: pointer;
       font: 600 18px/1 var(--sans);
     }
-    .play:hover { background: var(--st-accent-hover); }
+    .play:hover { background: var(--st-play-hover); }
     .play::before { content: ""; flex: none; width: 14px; height: 16px; background: currentColor; clip-path: polygon(0 0, 100% 50%, 0 100%); }
     .player.playing .play::before { width: 12px; background: transparent; border-left: 4px solid currentColor; border-right: 4px solid currentColor; clip-path: none; }
     .rassicura { flex: 1 1 260px; min-width: 0; }
@@ -545,7 +552,8 @@
     .chap.fatta .n, .chap.fatta .t, .chap.fatta .m { color: var(--muted); }
     .chap.active::before { content: ""; position: absolute; left: 0; top: -1px; bottom: -1px; width: 3px; background: var(--accent); }
     .chap.active .t { font-weight: 500; }
-    .chap.active .m::before { content: "in ascolto · "; color: var(--accent); font-weight: 500; }
+    .player.playing ~ .indice .chap.active .m::before { content: "in ascolto · "; color: var(--accent); font-weight: 500; }
+    .player.notte:not(.playing) ~ .indice .chap.active .m::before { content: "in pausa · "; color: var(--ink-soft); font-weight: 500; }
     @media (max-width: 479px) { .chap { padding-left: 12px; } .chap .n { width: 32px; } .chap .t { font-size: 19px; } .chap::after { margin: 0 8px; } }
 
     /* ---------- Le prossime tre settimane (fascia) ---------- */
@@ -573,7 +581,7 @@
       font: 600 16px/1 var(--sans);
     }
     .btn-sec svg { width: 16px; height: 16px; }
-    .btn-sec:hover { background: var(--accent); color: var(--on-accent); }
+    .btn-sec:hover { background: var(--accent-fill); color: var(--on-accent); }
     .testo-completo { margin-top: 28px; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--line); }
     .testo-completo > summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 64px; font: 400 23px/1.25 var(--serif); cursor: pointer; list-style: none; }
     .testo-completo > summary::-webkit-details-marker { display: none; }
@@ -587,6 +595,7 @@
     .colofone { background: var(--band); padding: clamp(56px, 7vw, 96px) 0 clamp(64px, 8vw, 104px); }
     .colofone > .wrap { border-top: 2px solid var(--ink); }
     .blocco { padding: 16px 0 28px; }
+    h2.etichetta { letter-spacing: normal; max-width: none; text-wrap: wrap; }
     .blocco + .blocco { border-top: 1px solid var(--line-ui); }
     @media (min-width: 900px) { .blocco { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--col-gap); } }
     .avv { font-size: 17px; line-height: 1.6; max-width: 66ch; }
@@ -600,10 +609,16 @@
     .col-testo p + p { margin-top: 10px; }
     .col-testo .col-casa { font: italic 400 20px/1.4 var(--serif); color: var(--ink); }
 
+    /* ---------- Contrasto maggiore: dopo tutti i token, vale anche in Sera e a luci basse ---------- */
+    @media (prefers-contrast: more) {
+      :root:root, :root[data-theme], :root.luci-basse { --line-ui: var(--ink-soft); --line: var(--ink-soft); }
+      .player.notte { --st-line-ui: #9BA3AE; --st-line: #687485; }
+    }
+
     /* ---------- Cambi di luce: un secondo, mai con prefers-reduced-motion ---------- */
-    html.in-cambio { transition: --paper 1s ease, --surface 1s ease, --band 1s ease, --ink 1s ease, --ink-soft 1s ease, --muted 1s ease, --accent 1s ease, --accent-hover 1s ease, --on-accent 1s ease, --on-ink 1s ease, --line 1s ease, --line-ui 1s ease, --sky-far 1s ease, --sky-near 1s ease, --dawn 1s ease; }
+    html.in-cambio { transition: --paper 1s ease, --surface 1s ease, --band 1s ease, --ink 1s ease, --ink-soft 1s ease, --muted 1s ease, --accent 1s ease, --accent-fill 1s ease, --accent-fill-hover 1s ease, --on-accent 1s ease, --on-ink 1s ease, --line 1s ease, --line-ui 1s ease, --sky-far 1s ease, --sky-near 1s ease, --dawn 1s ease; }
     .player { transition: --p 1s linear; }
-    .player.in-cambio-notte { transition: --p 1s linear, --st-bg 1s ease, --st-text 1s ease, --st-soft 1s ease, --st-muted 1s ease, --st-line 1s ease, --st-line-ui 1s ease, --st-accent 1s ease, --st-accent-hover 1s ease, --st-on-accent 1s ease, --st-rule 1s ease, --st-sky-far 1s ease, --st-sky-near 1s ease, --st-horizon 1s ease, --st-dawn 1s ease, --st-fill 1s ease, --st-wave 1s ease, --st-wave-next 1s ease; }
+    .player.in-cambio-notte { transition: --p 1s linear, --st-bg 1s ease, --st-text 1s ease, --st-soft 1s ease, --st-muted 1s ease, --st-line 1s ease, --st-line-ui 1s ease, --st-accent 1s ease, --st-play 1s ease, --st-play-hover 1s ease, --st-play-edge 1s ease, --st-on-accent 1s ease, --st-rule 1s ease, --st-sky-far 1s ease, --st-sky-near 1s ease, --st-horizon 1s ease, --st-dawn 1s ease, --st-fill 1s ease, --st-wave 1s ease, --st-wave-next 1s ease; }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
       *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -642,7 +657,7 @@
         <div class="apertura-testo">
           <p class="lede">Probabilmente hai già provato a smettere. Questa volta non devi combattere: ascolti, e&nbsp;lasci andare.</p>
           <p class="lede-2">
-            Una seduta di ipnosi guidata di 20–25 minuti, costruita sui principi del libro
+            Una seduta di ipnosi guidata di <span data-durata="testo">20–25 minuti</span>, costruita sui principi del libro
             <em>«È facile smettere di fumare se sai come farlo»</em>. L'idea centrale è semplice:
             non stai rinunciando a niente. Stai uscendo da una trappola.
           </p>
@@ -653,18 +668,17 @@
           </div>
         </div>
         <figure class="tavola tavola-respiro">
-          <svg viewBox="0 0 300 176" role="img" aria-labelledby="tav1">
-            <title id="tav1">Una linea che sale e scende piano, come un respiro, sopra nove righe stampate allineate a sinistra.</title>
+          <svg viewBox="0 0 300 182" role="img" aria-labelledby="tav1">
+            <title id="tav1">Una linea che sale e scende piano, come un respiro, sopra un cielo di righe orizzontali che si infittiscono fino alla linea dell'orizzonte.</title>
             <path class="onda" d="M0 30 C24 30 24 8 48 8 C84 8 84 30 120 30 C144 30 144 8 168 8 C204 8 204 30 240 30 C264 30 264 8 288 8 C294 8 297 9 300 10"/>
-            <line class="ln" x1="0" y1="56" x2="276" y2="56"/>
-            <line class="ln" x1="0" y1="71" x2="252" y2="71"/>
-            <line class="ln" x1="0" y1="86" x2="288" y2="86"/>
-            <line class="ln" x1="0" y1="101" x2="232" y2="101"/>
-            <line class="ln" x1="0" y1="116" x2="268" y2="116"/>
-            <line class="ln" x1="0" y1="131" x2="220" y2="131"/>
-            <line class="ln" x1="0" y1="146" x2="282" y2="146"/>
-            <line class="ln" x1="0" y1="161" x2="244" y2="161"/>
-            <line class="ln" x1="0" y1="176" x2="176" y2="176"/>
+            <line class="riga-cielo" x1="0" y1="56" x2="300" y2="56" style="--k:30%"/>
+            <line class="riga-cielo" x1="0" y1="92" x2="300" y2="92" style="--k:36%"/>
+            <line class="riga-cielo" x1="0" y1="120" x2="300" y2="120" style="--k:42%"/>
+            <line class="riga-cielo" x1="0" y1="141" x2="300" y2="141" style="--k:48%"/>
+            <line class="riga-cielo" x1="0" y1="156" x2="300" y2="156" style="--k:55%"/>
+            <line class="riga-cielo" x1="0" y1="167" x2="300" y2="167" style="--k:62%"/>
+            <line class="riga-cielo" x1="0" y1="174" x2="300" y2="174" style="--k:70%"/>
+            <line class="orizzonte" x1="0" y1="180" x2="300" y2="180"/>
           </svg>
           <figcaption>Tav. 1 — Il respiro, lasciato andare.</figcaption>
         </figure>
@@ -782,7 +796,7 @@
 
         <div class="cnt indice">
           <h3 class="indice-tit">Le 13 fasi</h3>
-          <ol class="chapters" id="chapters" aria-label="Fasi della seduta"></ol>
+          <ol class="chapters" id="chapters" role="list" aria-label="Fasi della seduta"></ol>
         </div>
       </div>
     </section>
@@ -807,7 +821,7 @@
         <div class="cnt">
           <h2 id="h-dopo">Le prossime tre settimane</h2>
           <p class="intro">Il metodo funziona se cambi il modo in cui guardi la sigaretta, non se stringi i denti. Queste sono le regole da tenere a mente.</p>
-          <ol class="regole">
+          <ol class="regole" role="list">
             <li><span class="r-num" aria-hidden="true">1</span><h3>Butta via tutto, subito</h3><p>Pacchetto, accendino, posacenere. Niente «scorta di emergenza»: tenerla significa che una parte di te crede ancora di rinunciare a qualcosa.</p></li>
             <li><span class="r-num" aria-hidden="true">2</span><h3>Quando arriva il pensiero</h3><p>Non combatterlo e non pensare «non posso». Pensa: <strong>«Che bello: non ne ho più bisogno».</strong> Unisci pollice e indice e fai un respiro profondo.</p></li>
             <li><span class="r-num" aria-hidden="true">3</span><h3>Il piccolo vuoto passa</h3><p>Il disagio fisico è lieve e cala in pochi giorni; in circa tre settimane anche l'abitudine perde forza. È il segnale che stai guarendo, non un pericolo.</p></li>
@@ -840,15 +854,15 @@
   <footer class="colofone">
     <div class="wrap">
       <div class="blocco">
-        <p class="etichetta lab">Avvertenze</p>
+        <h2 class="etichetta lab">Avvertenze</h2>
         <div class="cnt"><p class="avv">Questa seduta è pensata per persone adulte. È uno strumento di rilassamento e autosuggestione: non sostituisce il parere del medico né un percorso di cura. Non ascoltarla alla guida o mentre usi macchinari. Se soffri di disturbi psichiatrici o di epilessia, parlane prima con il tuo medico. Se assumi farmaci regolarmente, avvisa il medico che stai smettendo: smettere di fumare può modificare l'effetto di alcuni medicinali.</p></div>
       </div>
       <div class="blocco">
-        <p class="etichetta lab">Aiuto gratuito</p>
+        <h2 class="etichetta lab">Aiuto gratuito</h2>
         <div class="cnt"><p class="aiuto"><span class="aiuto-ente">Telefono Verde contro il Fumo dell'Istituto Superiore di Sanità:</span> <a class="aiuto-num" href="tel:800554088">800 554 088</a><span class="aiuto-sep"> · </span><span class="aiuto-resto"><a class="sottolineato" href="https://smettodifumare.iss.it" rel="noopener">smettodifumare.iss.it</a>, dove trovi anche i Centri Antifumo del Servizio Sanitario Nazionale.</span></p></div>
       </div>
       <div class="blocco">
-        <p class="etichetta lab">Colofone</p>
+        <h2 class="etichetta lab">Colofone</h2>
         <div class="cnt col-testo">
           <p class="col-casa">Respiro Libero è un progetto MINDSET.</p>
           <p>Le voci della seduta sono generate al computer: l'audio professionale con intelligenza artificiale (Google Gemini), le altre con la sintesi vocale del tuo dispositivo.</p>
@@ -1222,7 +1236,7 @@ Questa è la tua nuova vita. Goditela. {2}
   function jump(i) {
     idx = Math.max(0, Math.min(SEG.length - 1, i));
     if (isAudio()) {
-      track.currentTime = Math.max(0, AUDIO.segmenti[idx][0] - 0.3);
+      track.currentTime = Math.max(0, AUDIO.segmenti[idx][0] - 0.05);
       shown = idx;
       show(SEG[idx].t);
       ui();
@@ -1616,6 +1630,7 @@ Questa è la tua nuova vita. Goditela. {2}
     const avviata = started();
     chapters.querySelectorAll('.chap').forEach(c => {
       const f = Number(c.dataset.f);
+      if (idx >= SEG.length) c.classList.remove('active');
       c.classList.toggle('fatta', avviata && (f < fi || idx >= SEG.length));
       if (c.classList.contains('active')) c.setAttribute('aria-current', 'step');
       else c.removeAttribute('aria-current');
@@ -1636,15 +1651,17 @@ Questa è la tua nuova vita. Goditela. {2}
     aggiornaDurata();
   }
 
-  // Le frasi più lunghe usano un corpo più piccolo, così il riquadro non salta.
+  // La frase che non sta nelle righe riservate scende di un solo gradino di corpo,
+  // così il riquadro non salta. Misura prima del disegno (nessun lampo).
   function misuraFrase() {
-    const n = subtitle.textContent.length;
-    const v = n > 180 ? '3' : n > 140 ? '2' : n > 90 ? '1' : '';
-    if ((subtitle.dataset.lungo || '') !== v) {
-      if (v) subtitle.dataset.lungo = v; else delete subtitle.dataset.lungo;
-    }
+    delete subtitle.dataset.lungo;
+    const minH = parseFloat(getComputedStyle(subtitle).minHeight) || 0;
+    if (subtitle.getBoundingClientRect().height > minH + 1) subtitle.dataset.lungo = '1';
   }
   if ('MutationObserver' in window) new MutationObserver(misuraFrase).observe(subtitle, { childList: true, characterData: true, subtree: true });
+  let misuraRaf = 0;
+  window.addEventListener('resize', () => { cancelAnimationFrame(misuraRaf); misuraRaf = requestAnimationFrame(misuraFrase); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(misuraFrase);
   misuraFrase();
 
   // «Abbassa le luci durante l'ascolto»: attivo di predefinito, un tocco per spegnerlo.
