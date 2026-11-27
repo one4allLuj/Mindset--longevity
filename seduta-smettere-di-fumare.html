@@ -2,323 +2,859 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Respiro Libero | Seduta ipnotica per smettere di fumare · MINDSET LABS</title>
   <meta name="description" content="Seduta di ipnosi guidata di 20–25 minuti per smettere di fumare senza forza di volontà, ispirata ai principi del libro «È facile smettere di fumare se sai come farlo».">
+  <meta name="color-scheme" content="light dark">
+  <script>
+    /* Tema della pagina prima del primo disegno: Carta o Sera scelti a mano,
+       altrimenti segue il sistema (prefers-color-scheme). */
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem('respiroLibero.tema'); } catch (e) {}
+      if (t === 'sera') document.documentElement.setAttribute('data-theme', 'dark');
+      else if (t === 'carta') document.documentElement.setAttribute('data-theme', 'light');
+    })();
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,400&family=Schibsted+Grotesk:wght@400..600&display=swap" rel="stylesheet">
 
   <style>
+    /* ------------------------------------------------------------------
+       RESPIRO LIBERO · il libretto
+       Carta (chiaro) e Sera (scuro), tutto a token. Un solo accento: il blu
+       inchiostro. Durante l'ascolto il riquadro della seduta diventa notte e
+       il resto della pagina abbassa le luci. Niente gradienti, ombre o glow.
+    ------------------------------------------------------------------ */
+    /* I token sono registrati: così i cambi di luce (tema, notte, luci basse)
+       sfumano in un secondo tutti insieme, senza transizioni elemento per elemento. */
+    @property --paper { syntax: '<color>'; inherits: true; initial-value: #F2F0EA; }
+    @property --surface { syntax: '<color>'; inherits: true; initial-value: #FAF9F6; }
+    @property --band { syntax: '<color>'; inherits: true; initial-value: #E8E5DD; }
+    @property --ink { syntax: '<color>'; inherits: true; initial-value: #22302C; }
+    @property --ink-soft { syntax: '<color>'; inherits: true; initial-value: #48534F; }
+    @property --muted { syntax: '<color>'; inherits: true; initial-value: #5A635F; }
+    @property --accent { syntax: '<color>'; inherits: true; initial-value: #284B7A; }
+    @property --accent-hover { syntax: '<color>'; inherits: true; initial-value: #1D3A61; }
+    @property --on-accent { syntax: '<color>'; inherits: true; initial-value: #FFFFFF; }
+    @property --on-ink { syntax: '<color>'; inherits: true; initial-value: #FFFFFF; }
+    @property --line { syntax: '<color>'; inherits: true; initial-value: #D5D1C8; }
+    @property --line-ui { syntax: '<color>'; inherits: true; initial-value: #827E74; }
+    @property --sky-far { syntax: '<color>'; inherits: true; initial-value: #E9E6DF; }
+    @property --sky-near { syntax: '<color>'; inherits: true; initial-value: #CBC6BB; }
+    @property --dawn { syntax: '<color>'; inherits: true; initial-value: #B98A5E; }
+    @property --st-bg { syntax: '<color>'; inherits: true; initial-value: transparent; }
+    @property --st-text { syntax: '<color>'; inherits: true; initial-value: transparent; }
+    @property --st-soft { syntax: '<color>'; inherits: true; initial-value: transparent; }
+    @property --st-muted { syntax: '<color>'; inherits: true; initial-value: transparent; }
+    @property --st-line { syntax: '<color>'; inherits: true; initial-value: transparent; }
+    @property --st-line-ui { syntax: '<color>'; inherits: true; initial-value: transparent; }
+    @property --st-accent { syntax: '<color>'; inherits: true; initial-value: transparent; }
+    @property --st-accent-hover { syntax: '<color>'; inherits: true; initial-value: transparent; }
+    @property --st-on-accent { syntax: '<color>'; inherits: true; initial-value: transparent; }
+    @property --st-rule { syntax: '<color>'; inherits: true; initial-value: transparent; }
+    @property --st-sky-far { syntax: '<color>'; inherits: true; initial-value: transparent; }
+    @property --st-sky-near { syntax: '<color>'; inherits: true; initial-value: transparent; }
+    @property --st-horizon { syntax: '<color>'; inherits: true; initial-value: transparent; }
+    @property --st-dawn { syntax: '<color>'; inherits: true; initial-value: transparent; }
+    @property --st-fill { syntax: '<color>'; inherits: true; initial-value: transparent; }
+    @property --st-wave { syntax: '<color>'; inherits: true; initial-value: transparent; }
+    @property --st-wave-next { syntax: '<color>'; inherits: true; initial-value: transparent; }
+    @property --p { syntax: '<number>'; inherits: true; initial-value: 0; }
+
     :root {
-      --bg: #08090C;
-      --bg2: #0C0E14;
-      --card: #0F1218;
-      --line: rgba(255,255,255,.08);
-      --line2: rgba(255,255,255,.16);
-      --text: #F1F5F9;
-      --soft: #CBD5E1;
-      --muted: #94A3B8;
-      --dim: #64748B;
-      --cyan: #22D3EE;
-      --cyan-soft: rgba(34,211,238,.10);
-      --teal: #5EEAD4;
-      --violet: #A78BFA;
-      --emerald: #34D399;
-      --amber: #FBBF24;
-      color-scheme: dark;
+      color-scheme: light;
+      --paper: #F2F0EA;
+      --surface: #FAF9F6;
+      --band: #E8E5DD;
+      --ink: #22302C;
+      --ink-soft: #48534F;
+      --muted: #5A635F;
+      --accent: #284B7A;
+      --accent-hover: #1D3A61;
+      --on-accent: #FFFFFF;
+      --on-ink: #FFFFFF;
+      --line: #D5D1C8;
+      --line-ui: #827E74;
+      --sky-far: #E9E6DF;
+      --sky-near: #CBC6BB;
+      --dawn: #B98A5E;
+      --serif: "Newsreader", Georgia, "Times New Roman", serif;
+      --sans: "Schibsted Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --gutter: 16px;
+      --col-gap: 24px;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        color-scheme: dark;
+        --paper: #1A1916;
+        --surface: #23211D;
+        --band: #201E1B;
+        --ink: #ECE7DE;
+        --ink-soft: #C7C0B4;
+        --muted: #A39C90;
+        --accent: #A3BCE4;
+        --accent-hover: #C0D2EE;
+        --on-accent: #14171C;
+        --on-ink: #1A1916;
+        --line: #393631;
+        --line-ui: #78736B;
+        --sky-far: #2B2924;
+        --sky-near: #4A463F;
+        --dawn: #C99B70;
+      }
+    }
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --paper: #1A1916;
+      --surface: #23211D;
+      --band: #201E1B;
+      --ink: #ECE7DE;
+      --ink-soft: #C7C0B4;
+      --muted: #A39C90;
+      --accent: #A3BCE4;
+      --accent-hover: #C0D2EE;
+      --on-accent: #14171C;
+      --on-ink: #1A1916;
+      --line: #393631;
+      --line-ui: #78736B;
+      --sky-far: #2B2924;
+      --sky-near: #4A463F;
+      --dawn: #C99B70;
+    }
+    /* «Abbassa le luci durante l'ascolto»: la pagina passa a toni bassi,
+       sempre leggibili (inchiostro 11:1, testo secondario 5:1). */
+    :root.luci-basse {
+      color-scheme: dark;
+      --paper: #111214;
+      --surface: #17181B;
+      --band: #141518;
+      --ink: #CFCAC0;
+      --ink-soft: #ADA79C;
+      --muted: #928C82;
+      --accent: #93AEDA;
+      --accent-hover: #B3C8EA;
+      --on-accent: #111214;
+      --on-ink: #111214;
+      --line: #2A2B2E;
+      --line-ui: #6E6B65;
+      --sky-far: #1E1F22;
+      --sky-near: #35363A;
+      --dawn: #C99B70;
+    }
+    @media (prefers-contrast: more) {
+      :root { --line-ui: var(--ink-soft); --line: var(--line-ui); }
+    }
+    @media (min-width: 600px) { :root { --gutter: 24px; } }
+    @media (min-width: 900px) { :root { --gutter: 40px; } }
+
+    /* ---------- Base ---------- */
+    *, *::before, *::after { box-sizing: border-box; }
     [hidden] { display: none !important; }
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; scroll-padding-top: 12px; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
     body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      background-color: var(--paper);
+      color: var(--ink);
+      font-family: var(--serif);
+      font-size: 19px;
       line-height: 1.6;
+      font-optical-sizing: auto;
       overflow-x: hidden;
     }
-    body::before {
-      content: "";
-      position: fixed; inset: 0;
-      background: radial-gradient(ellipse at top, rgba(8,51,68,.35), transparent 60%);
-      pointer-events: none; z-index: 0;
+    @media (min-width: 600px) { body { font-size: 20px; } }
+    p, ol, ul, h1, h2, h3, figure { margin: 0; }
+    a { color: inherit; }
+    a:hover { color: var(--accent); }
+    button, input, select { font: inherit; color: inherit; }
+    svg { display: block; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .vh { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+    .salta { position: absolute; left: 12px; top: -80px; z-index: 50; background: var(--ink); color: var(--on-ink); font: 600 16px/1 var(--sans); padding: 14px 16px; border-radius: 2px; text-decoration: none; }
+    .salta:focus { top: 12px; color: var(--on-ink); }
+
+    .wrap { width: min(1120px, 100% - 2 * var(--gutter)); margin-inline: auto; }
+    .grid { display: grid; grid-template-columns: minmax(0, 1fr); }
+    @media (min-width: 900px) {
+      .grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--col-gap); }
+      .lab { grid-column: 1 / span 3; }
+      .cnt { grid-column: 5 / -1; }
     }
-    .wrap { position: relative; z-index: 1; max-width: 1040px; margin: 0 auto; padding: 0 16px; }
-    .mono { font-family: 'JetBrains Mono', monospace; }
-    .display { font-family: 'Space Grotesk', sans-serif; }
+    .ui { font-family: var(--sans); }
+    .sottolineato { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; text-decoration-color: var(--line-ui); }
+    .sottolineato:hover { text-decoration-color: currentColor; }
 
-    /* Header */
-    .top { position: sticky; top: 0; z-index: 20; background: rgba(8,9,12,.82); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
-    .top-in { display: flex; justify-content: space-between; align-items: center; height: 64px; gap: 12px; }
-    .brand { color: #fff; text-decoration: none; font-family: 'JetBrains Mono', monospace; font-weight: 600; letter-spacing: .08em; font-size: 14px; display: flex; align-items: center; gap: 8px; }
-    .brand b { color: var(--cyan); font-size: 10px; padding: 2px 6px; border: 1px solid rgba(34,211,238,.3); border-radius: 4px; background: var(--cyan-soft); }
-    .tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; text-align: right; }
-
-    /* Hero */
-    .hero { padding: 64px 16px 48px; text-align: center; }
-    .badge { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--cyan); background: var(--cyan-soft); border: 1px solid rgba(34,211,238,.3); padding: 6px 14px; border-radius: 999px; margin-bottom: 22px; }
-    h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(34px, 7vw, 64px); line-height: 1.05; letter-spacing: -.02em; font-weight: 700; margin-bottom: 20px; }
-    .grad { background: linear-gradient(90deg, var(--cyan), var(--teal) 45%, var(--violet)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .lead { max-width: 660px; margin: 0 auto 32px; color: var(--soft); font-size: 18px; }
-    h2 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(26px, 4.4vw, 38px); line-height: 1.15; letter-spacing: -.01em; margin-bottom: 12px; }
-    .kicker { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--cyan); margin-bottom: 10px; }
-    .section { padding-top: 56px; padding-bottom: 56px; }
-    .section-head { max-width: 680px; margin-bottom: 28px; }
-    .section-head p { color: var(--muted); }
-
-    /* Buttons */
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font: inherit; font-weight: 600; font-size: 15px; color: var(--text); background: rgba(255,255,255,.05); border: 1px solid var(--line2); border-radius: 14px; padding: 12px 20px; cursor: pointer; text-decoration: none; transition: background .2s, border-color .2s, transform .15s; }
-    .btn:hover { background: rgba(255,255,255,.09); border-color: rgba(255,255,255,.28); }
-    .btn:active { transform: scale(.98); }
-    .btn:focus-visible, select:focus-visible, input:focus-visible, summary:focus-visible, .chap:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
-    .btn.primary { background: linear-gradient(90deg, var(--cyan), var(--emerald)); color: #04110F; border: none; font-weight: 800; box-shadow: 0 0 28px rgba(34,211,238,.25); }
-    .btn.primary:hover { opacity: .92; }
-    .btn.big { min-width: 220px; padding: 16px 28px; font-size: 16px; border-radius: 999px; }
-    .btn.icon { width: 52px; height: 52px; padding: 0; border-radius: 50%; font-size: 22px; line-height: 1; }
-    .btn.ghost { background: transparent; border-color: transparent; color: var(--muted); font-weight: 500; font-size: 14px; padding: 8px 12px; }
-    .btn.ghost:hover { color: var(--text); background: rgba(255,255,255,.04); }
-
-    /* Cards */
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
-    .card { background: rgba(255,255,255,.025); border: 1px solid var(--line); border-radius: 18px; padding: 22px; }
-    .card .num { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--cyan); margin-bottom: 8px; display: block; }
-    .card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 18px; margin-bottom: 6px; }
-    .card p { color: var(--muted); font-size: 15px; }
-    .card p strong { color: var(--text); }
-
-    /* Player */
-    .player { background: linear-gradient(180deg, #0E121A, #0A0C11); border: 1px solid var(--line); border-radius: 28px; padding: 36px 20px 28px; text-align: center; box-shadow: 0 30px 80px rgba(0,0,0,.6); }
-    .stage { position: relative; height: 230px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
-    .orb { position: relative; width: 190px; height: 190px; border-radius: 50%; transform: scale(.8); animation: breathe 10s ease-in-out infinite; animation-play-state: paused; }
-    .orb::before { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 50% 42%, rgba(167,243,235,.95), rgba(34,211,238,.55) 34%, rgba(139,92,246,.18) 64%, transparent 71%); box-shadow: 0 0 90px rgba(34,211,238,.28); }
-    .orb::after { content: ""; position: absolute; inset: -18px; border-radius: 50%; border: 1px solid rgba(94,234,212,.18); }
-    .player.playing .orb { animation-play-state: running; }
-    @keyframes breathe {
-      0%, 100% { transform: scale(.78); opacity: .72; }
-      40%, 50% { transform: scale(1.05); opacity: 1; }
+    /* La primitiva: ogni sezione si apre con un filetto d'inchiostro */
+    .sez { padding-bottom: clamp(72px, 9vw, 128px); }
+    .sez > .wrap { border-top: 2px solid var(--ink); padding-top: 16px; }
+    .etichetta { font: 500 15px/1.4 var(--sans); color: var(--ink-soft); margin-bottom: 18px; }
+    @media (min-width: 900px) { .etichetta { margin-bottom: 0; padding-top: 4px; } }
+    h2 {
+      font-family: var(--serif); font-weight: 400;
+      font-size: clamp(1.875rem, 2.5vw + 1rem, 2.75rem);
+      line-height: 1.1; letter-spacing: -0.012em;
+      text-wrap: balance; max-width: 22ch;
     }
-    .phase-label { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; min-height: 1.4em; }
-    .subtitle { font-family: 'Space Grotesk', sans-serif; font-size: clamp(20px, 3.4vw, 28px); line-height: 1.42; color: #E2E8F0; max-width: 700px; margin: 0 auto 26px; min-height: 4.3em; display: flex; align-items: center; justify-content: center; }
-    .subtitle.in { animation: fadein .9s ease; }
-    @keyframes fadein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-    .progress { height: 4px; background: rgba(255,255,255,.08); border-radius: 4px; overflow: hidden; max-width: 560px; margin: 0 auto; }
-    .bar { height: 100%; width: 0; background: linear-gradient(90deg, var(--cyan), var(--violet)); transition: width 1s ease; }
-    .time { display: flex; justify-content: space-between; max-width: 560px; margin: 8px auto 22px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--dim); }
-    .controls { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; }
-    .stop-row { margin-top: 10px; }
-    .settings { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 26px; margin-top: 24px; padding-top: 22px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); }
-    .settings label { display: inline-flex; align-items: center; gap: 10px; }
-    select { font: inherit; font-size: 14px; color: var(--text); background: #12161E; border: 1px solid var(--line2); border-radius: 10px; padding: 8px 10px; max-width: 260px; }
-    input[type=range] { accent-color: var(--cyan); width: 120px; }
-    input[type=checkbox] { accent-color: var(--cyan); width: 18px; height: 18px; }
-    output { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--soft); min-width: 3.4em; text-align: left; }
-    .note { font-size: 13px; color: var(--dim); margin-top: 14px; max-width: 620px; margin-left: auto; margin-right: auto; }
-    .streak { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 18px; font-size: 13px; color: var(--muted); flex-wrap: wrap; }
-    .dots { display: inline-flex; gap: 6px; }
-    .dots i { width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--line2); }
-    .dots i.on { background: var(--emerald); border-color: var(--emerald); box-shadow: 0 0 8px rgba(52,211,153,.5); }
+    .intro { margin-top: 16px; max-width: 58ch; text-wrap: pretty; }
 
-    /* Chapters */
-    .chapters { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 8px; margin-top: 18px; }
-    .chap { width: 100%; display: flex; align-items: baseline; gap: 10px; text-align: left; font: inherit; font-size: 14px; color: var(--soft); background: rgba(255,255,255,.02); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; cursor: pointer; transition: border-color .2s, background .2s; }
-    .chap:hover { border-color: rgba(34,211,238,.35); }
-    .chap .n { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--dim); min-width: 1.6em; }
-    .chap .t { flex: 1; }
-    .chap .m { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--dim); }
-    .chap.active { border-color: var(--cyan); background: var(--cyan-soft); color: #fff; }
-    .chap.active .n { color: var(--cyan); }
-
-    /* Script */
-    .script-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
-    details { background: rgba(255,255,255,.02); border: 1px solid var(--line); border-radius: 18px; }
-    summary { cursor: pointer; padding: 18px 22px; font-weight: 600; list-style: none; display: flex; justify-content: space-between; align-items: center; }
-    summary::-webkit-details-marker { display: none; }
-    summary::after { content: "+"; font-family: 'JetBrains Mono', monospace; color: var(--cyan); font-size: 18px; }
-    details[open] summary::after { content: "–"; }
-    .script { padding: 4px 22px 26px; max-width: 760px; }
-    .script h3 { font-family: 'Space Grotesk', sans-serif; font-size: 19px; color: #fff; margin: 26px 0 10px; }
-    .script h3 span { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--cyan); margin-right: 8px; }
-    .script p { color: var(--soft); margin-bottom: 6px; }
-    .script .pausa { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--dim); white-space: nowrap; margin-left: 6px; }
-
-    /* Footer */
-    footer { border-top: 1px solid var(--line); padding: 36px 0 48px; color: var(--dim); font-size: 13px; }
-    footer p + p { margin-top: 10px; }
-    footer a { color: var(--muted); }
-    footer strong { color: var(--soft); }
-
-    @media (max-width: 560px) {
-      .hero { padding-top: 44px; }
-      .tag { display: none; }
-      .player { padding: 28px 14px 22px; border-radius: 22px; }
-      .stage { height: 200px; }
-      .orb { width: 160px; height: 160px; }
-      .btn.big { min-width: 0; flex: 1; }
-      .settings { flex-direction: column; align-items: stretch; }
-      .settings label { justify-content: space-between; }
-      select { max-width: 62vw; }
+    /* ---------- Testata ---------- */
+    .testata { border-bottom: 1px solid var(--ink); }
+    .testata-in { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 64px; }
+    .marchio { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; text-decoration: none; color: var(--ink); }
+    .marchio:hover { color: var(--ink); }
+    .m-casa { font: 600 13px/1 var(--sans); letter-spacing: 0.08em; }
+    .m-sep { width: 1px; height: 20px; background: var(--ink); }
+    .m-collana { font: italic 400 18px/1 var(--serif); white-space: nowrap; }
+    .testata-az { display: flex; align-items: center; gap: 10px; }
+    .ascolta { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 2px; font: 500 16px/1 var(--sans); white-space: nowrap; }
+    .ascolta svg, .link-giu svg { width: 14px; height: 14px; }
+    .tema {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      min-height: 44px; min-width: 44px; padding: 0 12px;
+      background: transparent; color: var(--ink);
+      border: 1px solid var(--line-ui); border-radius: 2px;
+      font: 500 15px/1 var(--sans); cursor: pointer;
     }
+    .tema svg { width: 16px; height: 16px; flex: none; }
+    .tema:hover { border-color: var(--ink); }
+    .tema[aria-pressed="true"] { background: var(--ink); color: var(--on-ink); border-color: var(--ink); }
+    @media (min-width: 600px) { .testata-az { gap: 20px; } .marchio { gap: 12px; } }
+    @media (max-width: 479px) {
+      .tema { width: 44px; padding: 0; }
+      .tema-testo { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+      .testata-in, .testata-az { gap: 8px; }
+      .marchio { gap: 8px; }
+      .ascolta { font-size: 15px; gap: 4px; }
+    }
+    @media (max-width: 379px) {
+      .m-collana { font-size: 16px; }
+      .marchio { gap: 6px; }
+      .m-casa { letter-spacing: 0.06em; }
+    }
+
+    /* ---------- Apertura ---------- */
+    .apertura { padding: clamp(40px, 7vw, 100px) 0 clamp(72px, 8vw, 116px); }
+    .occhiello { font: 400 16px/1.45 var(--sans); color: var(--ink-soft); margin-bottom: 18px; }
+    h1 {
+      font-family: var(--serif); font-weight: 400;
+      font-variation-settings: "opsz" 72;
+      font-size: clamp(2.75rem, 5.5vw + 1rem, 4.75rem);
+      line-height: 1.02; letter-spacing: -0.015em;
+      margin-bottom: 28px;
+    }
+    h1 span { display: block; text-wrap: balance; }
+    .h1-b { font-style: italic; letter-spacing: -0.01em; }
+    .lede { font-size: 21px; line-height: 1.45; max-width: 34ch; text-wrap: pretty; }
+    .lede-2 { font-size: 18px; line-height: 1.58; color: var(--ink-soft); max-width: 46ch; margin-top: 16px; text-wrap: pretty; }
+    @media (min-width: 900px) { .lede { font-size: 23px; } .lede-2 { font-size: 19px; } }
+    .cta-blocco { margin-top: 30px; }
+    .cta {
+      display: inline-flex; align-items: center; justify-content: center; gap: 14px;
+      min-height: 56px; padding: 0 26px;
+      background: var(--accent); color: var(--on-accent);
+      font: 600 18px/1 var(--sans); text-decoration: none; border-radius: 2px;
+    }
+    .cta:hover { background: var(--accent-hover); color: var(--on-accent); }
+    .cta svg { width: 20px; height: 20px; transition: transform .2s ease; }
+    .cta:hover svg { transform: translateX(3px); }
+    @media (max-width: 599px) { .cta { width: 100%; } }
+    .micro { font: 400 15px/1.45 var(--sans); color: var(--muted); margin-top: 12px; max-width: 44ch; }
+    .link-giu { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 4px; font: 500 16px/1.3 var(--sans); }
+    .tavola svg { width: 100%; height: auto; overflow: visible; }
+    .tavola figcaption { font: italic 400 17px/1.4 var(--serif); color: var(--ink-soft); margin-top: 14px; }
+    .tavola .ln { stroke: var(--ink); stroke-width: 1.25; fill: none; vector-effect: non-scaling-stroke; }
+    .tavola .onda { stroke: var(--accent); stroke-width: 2; fill: none; vector-effect: non-scaling-stroke; }
+    .tavola .ultima { stroke: var(--accent); stroke-width: 2; vector-effect: non-scaling-stroke; }
+    .tavola-respiro { margin-top: 48px; max-width: 300px; }
+    @media (min-width: 900px) {
+      .apertura .grid > .occhiello, .apertura .grid > h1 { grid-column: 1 / -1; }
+      .apertura-testo { grid-column: 1 / span 7; }
+      .tavola-respiro { grid-column: 9 / -1; margin-top: 8px; max-width: none; align-self: start; }
+    }
+
+    /* ---------- Tre cose ---------- */
+    .cose { grid-column: 1 / -1; margin-top: 32px; }
+    .cosa { border-top: 1px solid var(--line); padding: 16px 0 28px; }
+    .margine { font: italic 400 22px/1.3 var(--serif); color: var(--ink-soft); margin-bottom: 6px; }
+    .prosa { max-width: 62ch; text-wrap: pretty; }
+    .prosa h3, .prosa p { display: inline; font: inherit; }
+    .prosa h3 { font-family: var(--sans); font-weight: 600; font-size: 0.92em; letter-spacing: -0.005em; }
+    .prosa strong { font-weight: 600; }
+    @media (min-width: 900px) {
+      .cosa { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--col-gap); padding: 18px 0 32px; }
+      .margine { grid-column: 1 / span 3; margin: 0; }
+      .cosa .prosa { grid-column: 5 / -1; }
+    }
+
+    /* ---------- La seduta ---------- */
+    .lab-seduta { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+    .lab-seduta .etichetta { margin: 0; }
+    .numerale { display: flex; align-items: baseline; gap: 8px; margin: 0; }
+    .num-cifra { font-family: var(--serif); font-weight: 300; font-variation-settings: "opsz" 72; font-size: 48px; line-height: .8; letter-spacing: -0.02em; font-variant-numeric: lining-nums; white-space: nowrap; }
+    .num-unita { font: 500 15px/1.3 var(--sans); color: var(--ink-soft); }
+    @media (min-width: 900px) {
+      .lab-seduta { display: block; grid-row: 1; margin: 0; }
+      .testa-seduta { grid-row: 1; }
+      .numerale { margin-top: 26px; flex-direction: column; align-items: flex-start; gap: 12px; }
+      .num-cifra { font-size: 84px; }
+    }
+    .primo-minuto { margin-top: 32px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 17px; line-height: 1.55; color: var(--ink-soft); max-width: 46ch; }
+    .primo-minuto h3 { display: inline; font: 600 16px/1.4 var(--sans); color: var(--ink); }
+    .primo-minuto p { display: inline; }
+    @media (min-width: 900px) {
+      .primo-minuto { grid-column: 1 / span 3; grid-row: 3; align-self: start; margin-top: 48px; }
+      .indice { grid-row: 3; }
+    }
+
+    /* ---------- Il riquadro della seduta: carta a riposo, notte all'ascolto ---------- */
+    .player {
+      --st-bg: var(--surface);
+      --st-text: var(--ink);
+      --st-soft: var(--ink-soft);
+      --st-muted: var(--muted);
+      --st-line: var(--line);
+      --st-line-ui: var(--line-ui);
+      --st-accent: var(--accent);
+      --st-accent-hover: var(--accent-hover);
+      --st-on-accent: var(--on-accent);
+      --st-rule: var(--ink);
+      --st-sky-far: var(--sky-far);
+      --st-sky-near: var(--sky-near);
+      --st-horizon: var(--line-ui);
+      --st-dawn: var(--dawn);
+      --st-fill: var(--ink);
+      --st-wave: var(--ink-soft);
+      --st-wave-next: var(--line-ui);
+      --st-pad: 20px;
+      --p: 0;
+      grid-column: 1 / -1;
+      margin-top: 28px;
+      padding: 22px var(--st-pad) 20px;
+      background: var(--st-bg);
+      color: var(--st-text);
+      border: 1px solid var(--st-line);
+      border-top: 2px solid var(--st-rule);
+      border-radius: 2px;
+      scroll-margin-top: 8px;
+      overflow: hidden;
+    }
+    .player.notte {
+      color-scheme: dark;
+      --st-bg: #0F151D;
+      --st-text: #EAE6DD;
+      --st-soft: #BCC2CA;
+      --st-muted: #9BA3AE;
+      --st-line: #243040;
+      --st-line-ui: #687485;
+      --st-accent: #A8C0E6;
+      --st-accent-hover: #C3D4EF;
+      --st-on-accent: #0F151D;
+      --st-rule: #243040;
+      --st-sky-far: #19212C;
+      --st-sky-near: #3A4555;
+      --st-horizon: #5C6777;
+      --st-dawn: #E3B68C;
+      --st-fill: #E3B68C;
+      --st-wave: #C9CED6;
+      --st-wave-next: #4E5968;
+    }
+    @media (max-width: 599px) {
+      .player { margin-inline: calc(-1 * var(--gutter)); border-left: 0; border-right: 0; border-radius: 0; --st-pad: var(--gutter); }
+    }
+    @media (min-width: 900px) { .player { --st-pad: 40px; margin-top: 40px; padding-top: 28px; padding-bottom: 28px; } }
+
+    .p-testa { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 16px; font: 400 15px/1.4 var(--sans); color: var(--st-soft); font-variant-numeric: tabular-nums; }
+    .phase-label { min-height: 1.4em; color: var(--st-text); }
+    .tempo { white-space: nowrap; }
+    .tempo #tElapsed { color: var(--st-text); font-weight: 600; }
+
+    /* Sottotitolo: la frase intera, una dissolvenza di 450ms */
+    .subtitle {
+      margin: 26px 0 0;
+      font-family: var(--serif); font-weight: 400;
+      font-variation-settings: "opsz" 36;
+      font-size: 26px; line-height: 1.3;
+      min-height: calc(4 * 26px * 1.3);
+      max-width: 24em;
+      color: var(--st-text);
+      text-wrap: pretty;
+    }
+    /* Le battute lunghe (fino a 229 caratteri) scendono di corpo per stare nel riquadro */
+    .subtitle[data-lungo] { max-width: calc(24 * 26px); line-height: 1.25; }
+    .subtitle[data-lungo="1"] { font-size: 21px; }
+    .subtitle[data-lungo="2"] { font-size: 20px; }
+    .subtitle[data-lungo="3"] { font-size: 18px; }
+    @media (min-width: 600px) {
+      .subtitle { font-size: 32px; min-height: calc(4 * 32px * 1.3); }
+      .subtitle[data-lungo] { max-width: calc(24 * 32px); }
+      .subtitle[data-lungo="1"] { font-size: 28px; }
+      .subtitle[data-lungo="2"] { font-size: 25px; }
+      .subtitle[data-lungo="3"] { font-size: 23px; }
+    }
+    @media (min-width: 900px) {
+      .subtitle { font-size: 38px; min-height: calc(3 * 38px * 1.3); margin-top: 34px; }
+      .subtitle[data-lungo] { max-width: calc(24 * 38px); }
+      .subtitle[data-lungo="1"] { font-size: 33px; }
+      .subtitle[data-lungo="2"] { font-size: 29px; }
+      .subtitle[data-lungo="3"] { font-size: 27px; }
+    }
+    .subtitle.in { animation: frase .45s ease both; }
+    @keyframes frase { from { opacity: 0; } to { opacity: 1; } }
+
+    /* La linea del respiro: ampiezza costante, sale in 4 secondi e scende in 6 */
+    .respiro { margin-top: 18px; }
+    .respiro svg { width: calc(100% + 2 * var(--st-pad)); max-width: none; height: 52px; margin-inline: calc(-1 * var(--st-pad)); overflow: hidden; }
+    @media (min-width: 900px) { .respiro svg { height: 60px; } }
+    .onda-path { fill: none; vector-effect: non-scaling-stroke; stroke-linecap: round; }
+    .onda-fatta .onda-path { stroke: var(--st-wave); stroke-width: 1.75; }
+    .onda-dopo .onda-path { stroke: var(--st-wave-next); stroke-width: 1.25; }
+    .onda-scorre { animation: onda 10s linear infinite; animation-play-state: paused; }
+    .player.playing .onda-scorre { animation-play-state: running; }
+    @keyframes onda { from { transform: translateX(0); } to { transform: translateX(-250px); } }
+    .didascalia { margin-top: 8px; font: italic 400 17px/1.4 var(--serif); color: var(--st-soft); }
+
+    /* Il cielo a righe e l'orizzonte che si scalda */
+    .cielo { margin: 22px calc(-1 * var(--st-pad)) 0; }
+    .cielo svg { width: 100%; height: 88px; }
+    @media (min-width: 900px) { .cielo svg { height: 132px; } }
+    .cielo line {
+      --w: clamp(0, calc(1 - var(--h) / (var(--p) * 0.6 + 0.0001)), 1);
+      stroke: var(--st-sky-far);
+      stroke: color-mix(in oklab, var(--st-dawn) calc(var(--w) * 85%), color-mix(in oklab, var(--st-sky-near) calc((1 - var(--h)) * 100%), var(--st-sky-far)));
+      stroke-width: 1;
+      vector-effect: non-scaling-stroke;
+      shape-rendering: crispEdges;
+    }
+    @media (max-resolution: 1.4dppx) { .cielo line { stroke-width: 1.5; } }
+    .progress {
+      position: relative; height: 2px;
+      margin: 0 calc(-1 * var(--st-pad));
+      background: var(--st-horizon);
+      background: color-mix(in oklab, var(--st-dawn) calc(var(--p) * 60%), var(--st-horizon));
+    }
+    .bar { position: absolute; left: 0; top: 0; height: 100%; width: 0; background: var(--st-fill); transition: width 1s linear; }
+    .tacche i { position: absolute; top: 2px; width: 1px; height: 5px; background: var(--st-line-ui); }
+
+    /* Comandi */
+    .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 20px; margin-top: 26px; }
+    .trasporto { display: flex; align-items: center; gap: 10px; }
+    .salto {
+      width: 48px; height: 48px; display: grid; place-items: center; flex: none;
+      background: transparent; color: var(--st-text);
+      border: 1px solid var(--st-line-ui); border-radius: 2px; cursor: pointer;
+    }
+    .salto svg { width: 18px; height: 18px; }
+    .salto:hover { border-color: var(--st-text); }
+    .play {
+      display: inline-flex; align-items: center; justify-content: center; gap: 14px;
+      min-width: 200px; min-height: 64px; padding: 0 26px;
+      background: var(--st-accent); color: var(--st-on-accent);
+      border: 0; border-radius: 2px; cursor: pointer;
+      font: 600 18px/1 var(--sans);
+    }
+    .play:hover { background: var(--st-accent-hover); }
+    .play::before { content: ""; flex: none; width: 14px; height: 16px; background: currentColor; clip-path: polygon(0 0, 100% 50%, 0 100%); }
+    .player.playing .play::before { width: 12px; background: transparent; border-left: 4px solid currentColor; border-right: 4px solid currentColor; clip-path: none; }
+    .rassicura { flex: 1 1 260px; min-width: 0; }
+    .r-1 { font: italic 400 19px/1.35 var(--serif); color: var(--st-text); text-wrap: pretty; }
+    .r-2 { display: flex; align-items: center; gap: 8px; margin-top: 6px; font: 400 15px/1.4 var(--sans); color: var(--st-muted); }
+    .r-2 svg { width: 20px; height: 20px; flex: none; color: var(--st-soft); }
+    @media (max-width: 599px) {
+      .trasporto { width: 100%; }
+      .play { flex: 1; min-width: 0; padding: 0 16px; }
+    }
+
+    /* Opzioni sempre in vista */
+    .p-opzioni { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 20px; margin-top: 18px; padding-top: 6px; border-top: 1px solid var(--st-line); }
+    .scelta { display: inline-flex; align-items: center; gap: 12px; min-height: 48px; font: 500 16px/1.3 var(--sans); color: var(--st-text); cursor: pointer; }
+    .scelta input { width: 22px; height: 22px; margin: 0; flex: none; accent-color: var(--st-accent); cursor: pointer; }
+    .p-azioni { display: flex; flex-wrap: wrap; gap: 0 20px; }
+    .link-btn {
+      display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0;
+      background: none; border: 0; color: var(--st-text); cursor: pointer;
+      font: 500 15px/1 var(--sans);
+    }
+    .link-btn svg { width: 16px; height: 16px; flex: none; }
+    .link-btn:hover { color: var(--st-accent); }
+
+    /* Impostazioni */
+    .impostazioni { border-top: 1px solid var(--st-line); }
+    .impostazioni > summary { display: flex; align-items: center; gap: 12px; min-height: 52px; font: 600 16px/1.3 var(--sans); cursor: pointer; list-style: none; }
+    .impostazioni > summary::-webkit-details-marker { display: none; }
+    .imp-sintesi { margin-left: auto; font: 400 15px/1.3 var(--sans); color: var(--st-muted); text-align: right; }
+    @media (max-width: 479px) { .imp-sintesi { display: none; } .impostazioni > summary .piu { margin-left: auto; } }
+    .piu { position: relative; flex: none; width: 14px; height: 14px; }
+    .piu::before, .piu::after { content: ""; position: absolute; background: currentColor; }
+    .piu::before { left: 0; right: 0; top: 6.25px; height: 1.5px; }
+    .piu::after { top: 0; bottom: 0; left: 6.25px; width: 1.5px; transition: transform .2s ease; }
+    details[open] > summary .piu::after { transform: scaleY(0); }
+    .settings { padding-bottom: 6px; }
+    .riga { display: grid; gap: 8px; padding: 12px 0; border-top: 1px solid var(--st-line); }
+    @media (min-width: 600px) { .riga { grid-template-columns: 170px minmax(0, 1fr); align-items: center; gap: 16px; } }
+    .riga-etich { font: 500 15px/1.4 var(--sans); color: var(--st-soft); }
+    .riga.riga-sola { grid-template-columns: minmax(0, 1fr); }
+    .sel { position: relative; display: inline-block; justify-self: start; max-width: 100%; }
+    .sel::after { content: ""; position: absolute; right: 16px; top: 50%; width: 8px; height: 8px; margin-top: -6px; border-right: 1.5px solid var(--st-text); border-bottom: 1.5px solid var(--st-text); transform: rotate(45deg); pointer-events: none; }
+    select {
+      -webkit-appearance: none; appearance: none;
+      max-width: 100%; min-height: 44px; padding: 0 44px 0 14px;
+      background: var(--st-bg); color: var(--st-text);
+      border: 1px solid var(--st-line-ui); border-radius: 2px;
+      font: 500 16px/1.2 var(--sans); cursor: pointer;
+    }
+    select:hover { border-color: var(--st-text); }
+    .vel { display: flex; align-items: center; gap: 14px; }
+    output { font: 500 15px/1 var(--sans); font-variant-numeric: tabular-nums; color: var(--st-text); min-width: 3.4em; }
+    input[type=range] {
+      -webkit-appearance: none; appearance: none;
+      width: min(240px, 100%); height: 44px; margin: 0;
+      background: transparent; cursor: pointer;
+    }
+    input[type=range]::-webkit-slider-runnable-track { height: 2px; background: var(--st-line-ui); border: 0; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 16px; height: 16px; margin-top: -7px; background: var(--st-text); border: 0; border-radius: 0; }
+    input[type=range]::-moz-range-track { height: 2px; background: var(--st-line-ui); border: 0; }
+    input[type=range]::-moz-range-thumb { width: 16px; height: 16px; background: var(--st-text); border: 0; border-radius: 0; }
+    input[type=range]:focus-visible { outline: 2px solid var(--st-accent); outline-offset: 2px; }
+    .note { margin-top: 12px; font: 400 15px/1.5 var(--sans); color: var(--st-muted); max-width: 64ch; }
+    .note:empty { display: none; }
+    .streak { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; min-height: 44px; margin-top: 10px; padding-top: 6px; border-top: 1px solid var(--st-line); font: 400 15px/1.4 var(--sans); color: var(--st-soft); }
+    .dots { display: inline-flex; gap: 6px; align-items: center; }
+    .dots i { width: 1.5px; height: 18px; background: var(--st-line-ui); }
+    .dots i.on { width: 2px; background: var(--st-text); }
+    .player :focus-visible { outline-color: var(--st-accent); }
+
+    /* Indice delle fasi: righe con i puntini di guida */
+    .indice { margin-top: 40px; }
+    .indice-tit { font: 400 26px/1.2 var(--serif); margin-bottom: 12px; }
+    .chapters { list-style: none; padding: 0; border-top: 1px solid var(--ink); }
+    .chapters li { border-bottom: 1px solid var(--line); }
+    .chap {
+      position: relative; width: 100%; min-height: 56px;
+      display: flex; align-items: baseline;
+      padding: 14px 4px 14px 16px;
+      background: none; border: 0; text-align: left; cursor: pointer; color: var(--ink);
+    }
+    .chap:hover { background: var(--surface); }
+    .chap:focus-visible { outline-offset: -2px; }
+    .chap .n { order: 0; flex: none; width: 38px; font: 600 16px/1.5 var(--sans); font-variant-numeric: tabular-nums; }
+    .chap .t { order: 1; font: 400 20px/1.3 var(--serif); }
+    .chap::after { content: ""; order: 2; flex: 1 1 auto; min-width: 12px; margin: 0 10px; border-bottom: 2px dotted var(--line-ui); }
+    .chap .m { order: 3; flex: none; font: 400 15px/1.5 var(--sans); font-variant-numeric: tabular-nums; color: var(--ink-soft); }
+    .chap.fatta .n, .chap.fatta .t, .chap.fatta .m { color: var(--muted); }
+    .chap.active::before { content: ""; position: absolute; left: 0; top: -1px; bottom: -1px; width: 3px; background: var(--accent); }
+    .chap.active .t { font-weight: 500; }
+    .chap.active .m::before { content: "in ascolto · "; color: var(--accent); font-weight: 500; }
+    @media (max-width: 479px) { .chap { padding-left: 12px; } .chap .n { width: 32px; } .chap .t { font-size: 19px; } .chap::after { margin: 0 8px; } }
+
+    /* ---------- Le prossime tre settimane (fascia) ---------- */
+    .sez-dopo { background: var(--band); padding-top: clamp(56px, 7vw, 96px); }
+    .tavola-conteggio { max-width: 220px; margin: 4px 0 28px; }
+    @media (min-width: 900px) { .tavola-conteggio { margin: 40px 0 0; max-width: 200px; } }
+    .regole { list-style: none; padding: 0; margin-top: 36px; border-bottom: 1px solid var(--line-ui); }
+    .regole li { display: grid; grid-template-columns: 40px minmax(0, 1fr); column-gap: 14px; padding: 18px 0 24px; border-top: 1px solid var(--line-ui); }
+    .r-num { font-family: var(--serif); font-weight: 300; font-variation-settings: "opsz" 72; font-size: 40px; line-height: .85; font-variant-numeric: lining-nums; }
+    .regole h3 { grid-column: 2; font: 500 22px/1.25 var(--serif); margin-bottom: 6px; text-wrap: balance; }
+    .regole p { grid-column: 2; font-size: 18px; line-height: 1.55; text-wrap: pretty; }
+    .r-num { grid-row: 1 / span 2; }
+    .regole strong { font-weight: 600; }
+    @media (min-width: 900px) {
+      .regole li { grid-template-columns: 56px minmax(0, 5fr) minmax(0, 7fr); column-gap: var(--col-gap); }
+      .regole h3 { margin: 0; }
+      .regole p { grid-column: 3; grid-row: 1; }
+      .r-num { grid-row: 1; }
+    }
+
+    /* ---------- Il copione ---------- */
+    .btn-sec {
+      display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 18px; margin-top: 24px;
+      background: var(--ink); color: var(--on-ink); border: 0; border-radius: 2px; cursor: pointer;
+      font: 600 16px/1 var(--sans);
+    }
+    .btn-sec svg { width: 16px; height: 16px; }
+    .btn-sec:hover { background: var(--accent); color: var(--on-accent); }
+    .testo-completo { margin-top: 28px; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--line); }
+    .testo-completo > summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 64px; font: 400 23px/1.25 var(--serif); cursor: pointer; list-style: none; }
+    .testo-completo > summary::-webkit-details-marker { display: none; }
+    .script { max-width: 62ch; padding-bottom: 36px; }
+    .script h3 { font: 400 26px/1.2 var(--serif); margin: 40px 0 14px; text-wrap: balance; }
+    .script h3 span { display: block; margin-bottom: 4px; font: 500 15px/1.3 var(--sans); color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+    .script p { font-size: 19px; line-height: 1.65; margin-bottom: 10px; text-wrap: pretty; }
+    .script .pausa { font-style: italic; color: var(--ink-soft); white-space: nowrap; margin-left: 6px; }
+
+    /* ---------- Colofone (fascia) ---------- */
+    .colofone { background: var(--band); padding: clamp(56px, 7vw, 96px) 0 clamp(64px, 8vw, 104px); }
+    .colofone > .wrap { border-top: 2px solid var(--ink); }
+    .blocco { padding: 16px 0 28px; }
+    .blocco + .blocco { border-top: 1px solid var(--line-ui); }
+    @media (min-width: 900px) { .blocco { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--col-gap); } }
+    .avv { font-size: 17px; line-height: 1.6; max-width: 66ch; }
+    .aiuto { font-size: 17px; line-height: 1.55; max-width: 60ch; }
+    .aiuto-ente { display: block; font: 600 16px/1.4 var(--sans); }
+    .aiuto-num { display: inline-block; margin: 10px 0 8px; padding-bottom: 2px; font: 400 40px/1.1 var(--serif); font-variation-settings: "opsz" 72; font-variant-numeric: lining-nums; text-decoration: none; border-bottom: 1px solid var(--ink); }
+    .aiuto-num:hover { border-bottom-width: 2px; }
+    .aiuto-sep { display: none; }
+    .aiuto-resto { display: block; }
+    .col-testo p { font: 400 16px/1.6 var(--sans); color: var(--ink-soft); max-width: 66ch; }
+    .col-testo p + p { margin-top: 10px; }
+    .col-testo .col-casa { font: italic 400 20px/1.4 var(--serif); color: var(--ink); }
+
+    /* ---------- Cambi di luce: un secondo, mai con prefers-reduced-motion ---------- */
+    html.in-cambio { transition: --paper 1s ease, --surface 1s ease, --band 1s ease, --ink 1s ease, --ink-soft 1s ease, --muted 1s ease, --accent 1s ease, --accent-hover 1s ease, --on-accent 1s ease, --on-ink 1s ease, --line 1s ease, --line-ui 1s ease, --sky-far 1s ease, --sky-near 1s ease, --dawn 1s ease; }
+    .player { transition: --p 1s linear; }
+    .player.in-cambio-notte { transition: --p 1s linear, --st-bg 1s ease, --st-text 1s ease, --st-soft 1s ease, --st-muted 1s ease, --st-line 1s ease, --st-line-ui 1s ease, --st-accent 1s ease, --st-accent-hover 1s ease, --st-on-accent 1s ease, --st-rule 1s ease, --st-sky-far 1s ease, --st-sky-near 1s ease, --st-horizon 1s ease, --st-dawn 1s ease, --st-fill 1s ease, --st-wave 1s ease, --st-wave-next 1s ease; }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
-      .orb, .player.playing .orb { animation: none; transform: scale(.92); }
-      .subtitle.in { animation: none; }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+    @media (forced-colors: active) {
+      .cta, .play, .btn-sec, .salto, .tema { border: 2px solid ButtonText; }
+      .bar, .chap.active::before { background: Highlight; }
     }
   </style>
 </head>
 <body>
+  <a class="salta" href="#seduta">Vai alla seduta</a>
 
-  <header class="top">
-    <div class="wrap top-in">
-      <a href="index.html" class="brand">🧠 MINDSET <b>LABS</b></a>
-      <span class="tag">Seduta guidata · 20–25 min</span>
+  <header class="testata">
+    <div class="wrap testata-in">
+      <a class="marchio" href="index.html" aria-label="MINDSET, Respiro Libero: torna al sito MINDSET">
+        <span class="m-casa">MINDSET</span><span class="m-sep" aria-hidden="true"></span><span class="m-collana">Respiro Libero</span>
+      </a>
+      <div class="testata-az">
+        <a class="ascolta sottolineato" href="#seduta">Ascolta <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1v11M2.5 7.5 7 12l4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></a>
+        <button class="tema" type="button" id="btnTema" aria-pressed="false" title="Tema della pagina: Carta o Sera">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"/></svg>
+          <span class="tema-testo">Sera</span>
+        </button>
+      </div>
     </div>
   </header>
 
-  <!-- HERO -->
-  <section class="hero wrap">
-    <p class="badge">Protocollo Respiro Libero</p>
-    <h1>Smetti di fumare.<br><span class="grad">Senza forza di volontà.</span></h1>
-    <p class="lead">
-      Una seduta di ipnosi guidata di 20–25 minuti, costruita sui principi del libro
-      <em>«È facile smettere di fumare se sai come farlo»</em>. L'idea centrale è semplice:
-      non stai rinunciando a niente. Stai uscendo da una trappola.
-    </p>
-    <a href="#seduta" class="btn primary big">Vai alla seduta</a>
-  </section>
+  <main id="contenuto">
 
-  <!-- PRIMA DI INIZIARE -->
-  <section class="section wrap" aria-labelledby="h-prima">
-    <div class="section-head">
-      <p class="kicker">Prima di iniziare</p>
-      <h2 id="h-prima">Tre cose da sapere</h2>
-    </div>
-    <div class="grid">
-      <div class="card">
-        <span class="num">01</span>
-        <h3>Mezz'ora solo per te</h3>
-        <p>Un luogo tranquillo, una posizione comoda, meglio con le cuffie. <strong>Mai alla guida</strong> o mentre fai qualcosa che richiede attenzione.</p>
+    <!-- APERTURA -->
+    <section class="apertura" aria-labelledby="h-titolo">
+      <div class="wrap grid">
+        <p class="occhiello">Seduta guidata · <span data-durata="testo">20–25 minuti</span> · in italiano</p>
+        <h1 id="h-titolo"><span class="h1-a">Smetti di fumare.</span> <span class="h1-b">Senza forza di volontà.</span></h1>
+        <div class="apertura-testo">
+          <p class="lede">Probabilmente hai già provato a smettere. Questa volta non devi combattere: ascolti, e&nbsp;lasci andare.</p>
+          <p class="lede-2">
+            Una seduta di ipnosi guidata di 20–25 minuti, costruita sui principi del libro
+            <em>«È facile smettere di fumare se sai come farlo»</em>. L'idea centrale è semplice:
+            non stai rinunciando a niente. Stai uscendo da una trappola.
+          </p>
+          <div class="cta-blocco">
+            <a class="cta" id="ctaInizia" href="#seduta">Inizia la seduta <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2 10h15M11.5 4.5 17 10l-5.5 5.5" fill="none" stroke="currentColor" stroke-width="2"/></svg></a>
+            <p class="micro">Gratuita · nessun farmaco · ti servono un posto tranquillo e le cuffie</p>
+            <a class="link-giu sottolineato" href="#tre-cose">Prima, tre cose da sapere <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1v11M2.5 7.5 7 12l4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></a>
+          </div>
+        </div>
+        <figure class="tavola tavola-respiro">
+          <svg viewBox="0 0 300 176" role="img" aria-labelledby="tav1">
+            <title id="tav1">Una linea che sale e scende piano, come un respiro, sopra nove righe stampate allineate a sinistra.</title>
+            <path class="onda" d="M0 30 C24 30 24 8 48 8 C84 8 84 30 120 30 C144 30 144 8 168 8 C204 8 204 30 240 30 C264 30 264 8 288 8 C294 8 297 9 300 10"/>
+            <line class="ln" x1="0" y1="56" x2="276" y2="56"/>
+            <line class="ln" x1="0" y1="71" x2="252" y2="71"/>
+            <line class="ln" x1="0" y1="86" x2="288" y2="86"/>
+            <line class="ln" x1="0" y1="101" x2="232" y2="101"/>
+            <line class="ln" x1="0" y1="116" x2="268" y2="116"/>
+            <line class="ln" x1="0" y1="131" x2="220" y2="131"/>
+            <line class="ln" x1="0" y1="146" x2="282" y2="146"/>
+            <line class="ln" x1="0" y1="161" x2="244" y2="161"/>
+            <line class="ln" x1="0" y1="176" x2="176" y2="176"/>
+          </svg>
+          <figcaption>Tav. 1 — Il respiro, lasciato andare.</figcaption>
+        </figure>
       </div>
-      <div class="card">
-        <span class="num">02</span>
-        <h3>Non serve smettere prima</h3>
-        <p>Non devi ridurre né resistere prima della seduta. Tieni vicino il pacchetto e l'accendino: alla fine li butterai via.</p>
-      </div>
-      <div class="card">
-        <span class="num">03</span>
-        <h3>Ripetila per 7 giorni</h3>
-        <p>Ascoltala una volta al giorno per la prima settimana, idealmente la sera. Poi ogni volta che ne senti il bisogno.</p>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- PLAYER -->
-  <section id="seduta" class="section wrap" aria-labelledby="h-seduta">
-    <div class="section-head">
-      <p class="kicker">La seduta</p>
-      <h2 id="h-seduta">Chiudi gli occhi quando la voce te lo chiede</h2>
-      <p>La luce respira lentamente: se vuoi, lascia che il tuo respiro la segua.</p>
-    </div>
+    <!-- PRIMA DI INIZIARE -->
+    <section class="sez" id="tre-cose" aria-labelledby="h-prima">
+      <div class="wrap grid">
+        <p class="etichetta lab">Prima di iniziare</p>
+        <div class="cnt"><h2 id="h-prima">Tre cose da sapere</h2></div>
+        <div class="cose">
+          <div class="cosa">
+            <p class="margine" aria-hidden="true">Prima</p>
+            <div class="prosa"><h3>Mezz'ora solo per te.</h3> <p>Un luogo tranquillo, una posizione comoda, meglio con le cuffie. <strong>Mai alla guida</strong> o mentre fai qualcosa che richiede attenzione.</p></div>
+          </div>
+          <div class="cosa">
+            <p class="margine" aria-hidden="true">Durante</p>
+            <div class="prosa"><h3>Non serve smettere prima.</h3> <p>Non devi ridurre né resistere prima della seduta. Tieni vicino il pacchetto e l'accendino: alla fine li butterai via.</p></div>
+          </div>
+          <div class="cosa">
+            <p class="margine" aria-hidden="true">Dopo</p>
+            <div class="prosa"><h3>Ripetila per 7 giorni.</h3> <p>Ascoltala una volta al giorno per la prima settimana, idealmente la sera. Poi ogni volta che ne senti il bisogno.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <div class="player" id="player">
-      <div class="stage" aria-hidden="true"><div class="orb"></div></div>
-      <p class="phase-label" id="phaseLabel"></p>
-      <p class="subtitle in" id="subtitle">Trova un luogo tranquillo, indossa le cuffie e premi «Avvia la seduta».</p>
+    <!-- LA SEDUTA -->
+    <section id="seduta" class="sez" aria-labelledby="h-seduta">
+      <div class="wrap grid">
+        <div class="lab lab-seduta">
+          <p class="etichetta">La seduta</p>
+          <p class="numerale"><span class="num-cifra" data-durata="cifra" aria-hidden="true">20–25</span><span class="num-unita" aria-hidden="true">minuti · 13 fasi</span><span class="vh" data-durata="vh">20–25 minuti, 13 fasi</span></p>
+        </div>
+        <div class="cnt testa-seduta">
+          <h2 id="h-seduta">Chiudi gli occhi quando la voce te lo chiede</h2>
+        </div>
 
-      <div class="progress" aria-hidden="true"><div class="bar" id="bar"></div></div>
-      <div class="time"><span id="tElapsed">0:00</span><span id="tTotal"></span></div>
+        <div class="player" id="player" role="region" aria-label="Player della seduta">
+          <div class="p-testa">
+            <p class="phase-label" id="phaseLabel"></p>
+            <p class="tempo"><span id="tElapsed">0:00</span><span aria-hidden="true"> / </span><span id="tTotal"></span></p>
+          </div>
 
-      <div class="controls">
-        <button class="btn icon" id="btnPrev" type="button" aria-label="Frase precedente" title="Frase precedente">‹</button>
-        <button class="btn primary big" id="btnPlay" type="button">Avvia la seduta</button>
-        <button class="btn icon" id="btnNext" type="button" aria-label="Frase successiva" title="Frase successiva">›</button>
-      </div>
-      <div class="stop-row">
-        <button class="btn ghost" id="btnStop" type="button">↺ Ricomincia da capo</button>
-        <a class="btn ghost" id="lnkAudio" download="respiro-libero.mp3" hidden>⤓ Scarica l'audio</a>
-      </div>
-      <audio id="track" preload="metadata"></audio>
+          <p class="subtitle in" id="subtitle">Trova un luogo tranquillo, indossa le cuffie e premi «Avvia la seduta».</p>
 
-      <div class="settings">
-        <label>Voce <select id="selVoice" aria-label="Voce"></select></label>
-        <label>Velocità <input type="range" id="rngRate" min="0.7" max="1.1" step="0.05" value="0.85" aria-label="Velocità della voce"><output id="outRate">0.85×</output></label>
-        <label id="rowAmbient"><input type="checkbox" id="chkAmbient"> Sottofondo di onde</label>
-      </div>
-      <p class="note" id="voiceNote"></p>
+          <div class="respiro">
+            <svg viewBox="0 0 1000 60" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+              <defs>
+                <clipPath id="cpFatta"><rect x="-10" y="0" width="510" height="60"/></clipPath>
+                <clipPath id="cpDopo"><rect x="500" y="0" width="510" height="60"/></clipPath>
+              </defs>
+              <g class="onda-fatta" clip-path="url(#cpFatta)"><g class="onda-scorre"><path class="onda-path" d="M0 46 C50 46 50 14 100 14 C175 14 175 46 250 46 C300 46 300 14 350 14 C425 14 425 46 500 46 C550 46 550 14 600 14 C675 14 675 46 750 46 C800 46 800 14 850 14 C925 14 925 46 1000 46 C1050 46 1050 14 1100 14 C1175 14 1175 46 1250 46 C1300 46 1300 14 1350 14 C1425 14 1425 46 1500 46"/></g></g>
+              <g class="onda-dopo" clip-path="url(#cpDopo)"><g class="onda-scorre"><path class="onda-path" d="M0 46 C50 46 50 14 100 14 C175 14 175 46 250 46 C300 46 300 14 350 14 C425 14 425 46 500 46 C550 46 550 14 600 14 C675 14 675 46 750 46 C800 46 800 14 850 14 C925 14 925 46 1000 46 C1050 46 1050 14 1100 14 C1175 14 1175 46 1250 46 C1300 46 1300 14 1350 14 C1425 14 1425 46 1500 46"/></g></g>
+            </svg>
+            <p class="didascalia">Se vuoi, lascia che il tuo respiro segua la linea.</p>
+          </div>
 
-      <div class="streak">
-        <span id="streakText">Ascolti completati: 0 di 7</span>
-        <span class="dots" id="dots" aria-hidden="true"></span>
-      </div>
-    </div>
+          <div class="cielo" aria-hidden="true">
+            <svg viewBox="0 0 1000 100" preserveAspectRatio="none" focusable="false">
+              <line x1="0" x2="1000" y1="95.7" y2="95.7" style="--h:0.043"/><line x1="0" x2="1000" y1="90.82" y2="90.82" style="--h:0.092"/><line x1="0" x2="1000" y1="85.28" y2="85.28" style="--h:0.147"/><line x1="0" x2="1000" y1="78.99" y2="78.99" style="--h:0.21"/><line x1="0" x2="1000" y1="71.86" y2="71.86" style="--h:0.281"/><line x1="0" x2="1000" y1="63.76" y2="63.76" style="--h:0.362"/><line x1="0" x2="1000" y1="54.56" y2="54.56" style="--h:0.454"/><line x1="0" x2="1000" y1="44.13" y2="44.13" style="--h:0.559"/><line x1="0" x2="1000" y1="32.29" y2="32.29" style="--h:0.677"/><line x1="0" x2="1000" y1="18.85" y2="18.85" style="--h:0.812"/><line x1="0" x2="1000" y1="3.59" y2="3.59" style="--h:0.964"/>
+            </svg>
+          </div>
+          <div class="progress" aria-hidden="true"><div class="bar" id="bar"></div><span class="tacche" id="tacche"></span></div>
 
-    <ol class="chapters" id="chapters" aria-label="Fasi della seduta"></ol>
-  </section>
+          <div class="controls">
+            <div class="trasporto">
+              <button class="salto" id="btnPrev" type="button" aria-label="Frase precedente" title="Frase precedente"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M11.5 3 5.5 9l6 6" fill="none" stroke="currentColor" stroke-width="1.75"/></svg></button>
+              <button class="play" id="btnPlay" type="button">Avvia la seduta</button>
+              <button class="salto" id="btnNext" type="button" aria-label="Frase successiva" title="Frase successiva"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M6.5 3l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75"/></svg></button>
+            </div>
+            <div class="rassicura">
+              <p class="r-1">Resti sveglio e presente. Puoi fermarti quando vuoi.</p>
+              <p class="r-2"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3.25 12.5V10a6.75 6.75 0 0 1 13.5 0v2.5" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="2.5" y="11.75" width="4" height="6" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="13.5" y="11.75" width="4" height="6" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Meglio con le cuffie</p>
+            </div>
+          </div>
 
-  <!-- DOPO LA SEDUTA -->
-  <section class="section wrap" aria-labelledby="h-dopo">
-    <div class="section-head">
-      <p class="kicker">Dopo la seduta</p>
-      <h2 id="h-dopo">Le prossime tre settimane</h2>
-      <p>Il metodo funziona se cambi il modo in cui guardi la sigaretta, non se stringi i denti. Queste sono le regole da tenere a mente.</p>
-    </div>
-    <div class="grid">
-      <div class="card">
-        <span class="num">01</span>
-        <h3>Butta via tutto, subito</h3>
-        <p>Pacchetto, accendino, posacenere. Niente «scorta di emergenza»: tenerla significa che una parte di te crede ancora di rinunciare a qualcosa.</p>
-      </div>
-      <div class="card">
-        <span class="num">02</span>
-        <h3>Quando arriva il pensiero</h3>
-        <p>Non combatterlo e non pensare «non posso». Pensa: <strong>«Che bello: non ne ho più bisogno».</strong> Unisci pollice e indice e fai un respiro profondo.</p>
-      </div>
-      <div class="card">
-        <span class="num">03</span>
-        <h3>Il piccolo vuoto passa</h3>
-        <p>Il disagio fisico è lieve e cala in pochi giorni; in circa tre settimane anche l'abitudine perde forza. È il segnale che stai guarendo, non un pericolo.</p>
-      </div>
-      <div class="card">
-        <span class="num">04</span>
-        <h3>Non evitare la vita</h3>
-        <p>Caffè, cene, amici, giornate difficili: vivili da subito. Ogni situazione affrontata senza fumo ti dimostra che non ti serviva.</p>
-      </div>
-      <div class="card">
-        <span class="num">05</span>
-        <h3>Non esiste «solo una»</h3>
-        <p>Una sigaretta è tutto ciò che serve per richiudere la trappola. Non c'è niente da provare: la risposta è sempre «No, grazie. Non fumo».</p>
-      </div>
-      <div class="card">
-        <span class="num">06</span>
-        <h3>Nessun vuoto da riempire</h3>
-        <p>Non stai perdendo niente, quindi non servono dolci o snack al suo posto. Se segui una terapia su consiglio medico, continua a seguire le indicazioni del medico.</p>
-      </div>
-    </div>
-  </section>
+          <div class="p-opzioni">
+            <label class="scelta"><input type="checkbox" id="chkLuci" checked> Abbassa le luci durante l'ascolto</label>
+            <div class="p-azioni">
+              <button class="link-btn sottolineato" id="btnStop" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.2 6.2A5.25 5.25 0 1 1 2.75 9" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 2.75v3.75h3.75" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Ricomincia da capo</button>
+              <a class="link-btn sottolineato" id="lnkAudio" download="respiro-libero.mp3" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1v10M3.5 6.5 8 11l4.5-4.5M2 14.25h12" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Scarica l'audio</a>
+            </div>
+          </div>
+          <audio id="track" preload="metadata"></audio>
 
-  <!-- COPIONE -->
-  <section id="copione" class="section wrap" aria-labelledby="h-copione">
-    <div class="section-head">
-      <p class="kicker">Il copione</p>
-      <h2 id="h-copione">Il testo completo della seduta</h2>
-      <p>Puoi leggerlo o registrarlo con la tua voce, o con quella di una persona di cui ti fidi: una voce umana, calma e lenta, funziona meglio di qualunque sintetizzatore. Le pause sono indicate tra parentesi.</p>
-    </div>
-    <div class="script-actions">
-      <button class="btn" id="btnDownload" type="button">⤓ Scarica il copione (.txt)</button>
-    </div>
-    <details>
-      <summary>Mostra il testo della seduta</summary>
-      <div class="script" id="scriptText"></div>
-    </details>
-  </section>
+          <details class="impostazioni">
+            <summary><span>Impostazioni</span><span class="imp-sintesi">Voce, velocità e sottofondo</span><span class="piu" aria-hidden="true"></span></summary>
+            <div class="settings">
+              <div class="riga">
+                <label class="riga-etich" for="selVoice">Voce</label>
+                <span class="sel"><select id="selVoice" aria-label="Voce"></select></span>
+              </div>
+              <div class="riga">
+                <label class="riga-etich" for="rngRate">Velocità</label>
+                <span class="vel"><input type="range" id="rngRate" min="0.7" max="1.1" step="0.05" value="0.85" aria-label="Velocità della voce"><output id="outRate" for="rngRate">0.85×</output></span>
+              </div>
+              <div class="riga riga-sola" id="rowAmbient">
+                <label class="scelta"><input type="checkbox" id="chkAmbient"> Sottofondo di onde</label>
+              </div>
+            </div>
+          </details>
+          <p class="note" id="voiceNote"></p>
 
-  <footer>
+          <div class="streak">
+            <span id="streakText">Ascolti completati: 0 di 7</span>
+            <span class="dots" id="dots" aria-hidden="true"></span>
+          </div>
+        </div>
+
+        <aside class="primo-minuto" aria-labelledby="h-primo-minuto">
+          <h3 id="h-primo-minuto">Il primo minuto.</h3> <p>Una voce ti dà il benvenuto e ti dice che non devi sforzarti, né credere a niente, né decidere adesso di smettere. Gli occhi restano aperti: li chiuderai più avanti, solo quando sono pronti.</p>
+        </aside>
+
+        <div class="cnt indice">
+          <h3 class="indice-tit">Le 13 fasi</h3>
+          <ol class="chapters" id="chapters" aria-label="Fasi della seduta"></ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- DOPO LA SEDUTA -->
+    <section class="sez sez-dopo" id="dopo" aria-labelledby="h-dopo">
+      <div class="wrap grid">
+        <div class="lab">
+          <p class="etichetta">Dopo la seduta</p>
+          <figure class="tavola tavola-conteggio">
+            <svg viewBox="0 0 250 76" role="img" aria-labelledby="tav2">
+              <title id="tav2">Venti tacche verticali raggruppate a cinque, come un conteggio. L'ultima cade fuori dal gruppo.</title>
+              <line class="ln" x1="4" y1="17" x2="4" y2="58"/><line class="ln" x1="13" y1="19" x2="13" y2="58"/><line class="ln" x1="22" y1="16" x2="22" y2="58"/><line class="ln" x1="31" y1="18" x2="31" y2="58"/><line class="ln" x1="40" y1="20" x2="40" y2="58"/>
+              <line class="ln" x1="66" y1="18" x2="66" y2="58"/><line class="ln" x1="75" y1="16" x2="75" y2="58"/><line class="ln" x1="84" y1="19" x2="84" y2="58"/><line class="ln" x1="93" y1="17" x2="93" y2="58"/><line class="ln" x1="102" y1="18" x2="102" y2="58"/>
+              <line class="ln" x1="128" y1="19" x2="128" y2="58"/><line class="ln" x1="137" y1="17" x2="137" y2="58"/><line class="ln" x1="146" y1="18" x2="146" y2="58"/><line class="ln" x1="155" y1="16" x2="155" y2="58"/><line class="ln" x1="164" y1="20" x2="164" y2="58"/>
+              <line class="ln" x1="190" y1="18" x2="190" y2="58"/><line class="ln" x1="199" y1="17" x2="199" y2="58"/><line class="ln" x1="208" y1="19" x2="208" y2="58"/><line class="ln" x1="217" y1="16" x2="217" y2="58"/>
+              <line class="ultima" x1="0" y1="-20" x2="0" y2="20" transform="translate(236 50) rotate(28)"/>
+            </svg>
+            <figcaption>Tav. 2 — Il conteggio, interrotto.</figcaption>
+          </figure>
+        </div>
+        <div class="cnt">
+          <h2 id="h-dopo">Le prossime tre settimane</h2>
+          <p class="intro">Il metodo funziona se cambi il modo in cui guardi la sigaretta, non se stringi i denti. Queste sono le regole da tenere a mente.</p>
+          <ol class="regole">
+            <li><span class="r-num" aria-hidden="true">1</span><h3>Butta via tutto, subito</h3><p>Pacchetto, accendino, posacenere. Niente «scorta di emergenza»: tenerla significa che una parte di te crede ancora di rinunciare a qualcosa.</p></li>
+            <li><span class="r-num" aria-hidden="true">2</span><h3>Quando arriva il pensiero</h3><p>Non combatterlo e non pensare «non posso». Pensa: <strong>«Che bello: non ne ho più bisogno».</strong> Unisci pollice e indice e fai un respiro profondo.</p></li>
+            <li><span class="r-num" aria-hidden="true">3</span><h3>Il piccolo vuoto passa</h3><p>Il disagio fisico è lieve e cala in pochi giorni; in circa tre settimane anche l'abitudine perde forza. È il segnale che stai guarendo, non un pericolo.</p></li>
+            <li><span class="r-num" aria-hidden="true">4</span><h3>Non evitare la vita</h3><p>Caffè, cene, amici, giornate difficili: vivili da subito. Ogni situazione affrontata senza fumo ti dimostra che non ti serviva.</p></li>
+            <li><span class="r-num" aria-hidden="true">5</span><h3>Non esiste «solo una»</h3><p>Una sigaretta è tutto ciò che serve per richiudere la trappola. Non c'è niente da provare: la risposta è sempre «No, grazie. Non fumo».</p></li>
+            <li><span class="r-num" aria-hidden="true">6</span><h3>Nessun vuoto da riempire</h3><p>Non stai perdendo niente, quindi non servono dolci o snack al suo posto. Se segui una terapia su consiglio medico, continua a seguire le indicazioni del medico.</p></li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- COPIONE -->
+    <section id="copione" class="sez" aria-labelledby="h-copione">
+      <div class="wrap grid">
+        <p class="etichetta lab">Il copione</p>
+        <div class="cnt">
+          <h2 id="h-copione">Il testo completo della seduta</h2>
+          <p class="intro">Puoi leggerlo o registrarlo con la tua voce, o con quella di una persona di cui ti fidi: una voce umana, calma e lenta, funziona meglio di qualunque sintetizzatore. Le pause sono indicate tra parentesi.</p>
+          <button class="btn-sec" id="btnDownload" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1v10M3.5 6.5 8 11l4.5-4.5M2 14.25h12" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Scarica il copione (.txt)</button>
+          <details class="testo-completo">
+            <summary>Mostra il testo della seduta<span class="piu" aria-hidden="true"></span></summary>
+            <div class="script" id="scriptText"></div>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- COLOFONE -->
+  <footer class="colofone">
     <div class="wrap">
-      <p><strong>Avvertenze.</strong> Questa seduta è pensata per persone adulte. È uno strumento di rilassamento e autosuggestione: non sostituisce il parere del medico né un percorso di cura. Non ascoltarla alla guida o mentre usi macchinari. Se soffri di disturbi psichiatrici o di epilessia, parlane prima con il tuo medico. Se assumi farmaci regolarmente, avvisa il medico che stai smettendo: smettere di fumare può modificare l'effetto di alcuni medicinali.</p>
-      <p><strong>Aiuto gratuito.</strong> Telefono Verde contro il Fumo dell'Istituto Superiore di Sanità: <a href="tel:800554088">800 554 088</a> · <a href="https://smettodifumare.iss.it" rel="noopener">smettodifumare.iss.it</a>, dove trovi anche i Centri Antifumo del Servizio Sanitario Nazionale.</p>
-      <p>Le voci della seduta sono generate al computer: l'audio professionale con intelligenza artificiale (Google Gemini), le altre con la sintesi vocale del tuo dispositivo.</p>
-      <p>Testo originale ispirato ai principi del metodo descritto da Allen Carr in «È facile smettere di fumare se sai come farlo». Non affiliato né approvato da Allen Carr's Easyway.</p>
+      <div class="blocco">
+        <p class="etichetta lab">Avvertenze</p>
+        <div class="cnt"><p class="avv">Questa seduta è pensata per persone adulte. È uno strumento di rilassamento e autosuggestione: non sostituisce il parere del medico né un percorso di cura. Non ascoltarla alla guida o mentre usi macchinari. Se soffri di disturbi psichiatrici o di epilessia, parlane prima con il tuo medico. Se assumi farmaci regolarmente, avvisa il medico che stai smettendo: smettere di fumare può modificare l'effetto di alcuni medicinali.</p></div>
+      </div>
+      <div class="blocco">
+        <p class="etichetta lab">Aiuto gratuito</p>
+        <div class="cnt"><p class="aiuto"><span class="aiuto-ente">Telefono Verde contro il Fumo dell'Istituto Superiore di Sanità:</span> <a class="aiuto-num" href="tel:800554088">800 554 088</a><span class="aiuto-sep"> · </span><span class="aiuto-resto"><a class="sottolineato" href="https://smettodifumare.iss.it" rel="noopener">smettodifumare.iss.it</a>, dove trovi anche i Centri Antifumo del Servizio Sanitario Nazionale.</span></p></div>
+      </div>
+      <div class="blocco">
+        <p class="etichetta lab">Colofone</p>
+        <div class="cnt col-testo">
+          <p class="col-casa">Respiro Libero è un progetto MINDSET.</p>
+          <p>Le voci della seduta sono generate al computer: l'audio professionale con intelligenza artificiale (Google Gemini), le altre con la sintesi vocale del tuo dispositivo.</p>
+          <p>Testo originale ispirato ai principi del metodo descritto da Allen Carr in «È facile smettere di fumare se sai come farlo». Non affiliato né approvato da Allen Carr's Easyway.</p>
+        </div>
+      </div>
     </div>
   </footer>
 
@@ -598,6 +1134,7 @@ Questa è la tua nuova vita. Goditela. {2}
       ? FASI.length + ' fasi · ' + (isAudio() ? '' : 'circa ') + Math.round(total / 60) + ' minuti'
       : 'Fase ' + (fi + 1) + ' di ' + FASI.length + ' · ' + FASI[fi].titolo;
     chapters.querySelectorAll('.chap').forEach(c => c.classList.toggle('active', Number(c.dataset.f) === fi && started()));
+    aspetto();
   }
   function ui() {
     player.classList.toggle('playing', playing);
@@ -1022,6 +1559,129 @@ Questa è la tua nuova vita. Goditela. {2}
     a.click();
     a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  });
+
+  /* ---------------- Aspetto: notte, luci basse, alba, fasi ----------------
+     Solo stato visivo: legge lo stato della riproduzione e non lo modifica.
+     Chiamato alla fine di updateProgress(), quindi a ogni play, pausa,
+     cambio di frase e avanzamento dell'audio. */
+  const radice = document.documentElement;
+  const mqRidotto = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
+  const mqScuro = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : { matches: false };
+  const chkLuci = $('chkLuci'), tacche = $('tacche'), btnTema = $('btnTema');
+  let suonato = false, statoNotte = null, statoLuci = null, chiaveTacche = '', chiaveDurata = '';
+  const luciAttive = () => prefs.luciBasse !== false;
+
+  // Sfuma per un secondo i token della pagina (radice) o quelli del riquadro (notte).
+  function cambioMorbido(el = radice, cls = 'in-cambio') {
+    if (mqRidotto.matches) return;
+    el.classList.add(cls);
+    clearTimeout(el['t_' + cls]);
+    el['t_' + cls] = setTimeout(() => el.classList.remove(cls), 1100);
+  }
+  function aggiornaDurata() {
+    const m = (AUDIO && !audioFailed && AUDIO.durata > 0) ? Math.round(AUDIO.durata / 60) : 0;
+    if (String(m) === chiaveDurata) return;
+    chiaveDurata = String(m);
+    const cifra = m ? String(m) : '20–25';
+    document.querySelectorAll('[data-durata]').forEach(el => {
+      const tipo = el.dataset.durata;
+      el.textContent = tipo === 'cifra' ? cifra
+        : tipo === 'vh' ? cifra + ' minuti, ' + FASI.length + ' fasi'
+        : cifra + ' minuti';
+    });
+  }
+  function aspetto() {
+    // L'alba: --p va da 0 a 1 con l'ascolto e scalda orizzonte e righe del cielo.
+    const total = totalTime(), t = nowTime();
+    const p = total > 0 ? Math.min(1, Math.max(0, t / total)) : 0;
+    player.style.setProperty('--p', p.toFixed(4));
+
+    // Notte quando si ascolta (e in pausa a metà seduta); luci basse solo durante l'ascolto.
+    if (playing) suonato = true;
+    else if (!started() || idx >= SEG.length) suonato = false;
+    const notte = playing || (suonato && idx < SEG.length);
+    const luci = playing && luciAttive();
+    if (statoNotte !== null && notte !== statoNotte) cambioMorbido(player, 'in-cambio-notte');
+    if (statoLuci !== null && luci !== statoLuci) cambioMorbido();
+    if (notte !== statoNotte || luci !== statoLuci) {
+      statoNotte = notte;
+      statoLuci = luci;
+      player.classList.toggle('notte', notte);
+      radice.classList.toggle('luci-basse', luci);
+    }
+
+    // Indice: fasi già ascoltate e fase in corso.
+    const fi = idx < SEG.length ? SEG[idx].f : FASI.length - 1;
+    const avviata = started();
+    chapters.querySelectorAll('.chap').forEach(c => {
+      const f = Number(c.dataset.f);
+      c.classList.toggle('fatta', avviata && (f < fi || idx >= SEG.length));
+      if (c.classList.contains('active')) c.setAttribute('aria-current', 'step');
+      else c.removeAttribute('aria-current');
+    });
+
+    // Tacche delle fasi sull'orizzonte, proporzionali alle durate reali.
+    const chiave = mode + '|' + total.toFixed(1);
+    if (chiave !== chiaveTacche && total > 0 && cum.length > SEG.length) {
+      chiaveTacche = chiave;
+      tacche.textContent = '';
+      FASI.forEach((f, k) => {
+        if (!k) return;
+        const i = document.createElement('i');
+        i.style.left = (100 * cum[f.inizio] / total).toFixed(3) + '%';
+        tacche.appendChild(i);
+      });
+    }
+    aggiornaDurata();
+  }
+
+  // Le frasi più lunghe usano un corpo più piccolo, così il riquadro non salta.
+  function misuraFrase() {
+    const n = subtitle.textContent.length;
+    const v = n > 180 ? '3' : n > 140 ? '2' : n > 90 ? '1' : '';
+    if ((subtitle.dataset.lungo || '') !== v) {
+      if (v) subtitle.dataset.lungo = v; else delete subtitle.dataset.lungo;
+    }
+  }
+  if ('MutationObserver' in window) new MutationObserver(misuraFrase).observe(subtitle, { childList: true, characterData: true, subtree: true });
+  misuraFrase();
+
+  // «Abbassa le luci durante l'ascolto»: attivo di predefinito, un tocco per spegnerlo.
+  chkLuci.checked = luciAttive();
+  chkLuci.addEventListener('change', () => {
+    prefs.luciBasse = chkLuci.checked;
+    savePrefs();
+    aspetto();
+  });
+
+  // Tema della pagina: Carta o Sera (senza scelta segue il sistema).
+  function temaScuro() {
+    const t = radice.getAttribute('data-theme');
+    return t ? t === 'dark' : mqScuro.matches;
+  }
+  function segnaTema() {
+    const s = temaScuro();
+    btnTema.setAttribute('aria-pressed', String(s));
+    btnTema.title = s ? 'Tema Sera attivo: premi per tornare a Carta' : 'Tema Carta attivo: premi per passare a Sera';
+  }
+  btnTema.addEventListener('click', () => {
+    const sera = !temaScuro();
+    cambioMorbido();
+    radice.setAttribute('data-theme', sera ? 'dark' : 'light');
+    try { localStorage.setItem('respiroLibero.tema', sera ? 'sera' : 'carta'); } catch (e) {}
+    segnaTema();
+  });
+  if (mqScuro.addEventListener) mqScuro.addEventListener('change', segnaTema);
+  segnaTema();
+
+  // «Inizia la seduta»: avvia subito (come il tasto play) e porta il riquadro in vista.
+  $('ctaInizia').addEventListener('click', e => {
+    e.preventDefault();
+    player.scrollIntoView({ behavior: mqRidotto.matches ? 'auto' : 'smooth', block: 'start' });
+    if (!playing) play();
+    btnPlay.focus({ preventScroll: true });
+    try { history.replaceState(null, '', '#seduta'); } catch (err) {}
   });
 
   /* ---------------- Avvio ---------------- */
