@@ -626,8 +626,14 @@ def allinea_asr(x, segs, min_sil=0.3, max_span=18):
         cuts.append(c)
     cuts = cuts[::-1]                          # indici di pezzo: frase k = pezzi cuts[k]..cuts[k+1]
     pieces = [trim(x[chunks[cuts[k]][0]:chunks[cuts[k + 1] - 1][1]], thr) for k in range(n)]
-    errore = dp[n][C] / max(1, sum(len(r) for r in ref))
-    return pieces, errore
+    # quota di frasi che corrispondono al testo (un'allucinazione di Whisper su una
+    # parola isolata, o una frase improvvisata da Gemini, non devono invalidare tutto)
+    buone = 0
+    for k in range(n):
+        udito = [w for c in range(cuts[k], cuts[k + 1]) for w in heard[c]]
+        if word_edit(ref[k], udito) <= max(1, 0.3 * len(ref[k])):
+            buone += 1
+    return pieces, 1 - buone / n
 
 
 def split_takes(x, segs):
@@ -652,13 +658,13 @@ def split_takes(x, segs):
         return [trim(x, thr)], 'ok'
     if get_asr():
         pieces, err = allinea_asr(x, segs)
-        if pieces is not None and err <= 0.25:
+        if pieces is not None and err <= 0.2:
             strane = [sg['i'] for sg, pc in zip(segs, pieces) if not plausible(sg, len(pc) / SR)]
-            why = f'ok (allineata al testo, errore {err:.0%})'
+            why = f'ok (allineata al testo, {1 - err:.0%} delle frasi corrisponde)'
             if strane:
                 why += f'; durata insolita da controllare: {strane}'
             return pieces, why
-        print(f'  allineamento al testo non riuscito ({err if pieces is None else f"errore {err:.0%}"}): '
+        print(f'  allineamento al testo non riuscito ({err if pieces is None else f"corrisponde solo il {1 - err:.0%}"}): '
               'divido con le pause', flush=True)
     runs, start = [], None
     for i, q in enumerate(quiet):
